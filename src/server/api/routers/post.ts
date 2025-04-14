@@ -21,6 +21,7 @@ export const postRouter = createTRPCRouter({
       return ctx.db.post.create({
         data: {
           name: input.name,
+          likes: 0,
           createdBy: { connect: { id: ctx.session.user.id } },
         },
       });
@@ -30,6 +31,16 @@ export const postRouter = createTRPCRouter({
     const post = await ctx.db.post.findFirst({
       orderBy: { createdAt: "desc" },
       where: { createdBy: { id: ctx.session.user.id } },
+    });
+
+    return post ?? null;
+  }),
+
+  getAll: protectedProcedure.query(async ({ ctx }) => {
+    const post = await ctx.db.post.findMany({
+      orderBy: { createdAt: "desc" },
+      where: { createdBy: { id: ctx.session.user.id } },
+      include: { createdBy: true },
     });
 
     return post ?? null;
