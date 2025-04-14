@@ -4,6 +4,7 @@ import { api, HydrateClient } from "~/trpc/server";
 import styles from "./index.module.css";
 import { LatestPost } from "./_components/latestPost";
 import { NewUserModalWrapper } from "./_components/modalWrappers";
+import LoginButton from "./_components/loginButton";
 
 export default async function Home() {
   const session = await auth();
@@ -21,12 +22,19 @@ export default async function Home() {
             <br />
             to <span className={styles.pinkSpan}>Opus</span>
           </h1>
-
+          {!session && (
+            <div className={styles.showcaseContainer}>
+              <p>Please login</p>
+              <LoginButton />
+            </div>
+          )}
           {session?.user && <LatestPost />}
         </div>
-        <Navbar />
+        {session?.user && <Navbar />}
       </main>
-      <NewUserModalWrapper displayName={session?.user.displayName ?? null} />
+      {session && (
+        <NewUserModalWrapper displayName={session?.user.displayName ?? null} />
+      )}
     </HydrateClient>
   );
 }
