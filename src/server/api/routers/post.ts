@@ -16,12 +16,20 @@ export const postRouter = createTRPCRouter({
     }),
 
   create: protectedProcedure
-    .input(z.object({ name: z.string().min(1) }))
+    .input(
+      z.object({
+        name: z.string().min(1),
+        description: z.string().min(1),
+        imageId: z.string().min(1),
+      })
+    )
     .mutation(async ({ ctx, input }) => {
       return ctx.db.post.create({
         data: {
           name: input.name,
-          likes: 0,
+          description: input.description,
+          imageId: input.imageId,
+          likedBy: [],
           createdBy: { connect: { id: ctx.session.user.id } },
         },
       });
@@ -45,6 +53,40 @@ export const postRouter = createTRPCRouter({
 
     return post ?? null;
   }),
+
+  likePost: protectedProcedure
+    .input(z.object({ postId: z.number(), userId: z.string().min(1) }))
+    .mutation(async ({ ctx, input }) => {
+      const post = await ctx.db.post.findUnique({
+        where: { id: input.postId },
+        select: { likedBy: true },
+      });
+      if (post?.likedBy.includes(input.userId))
+        throw new Error("Post already liked");
+      return ctx.db.post.update({
+        where: { id: input.postId },
+        data: {
+          likedBy: { push: input.userId },
+        },
+      });
+    }),
+
+  unlikePost: protectedProcedure
+    .input(z.object({ postId: z.number(), userId: z.string().min(1) }))
+    .mutation(async ({ ctx, input }) => {
+      const post = await ctx.db.post.findUnique({
+        where: { id: input.postId },
+        select: { likedBy: true },
+      });
+      if (!post) throw new Error("Post not found");
+
+      const updatedLikedBy = post.likedBy.filter((id) => id !== input.userId);
+
+      return ctx.db.post.update({
+        where: { id: input.postId },
+        data: { likedBy: updatedLikedBy },
+      });
+    }),
 
   getSecretMessage: protectedProcedure.query(() => {
     return "you can now see this secret message!";

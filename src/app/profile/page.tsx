@@ -6,12 +6,14 @@ import { SignOutButton } from "../_components/signOutButton";
 import { CldImage } from "next-cloudinary";
 import CldImageWrapper from "../_components/cldImageWrapper";
 import ProfilePictureWrapper from "../_components/cldImageWrapper";
+import { redirect } from "next/navigation";
 
 export default async function Profile() {
   const session = await auth();
 
   return (
     <HydrateClient>
+      {!session?.user && redirect("/")}
       <main className={styles.main}>
         <div className={styles.container}>
           <div className={styles.profileHeader}>

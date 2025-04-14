@@ -40,12 +40,14 @@
 .profileAvatarCover {
   display: none;
   position: absolute;
+  cursor: pointer;
   top: 0;
   left: 0;
   width: 10vw;
   height: 10vw;
   border-radius: 5rem;
   text-align: center;
+  justify-content: center;
   align-items: center;
   background-color: rgba(0, 0, 0, 0.5);
   color: white;

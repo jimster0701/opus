@@ -2,10 +2,12 @@
 CREATE TABLE "Post" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "createdById" TEXT NOT NULL,
-    "likes" INTEGER DEFAULT 0,
+    "likedBy" TEXT[],
+    "imageId" TEXT,
 
     CONSTRAINT "Post_pkey" PRIMARY KEY ("id")
 );

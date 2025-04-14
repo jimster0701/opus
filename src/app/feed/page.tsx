@@ -7,16 +7,17 @@ import { Navbar } from "../_components/navbar";
 
 export default async function Feed() {
   const session = await auth();
-
-  return (
-    <HydrateClient>
-      <main className={styles.main}>
-        <div className={styles.container}>
-          {!session?.user && redirect("/login")}
-          <AllFriendsPosts />
-          <Navbar />
-        </div>
-      </main>
-    </HydrateClient>
-  );
+  if (session?.user) {
+    return (
+      <HydrateClient>
+        <main className={styles.main}>
+          <div className={styles.container}>
+            {!session?.user && redirect("/")}
+            <AllFriendsPosts userId={session?.user.id} />
+            <Navbar />
+          </div>
+        </main>
+      </HydrateClient>
+    );
+  }
 }

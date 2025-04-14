@@ -7,9 +7,11 @@ export interface SimpleUser {
 export interface Post {
   id: number;
   name: string;
+  description: string;
   createdAt: Date;
   updatedAt: Date;
   createdById: string;
   createdBy: SimpleUser;
-  likes: number;
+  likedBy: string[];
+  imageId: string | null;
 }
