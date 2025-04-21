@@ -2,11 +2,9 @@ import { Navbar } from "./_components/navbar";
 import { auth } from "~/server/auth";
 import { api, HydrateClient } from "~/trpc/server";
 import styles from "./index.module.css";
-import { LatestPost } from "./_components/latestPost";
 import { NewUserModalWrapper } from "./_components/modalWrappers";
 import LoginButton from "./_components/loginButton";
 import Header from "./_components/header";
-import { AllFriendsPosts } from "./_components/allFriendsPosts";
 
 export default async function Home() {
   const session = await auth();
@@ -32,11 +30,7 @@ export default async function Home() {
               <LoginButton />
             </div>
           )}
-          {session?.user.displayName && (
-            <>
-              <AllFriendsPosts userId={session?.user.id} />
-            </>
-          )}
+          {session?.user.displayName && <></>}
         </div>
       </main>
       {session && (
