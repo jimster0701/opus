@@ -36,7 +36,11 @@ export function PostBox(props: postProps) {
   return (
     <div className={styles.postContainer} key={props.post.id}>
       <div className={styles.postHeader}>
-        <h2>{props.post.createdBy.displayName}</h2>
+        <div className={styles.flexRow}>
+          <h2>{props.post.createdBy.displayName}</h2>
+          <p className={styles.postText}>-</p>
+          <p className={styles.postText}>{props.post.name}</p>
+        </div>
         <h3>{props.post.createdAt.toLocaleString()}</h3>
       </div>
       <div className={styles.postContent}>
@@ -55,7 +59,7 @@ export function PostBox(props: postProps) {
             {props.post.likedBy.length + tempLike}
           </p>
         </div>
-        <p className={styles.postText}>{props.post.name}</p>
+        <p className={styles.postText}>{props.post.description}</p>
       </div>
     </div>
   );

@@ -4,9 +4,15 @@ import Link from "next/link";
 export function Navbar() {
   return (
     <nav className={styles.navbar}>
-      <Link href={"/"}>Home</Link>
-      <Link href={"/feed"}>Feed</Link>
-      <Link href={"/profile"}>Profile</Link>
+      <Link className={styles.navbarItem} href={"/"}>
+        Home
+      </Link>
+      <Link className={styles.navbarItem} href={"/feed"}>
+        Feed
+      </Link>
+      <Link className={styles.navbarItem} href={"/profile"}>
+        Profile
+      </Link>
     </nav>
   );
 }

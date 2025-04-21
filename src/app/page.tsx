@@ -5,9 +5,11 @@ import styles from "./index.module.css";
 import { LatestPost } from "./_components/latestPost";
 import { NewUserModalWrapper } from "./_components/modalWrappers";
 import LoginButton from "./_components/loginButton";
+import Header from "./_components/header";
 
 export default async function Home() {
   const session = await auth();
+  const userId = session?.user.id || "null";
 
   if (session?.user) {
     void api.post.getLatest.prefetch();
@@ -15,6 +17,7 @@ export default async function Home() {
 
   return (
     <HydrateClient>
+      <Header userId={userId} />
       <main className={styles.main}>
         <div className={styles.container}>
           <h1 className={styles.title}>
@@ -24,17 +27,17 @@ export default async function Home() {
           </h1>
           {!session && (
             <div className={styles.showcaseContainer}>
-              <p>Please login</p>
+              <p className={styles.showcaseText}>Please login to start:</p>
               <LoginButton />
             </div>
           )}
           {session?.user && <LatestPost />}
         </div>
-        {session?.user && <Navbar />}
       </main>
       {session && (
         <NewUserModalWrapper displayName={session?.user.displayName ?? null} />
       )}
+      {session?.user && <Navbar />}
     </HydrateClient>
   );
 }

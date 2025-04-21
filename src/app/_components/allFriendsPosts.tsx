@@ -4,7 +4,6 @@ import { api } from "~/trpc/react";
 import styles from "../index.module.css";
 import { PostBox } from "./postbox";
 import { Post } from "~/types/post";
-import { User } from "~/types/user";
 
 interface AllFriendsPostsProps {
   userId: string;
@@ -23,7 +22,6 @@ export function AllFriendsPosts({ userId }: AllFriendsPostsProps) {
             post={post as unknown as Post}
           />
         ))}
-
       {!posts && <p className={styles.showcaseText}>No posts yet.</p>}
     </>
   );

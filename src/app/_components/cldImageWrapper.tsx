@@ -2,14 +2,21 @@
 
 import styles from "../index.module.css";
 import { CldImage } from "next-cloudinary";
+import { openUploadWidget } from "./cldUploadWidget";
 
-export default function ProfilePictureWrapper() {
+interface ProfilePictureWrapperProps {
+  id: string | undefined;
+  width: number;
+  height: number;
+}
+
+export function ProfilePictureWrapper(props: ProfilePictureWrapperProps) {
   return (
     <div className={styles.profileAvatarWrapper}>
       <CldImage
-        src="cld-sample-5" // Use this sample image or upload your own via the Media Explorer
-        width="500" // Transform the image: auto-crop to square aspect_ratio
-        height="500"
+        src={`profile-pictures/${props.id}`}
+        width={props.width}
+        height={props.height}
         className={styles.profileAvatar}
         crop={{
           type: "auto",
@@ -17,7 +24,39 @@ export default function ProfilePictureWrapper() {
         }}
         alt={""}
       />
-      <div className={styles.profileAvatarCover}>Change Picture</div>
+      <div
+        className={styles.profileAvatarCover}
+        onClick={() =>
+          openUploadWidget({
+            cloudName: "dbf1p4ylk",
+            uploadPreset: "opus-profile-image",
+            folder: "profile-pictures",
+            id: props.id,
+          })
+        }
+      >
+        Change Picture
+      </div>
+    </div>
+  );
+}
+
+export function ProfilePicturePreviewWrapper(
+  props: ProfilePictureWrapperProps
+) {
+  return (
+    <div className={styles.profileAvatarWrapper}>
+      <CldImage
+        src={`profile-pictures/${props.id}`}
+        width={props.width}
+        height={props.height}
+        className={styles.profileAvatarPreview}
+        crop={{
+          type: "auto",
+          source: true,
+        }}
+        alt={""}
+      />
     </div>
   );
 }

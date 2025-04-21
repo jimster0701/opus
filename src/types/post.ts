@@ -4,6 +4,15 @@ export interface SimpleUser {
   displayName: string | null;
 }
 
+export interface PostComment {
+  id: number;
+  message: string;
+  createdAt: Date;
+  updatedAt: Date;
+  createdById: string;
+  createdBy: SimpleUser;
+}
+
 export interface Post {
   id: number;
   name: string;

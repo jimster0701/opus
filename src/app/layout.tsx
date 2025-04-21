@@ -16,6 +16,9 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
+      <head>
+        <script src="https://widget.cloudinary.com/v2.0/global/all.js"></script>
+      </head>
       <body className={GeistSans.className}>
         <TRPCReactProvider>{children}</TRPCReactProvider>
       </body>

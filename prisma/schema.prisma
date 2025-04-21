@@ -16,9 +16,21 @@ model Post {
   createdById String
   createdBy   User     @relation(fields: [createdById], references: [id])
   likedBy     String[]
+  comments    Comment[]
   imageId     String?
 
   @@index([name])
+}
+
+model Comment {
+  id          Int      @id @default(autoincrement())
+  message     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  createdById String
+  createdBy   User     @relation(fields: [createdById], references: [id])
+  postId      Int
+  post        Post     @relation(fields: [postId], references: [id])
 }
 
 model Account {
@@ -60,6 +72,7 @@ model User {
   accounts      Account[]
   posts         Post[]
   sessions      Session[]
+  comments      Comment[]
 }
 
 model VerificationToken {
