@@ -6,6 +6,7 @@ import { LatestPost } from "./_components/latestPost";
 import { NewUserModalWrapper } from "./_components/modalWrappers";
 import LoginButton from "./_components/loginButton";
 import Header from "./_components/header";
+import { AllFriendsPosts } from "./_components/allFriendsPosts";
 
 export default async function Home() {
   const session = await auth();
@@ -31,7 +32,11 @@ export default async function Home() {
               <LoginButton />
             </div>
           )}
-          {session?.user && <LatestPost />}
+          {session?.user.displayName && (
+            <>
+              <AllFriendsPosts userId={session?.user.id} />
+            </>
+          )}
         </div>
       </main>
       {session && (

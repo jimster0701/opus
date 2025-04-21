@@ -11,16 +11,10 @@ interface postProps {
 }
 
 export function PostBox(props: postProps) {
-  const [liked, setLiked] = useState(false);
+  const [liked, setLiked] = useState(props.post.likedBy.includes(props.userId));
   const [tempLike, setTempLike] = useState(0);
   const likePost = trpc.post.likePost.useMutation();
   const unlikePost = trpc.post.unlikePost.useMutation();
-
-  useEffect(() => {
-    if (props.post.likedBy.includes(props.userId)) {
-      setLiked(true);
-    }
-  }, []);
 
   const handleLike = () => {
     setLiked(!liked);

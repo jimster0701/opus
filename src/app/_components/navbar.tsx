@@ -7,8 +7,14 @@ export function Navbar() {
       <Link className={styles.navbarItem} href={"/"}>
         Home
       </Link>
-      <Link className={styles.navbarItem} href={"/feed"}>
-        Feed
+      <Link className={styles.navbarItem} href={"/discover"}>
+        Discover
+      </Link>
+      <Link className={styles.navbarItem} href={"/create"}>
+        Create
+      </Link>
+      <Link className={styles.navbarItem} href={"/friends"}>
+        Friends
       </Link>
       <Link className={styles.navbarItem} href={"/profile"}>
         Profile
