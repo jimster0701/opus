@@ -1,7 +1,7 @@
 "use client";
 
 import { api } from "~/trpc/react";
-import styles from "../index.module.css";
+import styles from "../../index.module.css";
 import { PostBox } from "./postbox";
 import { Post } from "~/types/post";
 

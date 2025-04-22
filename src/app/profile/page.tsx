@@ -11,7 +11,7 @@ export default async function Profile() {
   return (
     <HydrateClient>
       {!session?.user && redirect("/")}
-      <Header userId={userId} />
+      <Header userId={userId} profile={true} />
       <ProfileClient session={session} />
       <Navbar />
     </HydrateClient>

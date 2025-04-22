@@ -1,7 +1,7 @@
 "use client";
 import { Post } from "~/types/post";
-import styles from "../index.module.css";
-import { use, useEffect, useState } from "react";
+import styles from "../../index.module.css";
+import { useState } from "react";
 import Image from "next/image";
 import { trpc } from "~/utils/trpc";
 

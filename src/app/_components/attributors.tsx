@@ -18,6 +18,15 @@ export default function Attributors() {
       <a href="https://www.flaticon.com/free-icons/bell" title="bell icons">
         Bell icons created by Pixel perfect - Flaticon
       </a>
+      <a
+        href="https://www.flaticon.com/free-icons/setting"
+        title="setting icons"
+      >
+        Setting icons created by Phoenix Group - Flaticon
+      </a>
+      <a href="https://www.flaticon.com/free-icons/user" title="user icons">
+        User icons created by Becris - Flaticon
+      </a>
     </div>
   );
 }

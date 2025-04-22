@@ -1,12 +1,12 @@
 "use client";
 
 import styles from "../../index.module.css";
-import { ProfilePictureWrapper } from "../cldImageWrapper";
-import { SignOutButton } from "../signOutButton";
+import { ProfilePictureWrapper } from "../images/cldImageWrapper";
+import { SignOutButton } from "../settings/signOutButton";
 import Image from "next/image";
 import { use, useState } from "react";
 import { trpc } from "~/utils/trpc";
-import ImageUpload from "../imageUpload";
+import ImageUpload from "../images/imageUpload";
 
 interface ProfileClientProps {
   session: any | null;

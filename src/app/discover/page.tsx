@@ -4,7 +4,7 @@ import styles from "../index.module.css";
 import { redirect } from "next/navigation";
 import { Navbar } from "../_components/navbar";
 import Header from "../_components/header";
-import { AllFriendsPosts } from "../_components/allFriendsPosts";
+import { AllFriendsPosts } from "../_components/posts/allFriendsPosts";
 
 export default async function Discover() {
   const session = await auth();

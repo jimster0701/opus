@@ -1,5 +1,5 @@
 import { signIn } from "~/server/auth";
-import styles from "../index.module.css";
+import styles from "../../index.module.css";
 
 export default async function LoginButton() {
   return (

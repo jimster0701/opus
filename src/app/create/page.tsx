@@ -4,18 +4,20 @@ import styles from "../index.module.css";
 import { redirect } from "next/navigation";
 import { Navbar } from "../_components/navbar";
 import Header from "../_components/header";
-import { LatestPost } from "../_components/latestPost";
+import { LatestPost } from "../_components/posts/latestPost";
 
 export default async function Create() {
   const session = await auth();
   if (session?.user) {
     const userId = session.user.id || "null";
+    const tags = await api.tag.getAllTags.fetch();
     return (
       <HydrateClient>
         <Header userId={userId} />
         <main className={styles.main}>
           <div className={styles.container}>
             {!session?.user && redirect("/")}
+
             <LatestPost />
           </div>
         </main>

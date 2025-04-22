@@ -3,7 +3,7 @@ import { auth } from "~/server/auth";
 import { api, HydrateClient } from "~/trpc/server";
 import styles from "./index.module.css";
 import { NewUserModalWrapper } from "./_components/modalWrappers";
-import LoginButton from "./_components/loginButton";
+import LoginButton from "./_components/settings/loginButton";
 import Header from "./_components/header";
 
 export default async function Home() {
