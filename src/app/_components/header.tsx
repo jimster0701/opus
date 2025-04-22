@@ -12,32 +12,23 @@ interface HeaderProps {
 
 export default function Header(props: HeaderProps) {
   const [showSettings, setShowSettings] = useState(false);
-  console.log("Header props", props.userId);
+  console.log(props.userId);
   return (
     <div className={styles.header}>
       <div className={styles.logo}>Opus</div>
-      {props.userId != null && (
+      {props.userId != "null" && (
         <div className={styles.navIcons}>
           <Image src="/images/bell.png" alt={""} width={25} height={25} />
-          {props.profile ? (
-            <>
-              <Image
-                src="/images/setting.png"
-                alt={""}
-                width={25}
-                height={25}
-                onClick={() => setShowSettings(true)}
-              />
-              {showSettings && (
-                <SettingsModal onComplete={() => setShowSettings(false)} />
-              )}
-            </>
-          ) : (
-            <ProfilePicturePreviewWrapper
-              id={props.userId}
-              width={200}
-              height={200}
-            />
+
+          <Image
+            src="/images/setting.png"
+            alt={""}
+            width={25}
+            height={25}
+            onClick={() => setShowSettings(true)}
+          />
+          {showSettings && (
+            <SettingsModal onComplete={() => setShowSettings(false)} />
           )}
         </div>
       )}

@@ -61,6 +61,7 @@ CREATE TABLE "User" (
     "emailVerified" TIMESTAMP(3),
     "image" TEXT,
     "displayName" TEXT,
+    "interests" TEXT,
     "themePreset" TEXT,
     "followers" TEXT[],
     "following" TEXT[],

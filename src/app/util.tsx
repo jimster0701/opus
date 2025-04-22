@@ -13,4 +13,5 @@ export function shuffle(array: any[]) {
       array[currentIndex],
     ];
   }
+  return array;
 }

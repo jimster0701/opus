@@ -2,6 +2,7 @@ import styles from "../index.module.css";
 import { useState } from "react";
 import { trpc } from "../../utils/trpc";
 import "~/styles/themes.css";
+import { shuffle } from "../util";
 
 export function Modal() {
   return (
@@ -47,12 +48,7 @@ export function SettingsModal({ onComplete }: { onComplete: () => void }) {
 
 export function NewUserModal({ onComplete }: { onComplete: () => void }) {
   const [displayName, setDisplayName] = useState("");
-  const [image, setImage] = useState<File | null>(null);
-  const [bio, setBio] = useState("");
-  const [selectedHobbies, setSelectedHobbies] = useState<string[]>([]);
-  const [selectedAfilliations, setSelectedAffiliations] = useState<string[]>(
-    []
-  );
+  const [selected, setSelected] = useState<string[]>([]);
 
   const hobbies = [
     "Music",
@@ -67,18 +63,11 @@ export function NewUserModal({ onComplete }: { onComplete: () => void }) {
     "Photography",
     "Reading",
     "Writing",
-    "Cooking",
-    "Gardening",
     "Crafting",
     "Dancing",
     "Hiking",
     "Fishing",
-    "camping",
-    "Biking",
-    "Running",
-    "Swimming",
-    "Yoga",
-    "Meditation",
+    "Camping",
     "Volunteering",
     "Learning",
     "Coding",
@@ -86,38 +75,28 @@ export function NewUserModal({ onComplete }: { onComplete: () => void }) {
     "Building",
     "Collecting",
     "Exploring",
-    "DIY",
-    "Knitting",
-    "Sewing",
-    "Woodworking",
-    "Metalworking",
-    "Pottery",
-    "Drawing",
-    "Painting",
-    "Sculpting",
-    "Blogging",
-    "Podcasting",
-    "Vlogging",
     "Streaming",
   ];
 
   const affiliations = [
     "Student",
     "Hobbyist",
-    "Idpendent Artist",
-    "Independent Business Owner",
+    "Artist",
+    "Independent",
+    "Business Owner",
     "Freelancer",
     "Entrepreneur",
-    "Independent Creator",
-    "Content Creator",
+    "Creator",
     "Influencer",
     "Developer",
     "Designer",
-    "Artist",
     "Musician",
     "Photographer",
   ];
 
+  const mixedTags = shuffle([...hobbies, ...affiliations]);
+
+  const updateTags = trpc.user.updateInterests.useMutation({});
   const updateDisplayName = trpc.user.updateDisplayName.useMutation({
     onSuccess: () => {
       onComplete();
@@ -126,12 +105,15 @@ export function NewUserModal({ onComplete }: { onComplete: () => void }) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    updateTags.mutate({ interests: selected.join(",") });
     updateDisplayName.mutate({ newDisplayName: displayName });
   };
 
-  const toggleHobby = (hobby: string) => {
-    setSelectedHobbies((prev) =>
-      prev.includes(hobby) ? prev.filter((h) => h !== hobby) : [...prev, hobby]
+  const toggleSelected = (interest: string) => {
+    setSelected((prev) =>
+      prev.includes(interest)
+        ? prev.filter((i) => i !== interest)
+        : [...prev, interest]
     );
   };
 
@@ -139,9 +121,9 @@ export function NewUserModal({ onComplete }: { onComplete: () => void }) {
     <div className={styles.modalContainer}>
       <div className={styles.modalBackground} />
       <div className={styles.modal}>
-        <h1>Welcome to Opus</h1>
+        <h1>Welcome to Opus :)</h1>
         <p>
-          Please complete your profile,
+          Please complete your profile
           <br />
           Don't worry, all choices can be changed later.
         </p>
@@ -158,19 +140,23 @@ export function NewUserModal({ onComplete }: { onComplete: () => void }) {
             autoComplete="off"
           />
           <br />
+          <p>
+            Below is a list of hobbies and affiliations, <br />
+            These choices will influence the types of tasks you are suggested
+            <br />
+            Please choose at least 5:
+          </p>
           <div className={styles.choiceList}>
-            {hobbies.map((hobby) => (
+            {mixedTags.map((tag) => (
               <button
                 type="button"
-                key={hobby}
+                key={tag}
                 className={`${styles.opusButton} ${
-                  selectedHobbies.includes(hobby)
-                    ? `${styles.selectedOpusButton}`
-                    : ""
+                  selected.includes(tag) ? `${styles.selectedOpusButton}` : ""
                 }`}
-                onClick={() => toggleHobby(hobby)}
+                onClick={() => toggleSelected(tag)}
               >
-                {hobby}
+                {tag}
               </button>
             ))}
           </div>

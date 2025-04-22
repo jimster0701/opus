@@ -10,7 +10,8 @@ export default async function Create() {
   const session = await auth();
   if (session?.user) {
     const userId = session.user.id || "null";
-    const tags = await api.tag.getAllTags.fetch();
+    const tags = await api.tag.getAllTags.call({ userId });
+    console.log("Tags", tags);
     return (
       <HydrateClient>
         <Header userId={userId} />
