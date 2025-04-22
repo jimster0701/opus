@@ -33,11 +33,6 @@
   }
 }
 
-/* Color utilities */
-.purpleSpan {
-  color: hsl(280, 83%, 59%);
-}
-
 /* Typography
 ------------------------------------------ */
 .title {
@@ -61,12 +56,12 @@
 /* Main container */
 .main {
   font-family: "Arial", sans-serif;
-  background: linear-gradient(to bottom, #a400ff, #e1b0ff, #f0e7ff);
+  background: var(--background-gradient);
   color: #222;
   height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: ce;
+  align-items: center;
 }
 
 .container {
@@ -118,8 +113,8 @@
   justify-content: space-between;
   align-items: center;
   padding: 0.5rem 0.5rem;
-  background: linear-gradient(90deg, #a400ff, #c56cf0);
-  color: white;
+  background: var(--header-gradient);
+  color: var(--text-primary);
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -164,7 +159,7 @@
 
 .navbarItem {
   text-align: center;
-  color: #666;
+  color: var(--text-primary);
   font-size: 1.25rem;
   text-decoration: none;
 }
@@ -174,7 +169,7 @@
 }
 
 .navbarItem.active {
-  color: #a400ff;
+  color: var(--accent-color);
 }
 
 .navbarItem.active > Link {
@@ -221,13 +216,16 @@
 /* Modal content */
 .modal {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   width: 90%;
   max-width: 800px;
   max-height: 90vh;
   padding: 2.5rem 2rem;
   border-radius: 30px;
-  background: linear-gradient(135deg, #8a2be2, #9932cc);
-  color: white;
+  background: var(--background-gradient);
+  color: var(--text-primary);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
   text-align: center;
   animation: fadeIn 0.3s ease-in-out;
@@ -263,7 +261,6 @@
 
 .modal p {
   font-size: 1.1rem;
-  margin-bottom: 2rem;
   line-height: 1.5;
   opacity: 0.9;
   position: relative;
@@ -323,7 +320,7 @@
   width: 100%;
 }
 
-/* Custom scrollbar for hobby list */
+/* Custom scrollbar for interests list */
 .choiceList::-webkit-scrollbar {
   width: 8px;
 }
@@ -338,7 +335,7 @@
   border-radius: 10px;
 }
 
-/* Hobby option buttons */
+/* Interest option buttons */
 .opusButton {
   background-color: rgba(255, 255, 255, 0.2);
   color: white;
@@ -365,7 +362,7 @@
 /* Submit button */
 .modalForm button[type="submit"] {
   background-color: white;
-  color: #8a2be2;
+  color: var(--accent-color);
   border: none;
   border-radius: 25px;
   padding: 0.8rem 2.5rem;
@@ -409,13 +406,14 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: flex-start;
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  width: 80vw;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
   gap: 1rem;
-  height: min-content;
-  width: 50vw;
-  padding: 1rem 1rem;
-  background-color: whitesmoke;
-  border: lightgray 1px groove;
 }
 
 .profileHeaderText {
@@ -553,14 +551,23 @@
 
 /* Theme Settings
 ------------------------------------------ */
-.themeSettings {
+.themeList {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
-  width: 90%;
-  overflow: scroll;
+  margin-bottom: 1rem;
+  max-height: 30vh;
+  overflow-y: auto;
+  padding: 0.5rem;
+  width: 85%;
   gap: 1rem;
+}
+
+.themeText {
+  font-size: 1.2rem;
+  color: white;
+  text-align: center;
+  margin-bottom: 0px;
 }
 
 .themeOption {
@@ -574,8 +581,23 @@
 .themePreset {
   width: 5vw;
   height: 5vw;
-  border: 0.5rem solid grey;
+  border: 0.2rem solid grey;
   border-radius: 1rem;
+}
+
+/* Custom scrollbar for theme list */
+.themeList::-webkit-scrollbar {
+  width: 8px;
+}
+
+.themeList::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.themeList::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
 }
 
 /* Showcase Components
@@ -662,4 +684,136 @@
   background-color: #ebebeb;
   box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.04), 0 1px 1px rgba(0, 0, 0, 0.25);
   cursor: not-allowed;
+}
+
+/* Theme Switcher
+------------------------------------------ */
+/* Update text color based on theme */
+:root {
+  /* Default Theme Variables */
+
+  --background-gradient: linear-gradient(to bottom, #a400ff, #e1b0ff, #f0e7ff);
+  --header-gradient: linear-gradient(90deg, #a400ff, #e1b0ff);
+  --text-primary: #ffffff;
+  --text-secondary: #ffffff;
+  --accent-color: #a400ff;
+}
+
+.opusText {
+  color: var(--text-primary);
+}
+
+.theme-default-preview {
+  background: linear-gradient(to bottom, #a400ff, #e1b0ff, #f0e7ff);
+}
+
+.theme-sunset-preview {
+  background: linear-gradient(to bottom, #ff7e5f, #feb47b, #ffe3b3);
+}
+.theme-ocean-preview {
+  background: linear-gradient(to bottom, #0072ff, #00c6ff, #a0eaff);
+}
+.theme-forest-preview {
+  background: linear-gradient(to bottom, #0f9b0f, #78e08f, #eafaf1);
+}
+.theme-ice-preview {
+  background: linear-gradient(to bottom, #8e9eab, #eef2f3, #ffffff);
+}
+.theme-lava-preview {
+  background: linear-gradient(to bottom, #ff4e50, #f9d423, #fff4d2);
+}
+.theme-space-preview {
+  background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);
+}
+.theme-midnight-preview {
+  background: linear-gradient(to bottom, #1a0033, #3b0a54, #5e1d80);
+}
+.theme-obsidian-preview {
+  background: linear-gradient(to bottom, #0a0a0a, #1a1a1a, #333333);
+}
+.theme-velvet-preview {
+  background: linear-gradient(to bottom, #2c001e, #4b0035, #7a1750);
+}
+.theme-twilight-preview {
+  background: linear-gradient(to bottom, #0f2a2e, #145c72, #1ca8c7);
+}
+
+.theme-sunset {
+  --background-gradient: linear-gradient(to bottom, #ff7e5f, #feb47b, #ffe3b3);
+  --header-gradient: linear-gradient(90deg, #ff7e5f, #feb47b);
+  --text-primary: #3b2000;
+  --text-secondary: #5c3c1e;
+  --accent-color: #ff7e5f;
+}
+
+.theme-ocean {
+  --background-gradient: linear-gradient(to bottom, #0072ff, #00c6ff, #a0eaff);
+  --header-gradient: linear-gradient(90deg, #0072ff, #00c6ff);
+  --text-primary: #001d3a;
+  --text-secondary: #003b5e;
+  --accent-color: #00c6ff;
+}
+
+.theme-forest {
+  --background-gradient: linear-gradient(to bottom, #0f9b0f, #78e08f, #eafaf1);
+  --header-gradient: linear-gradient(90deg, #0f9b0f, #78e08f);
+  --text-primary: #0a3f0a;
+  --text-secondary: #1d5e1d;
+  --accent-color: #0f9b0f;
+}
+
+.theme-ice {
+  --background-gradient: linear-gradient(to bottom, #8e9eab, #eef2f3, #ffffff);
+  --header-gradient: linear-gradient(90deg, #8e9eab, #eef2f3);
+  --text-primary: #222222;
+  --text-secondary: #444444;
+  --accent-color: #8e9eab;
+}
+
+.theme-lava {
+  --background-gradient: linear-gradient(to bottom, #ff4e50, #f9d423, #fff4d2);
+  --header-gradient: linear-gradient(90deg, #ff4e50, #f9d423);
+  --text-primary: #3a1000;
+  --text-secondary: #5e2a00;
+  --accent-color: #ff4e50;
+}
+
+.theme-space {
+  --background-gradient: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);
+  --header-gradient: linear-gradient(90deg, #0f2027, #2c5364);
+  --text-primary: #cfd8dc;
+  --text-secondary: #90a4ae;
+  --accent-color: #2c5364;
+}
+
+.theme-midnight {
+  --background-gradient: linear-gradient(to bottom, #1a0033, #3b0a54, #5e1d80);
+  --header-gradient: linear-gradient(90deg, #2c0049, #5e1d80);
+  --text-primary: #f5e8ff;
+  --text-secondary: #cbb4e0;
+  --accent-color: #5e1d80;
+}
+
+.theme-obsidian {
+  --background-gradient: linear-gradient(to bottom, #0a0a0a, #1a1a1a, #333333);
+  --header-gradient: linear-gradient(90deg, #0a0a0a, #333333);
+  --text-primary: #eeeeee;
+  --text-secondary: #aaaaaa;
+  --accent-color: #333333;
+}
+
+.theme-velvet {
+  --background-gradient: linear-gradient(to bottom, #2c001e, #4b0035, #7a1750);
+  --header-gradient: linear-gradient(90deg, #4b0035, #7a1750);
+  --text-primary: #ffddee;
+  --text-secondary: #e5a8c8;
+  --accent-color: #7a1750;
+}
+
+.theme-twilight {
+  --background-gradient: linear-gradient(to bottom, #0f2a2e, #145c72, #1ca8c7);
+  --header-gradient: linear-gradient(90deg, #0f2a2e, #145c72);
+  --text-primary: #e0f7fa;
+  --text-secondary: #80deea;
+  --accent-color: #1ca8c7;
 }

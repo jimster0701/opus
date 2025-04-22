@@ -30,4 +30,13 @@ export const userRouter = createTRPCRouter({
         data: { image: input.image },
       });
     }),
+
+  updateThemePreset: protectedProcedure
+    .input(z.object({ theme: z.string().min(1) }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.user.update({
+        where: { id: ctx.session.user.id },
+        data: { themePreset: input.theme },
+      });
+    }),
 });

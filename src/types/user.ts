@@ -8,6 +8,7 @@ export interface User {
   email: string;
   emailVerified: Date;
   image: string;
+  themePreset: string;
   displayName: string;
   followers: string[];
   following: string[];

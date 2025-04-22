@@ -1,10 +1,11 @@
 import { Navbar } from "./_components/navbar";
 import { auth } from "~/server/auth";
 import { api, HydrateClient } from "~/trpc/server";
-import styles from "./index.module.css";
 import { NewUserModalWrapper } from "./_components/modalWrappers";
-import LoginButton from "./_components/settings/loginButton";
 import Header from "./_components/header";
+import HomeClient from "./_components/pages/HomeClient";
+import LoginButton from "./_components/settings/loginButton";
+import styles from "./index.module.css";
 
 export default async function Home() {
   const session = await auth();
@@ -14,25 +15,19 @@ export default async function Home() {
     void api.post.getLatest.prefetch();
   }
 
+  console.log(session?.user.themePreset);
+
   return (
     <HydrateClient>
       <Header userId={userId} />
-      <main className={styles.main}>
-        <div className={styles.container}>
-          <h1 className={styles.title}>
-            Welcome {session && <span>{session.user?.name}, </span>}
-            <br />
-            to <span className={styles.pinkSpan}>Opus</span>
-          </h1>
-          {!session && (
-            <div className={styles.showcaseContainer}>
-              <p className={styles.showcaseText}>Please login to start:</p>
-              <LoginButton />
-            </div>
-          )}
-          {session?.user.displayName && <></>}
+
+      <HomeClient session={session} />
+      {!session && (
+        <div className={styles.showcaseContainer}>
+          <p className={styles.showcaseText}>Please login to start:</p>
+          <LoginButton />
         </div>
-      </main>
+      )}
       {session && (
         <NewUserModalWrapper displayName={session?.user.displayName ?? null} />
       )}

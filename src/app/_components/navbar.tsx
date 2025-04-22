@@ -1,23 +1,33 @@
+"use client";
+import { useThemeStore } from "~/store/themeStore";
 import styles from "../index.module.css";
 import Link from "next/link";
 
 export function Navbar() {
+  const { theme, setTheme } = useThemeStore();
   return (
-    <nav className={styles.navbar}>
+    <nav
+      className={
+        theme === "default"
+          ? `${styles.navbar}`
+          : `${styles.navbar} ${styles[`theme-${theme}`]}`
+      }
+    >
       <Link className={styles.navbarItem} href={"/"}>
-        Home
+        <p className={styles.opusText}>Home</p>
       </Link>
-      <Link className={styles.navbarItem} href={"/discover"}>
-        Discover
+      <Link className={styles.navbarItem} href={"/feed"}>
+        <p className={styles.opusText}></p>
+        <p className={styles.opusText}>Discover</p>
       </Link>
       <Link className={styles.navbarItem} href={"/create"}>
-        Create
+        <p className={styles.opusText}>Create</p>
       </Link>
       <Link className={styles.navbarItem} href={"/friends"}>
-        Friends
+        <p className={styles.opusText}>Friends</p>
       </Link>
       <Link className={styles.navbarItem} href={"/profile"}>
-        Profile
+        <p className={styles.opusText}>Profile</p>
       </Link>
     </nav>
   );

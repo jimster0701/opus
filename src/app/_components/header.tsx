@@ -1,9 +1,9 @@
 "use client";
 import styles from "../index.module.css";
-import { ProfilePicturePreviewWrapper } from "../_components/images/cldImageWrapper";
 import Image from "next/image";
 import { SettingsModal } from "./modals";
 import { useState } from "react";
+import { useThemeStore } from "~/store/themeStore";
 
 interface HeaderProps {
   userId: string;
@@ -12,9 +12,16 @@ interface HeaderProps {
 
 export default function Header(props: HeaderProps) {
   const [showSettings, setShowSettings] = useState(false);
-  console.log(props.userId);
+  const { theme, setTheme } = useThemeStore();
+
   return (
-    <div className={styles.header}>
+    <div
+      className={
+        theme === "default"
+          ? `${styles.header}`
+          : `${styles.header} ${styles[`theme-${theme}`]}`
+      }
+    >
       <div className={styles.logo}>Opus</div>
       {props.userId != "null" && (
         <div className={styles.navIcons}>

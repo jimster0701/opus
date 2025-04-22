@@ -24,6 +24,7 @@ export function ProfilePictureWrapper(props: ProfilePictureWrapperProps) {
   const updateImage = trpc.user.updateProfilePicture.useMutation({});
 
   useEffect(() => {
+    console.log("Image URL:", props.imageUrl);
     if (props.imageUrl) {
       setUploadedUrl(
         `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/${props.imageUrl}`
@@ -47,6 +48,7 @@ export function ProfilePictureWrapper(props: ProfilePictureWrapperProps) {
     setUploading(true);
 
     try {
+      // Delete existing image
       const deleteRes = await fetch("/api/cld-delete-image", {
         method: "POST",
         headers: {
@@ -63,7 +65,7 @@ export function ProfilePictureWrapper(props: ProfilePictureWrapperProps) {
         );
       }
 
-      // Then upload the new image
+      // Upload the new image
       const formData = new FormData();
       formData.append("file", image);
       formData.append("upload_preset", "opus-profile-image");

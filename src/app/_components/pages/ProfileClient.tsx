@@ -27,10 +27,10 @@ export default function ProfileClient(props: ProfileClientProps) {
     <main className={styles.main}>
       {props.session.user && (
         <div className={styles.container}>
-          <ImageUpload />
           <div className={styles.profileHeader}>
             <ProfilePictureWrapper
               id={props.session.user.id}
+              imageUrl={props.session.user.image}
               width={500}
               height={500}
             />

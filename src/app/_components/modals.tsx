@@ -3,6 +3,12 @@ import { useState } from "react";
 import { trpc } from "../../utils/trpc";
 import "~/styles/themes.css";
 import { shuffle } from "../util";
+import { useThemeStore } from "~/store/themeStore";
+
+interface modalProps {
+  onComplete: () => void;
+  theme?: string;
+}
 
 export function Modal() {
   return (
@@ -15,8 +21,10 @@ export function Modal() {
   );
 }
 
-export function SettingsModal({ onComplete }: { onComplete: () => void }) {
+export function SettingsModal(props: modalProps) {
+  const { theme, setTheme } = useThemeStore();
   const allThemes = [
+    "default",
     "sunset",
     "ocean",
     "forest",
@@ -28,16 +36,31 @@ export function SettingsModal({ onComplete }: { onComplete: () => void }) {
     "velvet",
     "twilight",
   ];
+  const updateThemePreset = trpc.user.updateThemePreset.useMutation();
   return (
     <div className={styles.modalContainer}>
-      <div className={styles.modalBackground} onClick={onComplete} />
+      <div className={styles.modalBackground} onClick={props.onComplete} />
       <div className={styles.modal}>
-        <h1>General Theme</h1>
-        <div className={styles.themeSettings}>
+        <h2 className={styles.opusText}>Settings</h2>
+        <h3 className={styles.opusText}>Change The Theme</h3>
+        <div className={styles.themeList}>
           {allThemes.map((theme) => (
-            <div className={styles.themeOption} key={theme}>
-              <p>{theme}</p>
-              <div className={`${styles.themePreset} theme-${theme}`} />
+            <div
+              className={styles.themeOption}
+              key={theme}
+              onClick={() => {
+                setTheme(theme);
+                updateThemePreset.mutate({ theme: theme });
+              }}
+            >
+              <p className={`${styles.themeText} ${styles.opusText}`}>
+                {theme}
+              </p>
+              <div
+                className={`${styles.themePreset} ${
+                  styles[`theme-${theme}-preview`]
+                }`}
+              />
             </div>
           ))}
         </div>
@@ -46,7 +69,7 @@ export function SettingsModal({ onComplete }: { onComplete: () => void }) {
   );
 }
 
-export function NewUserModal({ onComplete }: { onComplete: () => void }) {
+export function NewUserModal(props: modalProps) {
   const [displayName, setDisplayName] = useState("");
   const [selected, setSelected] = useState<string[]>([]);
 
@@ -99,7 +122,7 @@ export function NewUserModal({ onComplete }: { onComplete: () => void }) {
   const updateTags = trpc.user.updateInterests.useMutation({});
   const updateDisplayName = trpc.user.updateDisplayName.useMutation({
     onSuccess: () => {
-      onComplete();
+      props.onComplete();
     },
   });
 
