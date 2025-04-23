@@ -7,6 +7,7 @@ import Image from "next/image";
 import { use, useState } from "react";
 import { trpc } from "~/utils/trpc";
 import ImageUpload from "../images/imageUpload";
+import { useThemeStore } from "~/store/themeStore";
 
 interface ProfileClientProps {
   session: any | null;
@@ -15,8 +16,8 @@ interface ProfileClientProps {
 export default function ProfileClient(props: ProfileClientProps) {
   const [changeDisplay, setChangeDisplay] = useState(false);
   const [displayName, setDisplayName] = useState("");
+  const { theme, setTheme } = useThemeStore();
   const updateDisplayName = trpc.user.updateDisplayName.useMutation();
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     updateDisplayName.mutate({ newDisplayName: displayName });
@@ -24,7 +25,13 @@ export default function ProfileClient(props: ProfileClientProps) {
   };
 
   return (
-    <main className={styles.main}>
+    <main
+      className={
+        theme == "default"
+          ? `${styles.main}`
+          : `${styles.main} ${styles[`theme-${theme}`]}`
+      }
+    >
       {props.session.user && (
         <div className={styles.container}>
           <div className={styles.profileHeader}>

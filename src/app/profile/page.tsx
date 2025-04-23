@@ -8,10 +8,15 @@ import { Navbar } from "../_components/navbar";
 export default async function Profile() {
   const session = await auth();
   const userId = session?.user.id || "null";
+
   return (
     <HydrateClient>
       {!session?.user && redirect("/")}
-      <Header userId={userId} profile={true} />
+      <Header
+        userId={userId}
+        profile={true}
+        theme={session?.user.themePreset}
+      />
       <ProfileClient session={session} />
       <Navbar />
     </HydrateClient>

@@ -7,9 +7,10 @@ export interface User {
   name: string;
   email: string;
   emailVerified: Date;
+  displayName: string;
   image: string;
   themePreset: string;
-  displayName: string;
+  interests: string;
   followers: string[];
   following: string[];
   accounts: Account[];
