@@ -9,7 +9,7 @@ interface HomeClientProps {
 
 export default function HomeClient(props: HomeClientProps) {
   const { theme, setTheme } = useThemeStore();
-  if (theme != props.theme) setTheme(props.theme);
+  if (theme == "unset") setTheme(props.theme);
   return (
     <main
       className={
