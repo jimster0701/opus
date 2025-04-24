@@ -31,6 +31,18 @@ export default function HomeClient(props: HomeClientProps) {
             <span>{props.session.user.displayName}</span>
           )}
         </h1>
+        <div className={styles.taskList}>
+          <h2>Daily tasks:</h2>
+          <Taskbox
+            task={{
+              id: 1,
+              name: "Title",
+              icon: ":0",
+              interests: "Help",
+              description: "Do this...",
+            }}
+          />
+        </div>
       </div>
     </main>
   );

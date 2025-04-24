@@ -553,20 +553,67 @@
 
 /* Task Components
 ------------------------------------------ */
-.task {
-  max-width: 20rem;
+.taskList {
   display: flex;
+  align-items: flex-start;
   flex-direction: column;
+  width: 100%;
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
   gap: 1rem;
-  padding: 1rem;
-  border-radius: 0.75rem;
-  color: white;
-  background-color: rgb(255 255 255 / 0.1);
+  max-height: 70vh;
+  overflow-y: scroll;
 }
 
-.task:hover {
+.taskList::-webkit-scrollbar {
+  width: 8px;
+}
+
+.taskList::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.taskList::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+}
+
+.taskList h2 {
+  margin: 0;
+}
+
+.taskContainer {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: row;
+  width: 100%;
+  background: white;
+  border-radius: 16px;
+  padding: 0.5rem 0.75rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  margin-bottom: 0.5rem;
+  gap: 1rem;
+}
+
+.taskContainer:hover {
   background-color: rgb(255 255 255 / 0.2);
   transition: background-color 150ms cubic-bezier(0.5, 0, 0.2, 1);
+}
+
+.taskIconContainer {
+  width: 20%;
+}
+
+.taskContentContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .taskTitle {
@@ -579,6 +626,14 @@
 .taskText {
   font-size: 1.125rem;
   line-height: 1.75rem;
+  margin: 0;
+}
+
+.taskInterests {
+  font-size: 1rem;
+  line-height: 1.75rem;
+  font-weight: lighter;
+  margin: 0;
 }
 
 /* Theme Settings
