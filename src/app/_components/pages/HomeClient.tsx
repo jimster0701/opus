@@ -2,10 +2,9 @@
 import styles from "../../index.module.css";
 import { useThemeStore } from "~/store/themeStore";
 import TaskList from "../tasks/dailyTasks";
-import { Session } from "~/types/session";
 
 interface HomeClientProps {
-  session: Session;
+  session?: any;
   theme: string;
 }
 

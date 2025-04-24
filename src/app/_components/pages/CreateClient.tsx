@@ -3,10 +3,9 @@ import styles from "../../index.module.css";
 import { useThemeStore } from "~/store/themeStore";
 import { LatestPost } from "../posts/latestPost";
 import CreateSelector from "../create/createSelector";
-import { Session } from "~/types/session";
 
 interface CreateClientProps {
-  session: Session;
+  session?: any;
   theme: string;
 }
 
@@ -23,7 +22,7 @@ export default function CreateClient(props: CreateClientProps) {
     >
       <div className={styles.container}>
         <LatestPost />
-        <CreateSelector user={props.session.user} />
+        <CreateSelector />
       </div>
     </main>
   );

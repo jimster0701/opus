@@ -6,10 +6,10 @@ import Image from "next/image";
 import { useState } from "react";
 import { trpc } from "~/utils/trpc";
 import { useThemeStore } from "~/store/themeStore";
-import { Session } from "~/types/session";
+import { Session } from "inspector/promises";
 
 interface ProfileClientProps {
-  session: Session;
+  session: any | null;
 }
 
 export default function ProfileClient(props: ProfileClientProps) {

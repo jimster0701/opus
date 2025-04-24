@@ -1,10 +1,9 @@
 "use client";
-import { Session } from "~/types/session";
 import styles from "../../index.module.css";
 import { useThemeStore } from "~/store/themeStore";
 
 interface FriendsClientProps {
-  session: Session;
+  session?: any;
   theme: string;
 }
 
