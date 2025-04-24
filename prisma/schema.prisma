@@ -67,7 +67,7 @@ model User {
   emailVerified DateTime?
   image         String?
   displayName   String?
-  interests     String?
+  interests     String[]
   themePreset   String?
   followers     String[]
   following     String[]
@@ -85,7 +85,7 @@ model Task {
   type        String
   name        String
   icon        String
-  interests   String
+  interests   String[]
   description String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

@@ -14,7 +14,7 @@ export const userRouter = createTRPCRouter({
     }),
 
   updateInterests: protectedProcedure
-    .input(z.object({ interests: z.string().min(1) }))
+    .input(z.object({ interests: z.array(z.string().min(1)) }))
     .mutation(async ({ ctx, input }) => {
       return ctx.db.user.update({
         where: { id: ctx.session.user.id },

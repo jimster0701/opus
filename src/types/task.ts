@@ -10,7 +10,7 @@ export interface Task {
   type: TaskType;
   name: string;
   icon: string;
-  interests: string;
+  interests: string[];
   friends?: string[];
   description: string;
 }

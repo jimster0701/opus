@@ -235,7 +235,7 @@
   max-height: 90vh;
   padding: 2.5rem 2rem;
   border-radius: 30px;
-  background: var(--background-gradient);
+  background: var(--modal-background);
   color: var(--text-primary);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
   text-align: center;
@@ -324,6 +324,19 @@
   color: rgba(255, 255, 255, 0.6);
 }
 
+.modalText {
+  margin-top: 0;
+}
+
+.modalForm > h4 {
+  margin: 0rem 1rem;
+}
+
+.modalForm > h5 {
+  margin: 0rem;
+  margin-bottom: 1rem;
+}
+
 /* Choice buttons container */
 .choiceList {
   display: flex;
@@ -370,8 +383,9 @@
 }
 
 .selectedOpusButton {
-  background-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.818);
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  color: black;
   transform: translateY(-2px);
   font-weight: 500;
 }
@@ -412,7 +426,7 @@
   }
 
   .choiceList {
-    max-height: 25vh;
+    max-height: 30vh;
   }
 }
 
@@ -839,6 +853,11 @@
   --text-primary: #ffffff;
   --text-secondary: #6c6c6c;
   --accent-color: #a400ff;
+  --modal-background: radial-gradient(
+    circle at center,
+    #bd41ff 0%,
+    #a400ff 100%
+  );
 }
 
 .opusText {
@@ -886,6 +905,11 @@
   --text-primary: #3b2000;
   --text-secondary: #5c3c1e;
   --accent-color: #ff7e5f;
+  --modal-background: radial-gradient(
+    circle at center,
+    #ffe3b3 0%,
+    #ff7e5f 100%
+  );
 }
 
 .theme-ocean {
@@ -894,6 +918,11 @@
   --text-primary: #001d3a;
   --text-secondary: #003b5e;
   --accent-color: #00c6ff;
+  --modal-background: radial-gradient(
+    circle at center,
+    #a0eaff 0%,
+    #0072ff 100%
+  );
 }
 
 .theme-forest {
@@ -902,6 +931,11 @@
   --text-primary: #0a3f0a;
   --text-secondary: #1d5e1d;
   --accent-color: #0f9b0f;
+  --modal-background: radial-gradient(
+    circle at center,
+    #eafaf1 0%,
+    #0f9b0f 100%
+  );
 }
 
 .theme-ice {
@@ -910,6 +944,11 @@
   --text-primary: #222222;
   --text-secondary: #444444;
   --accent-color: #8e9eab;
+  --modal-background: radial-gradient(
+    circle at center,
+    #ffffff 0%,
+    #8e9eab 100%
+  );
 }
 
 .theme-lava {
@@ -918,6 +957,11 @@
   --text-primary: #3a1000;
   --text-secondary: #5e2a00;
   --accent-color: #ff4e50;
+  --modal-background: radial-gradient(
+    circle at center,
+    #fff4d2 0%,
+    #ff4e50 100%
+  );
 }
 
 .theme-space {
@@ -926,6 +970,11 @@
   --text-primary: #cfd8dc;
   --text-secondary: #90a4ae;
   --accent-color: #2c5364;
+  --modal-background: radial-gradient(
+    circle at center,
+    #2c5364 0%,
+    #0f2027 100%
+  );
 }
 
 .theme-midnight {
@@ -934,6 +983,11 @@
   --text-primary: #f5e8ff;
   --text-secondary: #cbb4e0;
   --accent-color: #5e1d80;
+  --modal-background: radial-gradient(
+    circle at center,
+    #5e1d80 0%,
+    #1a0033 100%
+  );
 }
 
 .theme-obsidian {
@@ -942,6 +996,11 @@
   --text-primary: #eeeeee;
   --text-secondary: #aaaaaa;
   --accent-color: #333333;
+  --modal-background: radial-gradient(
+    circle at center,
+    #333333 0%,
+    #0a0a0a 100%
+  );
 }
 
 .theme-velvet {
@@ -950,6 +1009,11 @@
   --text-primary: #ffddee;
   --text-secondary: #e5a8c8;
   --accent-color: #7a1750;
+  --modal-background: radial-gradient(
+    circle at center,
+    #7a1750 0%,
+    #2c001e 100%
+  );
 }
 
 .theme-twilight {
@@ -958,4 +1022,9 @@
   --text-primary: #e0f7fa;
   --text-secondary: #80deea;
   --accent-color: #1ca8c7;
+  --modal-background: radial-gradient(
+    circle at center,
+    #1ca8c7 0%,
+    #0f2a2e 100%
+  );
 }

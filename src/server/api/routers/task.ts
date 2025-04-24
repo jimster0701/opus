@@ -20,7 +20,7 @@ export const taskRouter = createTRPCRouter({
       z.object({
         name: z.string().min(1),
         icon: z.string().min(1),
-        interests: z.string().min(1),
+        interests: z.array(z.string().min(1)),
         description: z.string().min(1),
       })
     )
@@ -33,6 +33,31 @@ export const taskRouter = createTRPCRouter({
           interests: input.interests,
           description: input.description,
           userId: ctx.session.user.id,
+        },
+      });
+    }),
+  createCustomFriendTask: protectedProcedure
+    .input(
+      z.object({
+        name: z.string().min(1),
+        icon: z.string().min(1),
+        friends: z.array(z.string().min(1)),
+        interests: z.array(z.string().min(1)),
+        description: z.string().min(1),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.task.create({
+        data: {
+          type: TaskType.customFriend,
+          name: input.name,
+          icon: input.icon,
+          interests: input.interests,
+          userId: ctx.session.user.id,
+          description: input.description,
+          friends: {
+            connect: input.friends.map((friendId) => ({ id: friendId })),
+          },
         },
       });
     }),
