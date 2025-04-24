@@ -1,8 +1,7 @@
 "use client";
 import styles from "../../index.module.css";
 import { useThemeStore } from "~/store/themeStore";
-import Taskbox from "../taskbox";
-import { TaskType } from "~/types/task";
+import TaskList from "../tasks/dailyTasks";
 
 interface HomeClientProps {
   session?: any;
@@ -32,19 +31,7 @@ export default function HomeClient(props: HomeClientProps) {
             <span>{props.session.user.displayName}</span>
           )}
         </h1>
-        <div className={styles.taskList}>
-          <h2>Daily tasks:</h2>
-          <Taskbox
-            task={{
-              id: 1,
-              type: TaskType.generated,
-              name: "Title",
-              icon: ":0",
-              interests: "Help",
-              description: "Do this...",
-            }}
-          />
-        </div>
+        <TaskList />
       </div>
     </main>
   );

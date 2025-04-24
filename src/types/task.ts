@@ -11,5 +11,6 @@ export interface Task {
   name: string;
   icon: string;
   interests: string;
+  friends?: string[];
   description: string;
 }

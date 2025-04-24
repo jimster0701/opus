@@ -1,5 +1,5 @@
 import { Task } from "~/types/task";
-import styles from "../index.module.css";
+import styles from "../../index.module.css";
 
 interface TaskboxProps {
   task?: Task;

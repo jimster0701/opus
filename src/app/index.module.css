@@ -605,6 +605,61 @@
   transition: background-color 150ms cubic-bezier(0.5, 0, 0.2, 1);
 }
 
+.taskTabContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.taskTabContainer > button {
+  border: none;
+  border-bottom: 3px solid transparent;
+  background-color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  width: fit-content;
+  padding: 0.5rem 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  border-radius: 0.5rem 0.5rem 0 0;
+}
+
+.taskTabContainer > button:hover,
+.taskTabContainer > button:focus {
+  border-bottom: 3px solid var(--accent-color); /* purple highlight */
+  background-color: #f3f4f6; /* subtle hover */
+}
+
+.taskTabContainer > button.selected {
+  border-bottom: 3px solid var(--accent-color);
+  background-color: #f9fafb;
+}
+
+/* Mobile tweak */
+@media (max-width: 500px) {
+  .taskTabContainer {
+    align-items: center;
+  }
+
+  .taskTabContainer > button {
+    border-radius: 0.5rem;
+    border: 1px solid #e5e7eb;
+  }
+
+  .taskTabContainer > button.selected {
+    border-color: var(--accent-color);
+  }
+}
+
+.dailyTaskList {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
 .taskIconContainer {
   width: 20%;
 }
