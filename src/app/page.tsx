@@ -4,8 +4,8 @@ import { api, HydrateClient } from "~/trpc/server";
 import { NewUserModalWrapper } from "./_components/modalWrappers";
 import Header from "./_components/header";
 import HomeClient from "./_components/pages/HomeClient";
-import LoginButton from "./_components/settings/loginButton";
 import styles from "./index.module.css";
+import NotLoggedIn from "./_components/pages/NotLoggedIn";
 
 export default async function Home() {
   const session = await auth();
@@ -18,31 +18,15 @@ export default async function Home() {
     return (
       <HydrateClient>
         <Header userId={userId} />
-
         <HomeClient session={session} theme={session.user.themePreset} />
-        {!session && (
-          <div className={styles.showcaseContainer}>
-            <p className={styles.showcaseText}>Please login to start:</p>
-            <LoginButton />
-          </div>
-        )}
-        {session && (
-          <NewUserModalWrapper
-            displayName={session?.user.displayName ?? null}
-          />
-        )}
-        {session?.user && <Navbar />}
+        <NewUserModalWrapper displayName={session?.user.displayName ?? null} />
+        <Navbar />
       </HydrateClient>
     );
   }
   return (
     <HydrateClient>
-      {!session && (
-        <div className={styles.showcaseContainer}>
-          <p className={styles.showcaseText}>Please login to start:</p>
-          <LoginButton />
-        </div>
-      )}
+      <NotLoggedIn />
     </HydrateClient>
   );
 }
