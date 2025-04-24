@@ -109,7 +109,7 @@ export function ProfilePictureWrapper(props: ProfilePictureWrapperProps) {
             alt={""}
           />
         )}
-        <label className={styles.profileAvatarCover}>
+        <label className={styles.profileAvatarChangeCover}>
           Change Picture
           <input
             type="file"

@@ -2,6 +2,7 @@
 import { useThemeStore } from "~/store/themeStore";
 import styles from "../index.module.css";
 import Link from "next/link";
+import { Home, Search, PlusCircle, Users, User } from "lucide-react";
 
 export function Navbar() {
   const { theme, setTheme } = useThemeStore();
@@ -14,20 +15,24 @@ export function Navbar() {
       }
     >
       <Link className={styles.navbarItem} href={"/"}>
-        <p className={styles.opusText}>Home</p>
+        <Home size={20} />
+        <p>Home</p>
       </Link>
-      <Link className={styles.navbarItem} href={"/feed"}>
-        <p className={styles.opusText}></p>
-        <p className={styles.opusText}>Discover</p>
+      <Link className={styles.navbarItem} href={"/discover"}>
+        <Search size={20} />
+        <p>Discover</p>
       </Link>
       <Link className={styles.navbarItem} href={"/create"}>
-        <p className={styles.opusText}>Create</p>
+        <PlusCircle size={20} />
+        <p>Create</p>
       </Link>
       <Link className={styles.navbarItem} href={"/friends"}>
-        <p className={styles.opusText}>Friends</p>
+        <Users size={20} />
+        <p>Friends</p>
       </Link>
       <Link className={styles.navbarItem} href={"/profile"}>
-        <p className={styles.opusText}>Profile</p>
+        <User size={20} />
+        <p>Profile</p>
       </Link>
     </nav>
   );

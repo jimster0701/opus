@@ -42,6 +42,9 @@ export function SettingsModal(props: modalProps) {
     <div className={styles.modalContainer}>
       <div className={styles.modalBackground} onClick={props.onComplete} />
       <div className={styles.modal}>
+        <p className={styles.closeModalButton} onClick={props.onComplete}>
+          x
+        </p>
         <h2 className={styles.opusText}>Settings</h2>
         <h3 className={styles.opusText}>Change The Theme</h3>
         <div className={styles.themeList}>

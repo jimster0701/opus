@@ -11,6 +11,7 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  flex-wrap: wrap;
   gap: 0.2rem;
 }
 
@@ -150,41 +151,51 @@
   display: flex;
   justify-content: space-around;
   align-items: center;
-  background: none;
-  padding: 0.5rem 0;
+  background: rgba(255, 255, 255, 0.1); /* Light blur background */
+  backdrop-filter: blur(10px);
+  padding: 0.75rem 1rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
   width: 100vw;
   position: fixed;
   bottom: 0;
+  z-index: 100;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .navbarItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
   text-align: center;
-  color: var(--text-primary);
-  font-size: 1.25rem;
-  text-decoration: none;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  text-decoration: double;
+  transition: all 0.2s ease-in-out;
+  padding: 0.5rem 0;
 }
 
-.navbarItem > Link {
-  font-size: 1.3rem;
+.navbarItem > * {
+  margin: 0;
 }
 
+.navbarItem:hover,
 .navbarItem.active {
   color: var(--accent-color);
+  font-weight: 600;
+  transform: scale(1.05);
 }
 
-.navbarItem.active > Link {
-  transform: scale(1.1);
+.navbarItem:active {
+  transform: scale(0.97);
+  opacity: 0.85;
 }
 
 @media (min-width: 640px) {
   .navbar {
-    gap: 1.5rem;
-  }
-}
-
-@media (min-width: 768px) {
-  .navbar {
     gap: 2rem;
+    padding: 1rem 2rem;
   }
 }
 
@@ -232,6 +243,20 @@
   overflow: hidden scroll;
 }
 
+@media (max-width: 640px) {
+  .modal {
+    height: 90vh;
+  }
+}
+
+.closeModalButton {
+  position: absolute;
+  font-size: xx-large;
+  font-weight: bold;
+  right: 50;
+  top: 0;
+}
+
 /* Gradient background with light circle effect */
 .modal::before {
   content: "";
@@ -255,14 +280,6 @@
   font-size: 2.5rem;
   margin-bottom: 1.5rem;
   font-weight: 700;
-  position: relative;
-  z-index: 1;
-}
-
-.modal p {
-  font-size: 1.1rem;
-  line-height: 1.5;
-  opacity: 0.9;
   position: relative;
   z-index: 1;
 }
@@ -423,6 +440,10 @@
   margin: 0px;
 }
 
+.profileHeaderFollowText {
+  font-weight: normal;
+}
+
 /* Profile avatar */
 .profileAvatarWrapper {
   position: relative;
@@ -441,7 +462,18 @@
   border-radius: 5rem;
 }
 
-.profileAvatarCover {
+@media (max-width: 640px) {
+  .profileAvatar {
+    width: 15vw;
+    height: 15vw;
+  }
+  .profileAvatarChangeCover {
+    width: 15vw;
+    height: 15vw;
+  }
+}
+
+.profileAvatarChangeCover {
   display: none;
   position: absolute;
   cursor: pointer;
@@ -459,7 +491,7 @@
   transition: background-color 0.3s ease;
 }
 
-.profileAvatarWrapper:hover .profileAvatarCover {
+.profileAvatarWrapper:hover .profileAvatarChangeCover {
   display: flex;
 }
 
@@ -695,7 +727,7 @@
   --background-gradient: linear-gradient(to bottom, #a400ff, #e1b0ff, #f0e7ff);
   --header-gradient: linear-gradient(90deg, #a400ff, #e1b0ff);
   --text-primary: #ffffff;
-  --text-secondary: #ffffff;
+  --text-secondary: #6c6c6c;
   --accent-color: #a400ff;
 }
 
