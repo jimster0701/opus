@@ -12,11 +12,7 @@ export default async function Profile() {
   return (
     <HydrateClient>
       {!session?.user && redirect("/")}
-      <Header
-        userId={userId}
-        profile={true}
-        theme={session?.user.themePreset}
-      />
+      <Header userId={userId} profile={true} />
       <ProfileClient session={session} />
       <Navbar />
     </HydrateClient>

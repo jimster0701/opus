@@ -4,10 +4,12 @@ import { useThemeStore } from "~/store/themeStore";
 
 interface HomeClientProps {
   session?: any;
+  theme: string;
 }
 
 export default function HomeClient(props: HomeClientProps) {
   const { theme, setTheme } = useThemeStore();
+  if (theme != props.theme) setTheme(props.theme);
   return (
     <main
       className={

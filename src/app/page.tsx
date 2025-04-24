@@ -11,27 +11,38 @@ export default async function Home() {
   const session = await auth();
   const userId = session?.user.id || "null";
 
-  if (session?.user) {
-    void api.post.getLatest.prefetch();
+  if (session) {
+    if (session?.user) {
+      void api.post.getLatest.prefetch();
+    }
+    return (
+      <HydrateClient>
+        <Header userId={userId} />
+
+        <HomeClient session={session} theme={session.user.themePreset} />
+        {!session && (
+          <div className={styles.showcaseContainer}>
+            <p className={styles.showcaseText}>Please login to start:</p>
+            <LoginButton />
+          </div>
+        )}
+        {session && (
+          <NewUserModalWrapper
+            displayName={session?.user.displayName ?? null}
+          />
+        )}
+        {session?.user && <Navbar />}
+      </HydrateClient>
+    );
   }
-
-  console.log(session?.user.themePreset);
-
   return (
     <HydrateClient>
-      <Header userId={userId} />
-
-      <HomeClient session={session} />
       {!session && (
         <div className={styles.showcaseContainer}>
           <p className={styles.showcaseText}>Please login to start:</p>
           <LoginButton />
         </div>
       )}
-      {session && (
-        <NewUserModalWrapper displayName={session?.user.displayName ?? null} />
-      )}
-      {session?.user && <Navbar />}
     </HydrateClient>
   );
 }

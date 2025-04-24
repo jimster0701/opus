@@ -2,8 +2,9 @@ import styles from "../index.module.css";
 import { useState } from "react";
 import { trpc } from "../../utils/trpc";
 import "~/styles/themes.css";
-import { shuffle } from "../util";
+import { shuffle } from "./util";
 import { useThemeStore } from "~/store/themeStore";
+import { SignOutButton } from "./settings/signOutButton";
 
 interface modalProps {
   onComplete: () => void;
@@ -64,6 +65,7 @@ export function SettingsModal(props: modalProps) {
             </div>
           ))}
         </div>
+        <SignOutButton />
       </div>
     </div>
   );

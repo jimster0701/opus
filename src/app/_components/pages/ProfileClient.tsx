@@ -2,11 +2,9 @@
 
 import styles from "../../index.module.css";
 import { ProfilePictureWrapper } from "../images/cldImageWrapper";
-import { SignOutButton } from "../settings/signOutButton";
 import Image from "next/image";
-import { use, useState } from "react";
+import { useState } from "react";
 import { trpc } from "~/utils/trpc";
-import ImageUpload from "../images/imageUpload";
 import { useThemeStore } from "~/store/themeStore";
 
 interface ProfileClientProps {
@@ -91,7 +89,6 @@ export default function ProfileClient(props: ProfileClientProps) {
               </div>
             </div>
           </div>
-          <SignOutButton />
         </div>
       )}
     </main>

@@ -8,12 +8,12 @@ import { useThemeStore } from "~/store/themeStore";
 interface HeaderProps {
   userId: string;
   profile?: boolean;
-  theme?: string;
 }
 
 export default function Header(props: HeaderProps) {
   const [showSettings, setShowSettings] = useState(false);
   const { theme, setTheme } = useThemeStore();
+
   return (
     <div
       className={
