@@ -22,31 +22,33 @@ export default function TaskList(props: TaskListProps) {
         <button onClick={() => setSelectedTab("friends")}>Friend tasks</button>
       </div>
       {selectedTab == "daily" && (
-        <div className={styles.dailyTaskList}>
+        <div className={styles.taskComponentContainer}>
           <Taskbox
             task={{
               id: 1,
               type: TaskType.generated,
               name: "Title",
               icon: ":0",
-              interests: "Help",
+              interests: ["Help"],
               description: "Do this...",
             }}
+            editable={false}
           />
         </div>
       )}
       {selectedTab == "friends" && (
-        <div className={styles.dailyTaskList}>
+        <div className={styles.taskComponentContainer}>
           <Taskbox
             task={{
               id: 1,
               type: TaskType.generated,
               name: "Title",
               icon: ":0",
-              interests: "Help",
+              interests: ["Help"],
               friends: [""],
               description: "Do this...",
             }}
+            editable={false}
           />
         </div>
       )}

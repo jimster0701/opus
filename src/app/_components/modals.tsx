@@ -1,5 +1,5 @@
 import styles from "../index.module.css";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { trpc } from "../../utils/trpc";
 import "~/styles/themes.css";
 import { shuffle } from "./util";
@@ -77,6 +77,7 @@ export function SettingsModal(props: modalProps) {
 export function NewUserModal(props: modalProps) {
   const [displayName, setDisplayName] = useState("");
   const [selected, setSelected] = useState<string[]>([]);
+  const [choices, setChoices] = useState<string[]>([]);
 
   const hobbies = [
     "Music",
@@ -110,7 +111,6 @@ export function NewUserModal(props: modalProps) {
     "Student",
     "Hobbyist",
     "Artist",
-    "Independent",
     "Business Owner",
     "Freelancer",
     "Entrepreneur",
@@ -122,7 +122,9 @@ export function NewUserModal(props: modalProps) {
     "Photographer",
   ];
 
-  const mixedTags = shuffle([...hobbies, ...affiliations]);
+  const mixedTags = useMemo(() => {
+    setChoices(shuffle([...hobbies, ...affiliations]));
+  }, []);
 
   const updateTags = trpc.user.updateInterests.useMutation({});
   const updateDisplayName = trpc.user.updateDisplayName.useMutation({
@@ -133,7 +135,7 @@ export function NewUserModal(props: modalProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    updateTags.mutate({ interests: selected.join(",") });
+    updateTags.mutate({ interests: selected });
     updateDisplayName.mutate({ newDisplayName: displayName });
   };
 
@@ -167,15 +169,22 @@ export function NewUserModal(props: modalProps) {
             onChange={(e) => setDisplayName(e.target.value)}
             autoComplete="off"
           />
-          <br />
-          <p>
+          <h3 className={styles.modalText}>
             Below is a list of hobbies and affiliations, <br />
-            These choices will influence the types of tasks you are suggested
+            These will influence your tasks and social circles.
             <br />
-            Please choose at least 5:
-          </p>
+          </h3>
+          <h4>
+            {selected.length < 5 && (
+              <>Please choose at least: {5 - selected.length}</>
+            )}
+            {selected.length >= 5 && (
+              <>You have {25 - selected.length} choices left:</>
+            )}
+          </h4>
+          <h5>You can have up to 25 interests.</h5>
           <div className={styles.choiceList}>
-            {mixedTags.map((tag) => (
+            {choices.map((tag) => (
               <button
                 type="button"
                 key={tag}

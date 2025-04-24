@@ -13,6 +13,11 @@ export interface PostComment {
   createdBy: SimpleUser;
 }
 
+export interface Tag {
+  icon: string;
+  name: string;
+}
+
 export interface Post {
   id: number;
   name: string;
@@ -22,5 +27,7 @@ export interface Post {
   createdById: string;
   createdBy: SimpleUser;
   likedBy: string[];
+  tags: Tag[];
   imageId: string | null;
+  comments: PostComment[];
 }
