@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { trpc } from "~/utils/trpc";
 import { useThemeStore } from "~/store/themeStore";
+import { Session } from "inspector/promises";
 
 interface ProfileClientProps {
   session: any | null;
@@ -22,6 +23,7 @@ export default function ProfileClient(props: ProfileClientProps) {
     setChangeDisplay(false);
   };
 
+  if (theme == "unset") setTheme(props.session.user.themePreset);
   return (
     <main
       className={
@@ -80,10 +82,14 @@ export default function ProfileClient(props: ProfileClientProps) {
                 )}
               </div>
               <div className={styles.flexRow}>
-                <p className={styles.profileHeaderText}>
+                <p
+                  className={`${styles.profileHeaderText} ${styles.profileHeaderFollowText}`}
+                >
                   Following:{props.session.user.following.length}
                 </p>
-                <p className={styles.profileHeaderText}>
+                <p
+                  className={`${styles.profileHeaderText} ${styles.profileHeaderFollowText}`}
+                >
                   Followers:{props.session.user.followers.length}
                 </p>
               </div>
