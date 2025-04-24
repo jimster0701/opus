@@ -1,8 +1,8 @@
 export enum TaskType {
-  generated,
-  generatedFriend,
-  custom,
-  customFriend,
+  generated = "generated",
+  generatedFriend = "generatedFriend",
+  custom = "custom",
+  customFriend = "customFriend",
 }
 
 export interface Task {

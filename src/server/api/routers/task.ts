@@ -4,14 +4,36 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
+import { TaskType } from "~/types/task";
 
-export const tagRouter = createTRPCRouter({
-  getAllTasks: protectedProcedure.query(async ({ ctx }) => {
+export const taskRouter = createTRPCRouter({
+  getDailyTasks: protectedProcedure.query(async ({ ctx }) => {
     const post = await ctx.db.task.findMany({
       orderBy: { name: "desc" },
-      where: { userId: ctx.session.user.id },
+      where: { userId: ctx.session.user.id, createdAt: Date() },
     });
-
     return post ?? null;
   }),
+
+  createCustomTask: protectedProcedure
+    .input(
+      z.object({
+        name: z.string().min(1),
+        icon: z.string().min(1),
+        interests: z.string().min(1),
+        description: z.string().min(1),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.task.create({
+        data: {
+          type: TaskType.custom,
+          name: input.name,
+          icon: input.icon,
+          interests: input.interests,
+          description: input.description,
+          userId: ctx.session.user.id,
+        },
+      });
+    }),
 });
