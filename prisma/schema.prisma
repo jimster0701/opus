@@ -76,6 +76,17 @@ model User {
   sessions      Session[]
   comments      Comment[]
   tags          Tag[]
+  tasks         Task[]
+}
+
+model Task {
+  id          Int      @id @default(autoincrement())
+  type        String
+  name        String
+  icon        String
+  description String
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Tag {

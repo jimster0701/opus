@@ -2,6 +2,7 @@
 import styles from "../../index.module.css";
 import { useThemeStore } from "~/store/themeStore";
 import Taskbox from "../taskbox";
+import { TaskType } from "~/types/task";
 
 interface HomeClientProps {
   session?: any;
@@ -36,6 +37,7 @@ export default function HomeClient(props: HomeClientProps) {
           <Taskbox
             task={{
               id: 1,
+              type: TaskType.generated,
               name: "Title",
               icon: ":0",
               interests: "Help",
