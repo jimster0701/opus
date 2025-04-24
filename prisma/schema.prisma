@@ -76,8 +76,8 @@ model User {
   sessions      Session[]
   comments      Comment[]
   tags          Tag[]
-  tasks         Task[]    @relation("TaskFriends")
-  createdTasks  Task[]    @relation("UserCreatedTasks")
+  assignedtasks Task[]    @relation("TaskAssigned")
+  ownTasks      Task[]    @relation("TaskOwn")
 }
 
 model Task {
@@ -86,9 +86,11 @@ model Task {
   name        String
   icon        String
   description String
-  friends     User[]  @relation("TaskFriends")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  friends     User[]   @relation("TaskAssigned")
   userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User     @relation("TaskOwn" ,fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Tag {
