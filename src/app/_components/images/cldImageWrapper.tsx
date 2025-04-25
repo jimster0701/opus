@@ -153,21 +153,23 @@ export function ProfilePicturePreviewWrapper(
   props: ProfilePictureWrapperProps
 ) {
   const [src, setSrc] = useState(
-    "https://res.cloudinary.com/dbf1p4ylk/image/upload/v1745329655/profile-pictures/default"
+    `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/v1745329655/profile-pictures/default`
   );
 
-  console.log(props.id);
+  if (props.imageUrl) {
+    if (props.imageUrl.includes("google")) setSrc(props.session.user.image);
+    else
+      setSrc(
+        `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/${props.imageUrl}`
+      );
+  }
   return (
     <div className={styles.profileAvatarWrapper}>
-      <CldImage
-        src={"profile-pictures/" + props.id}
+      <img
+        src={src}
         width={props.width}
         height={props.height}
         className={styles.profileAvatarPreview}
-        crop={{
-          type: "auto",
-          source: true,
-        }}
         alt={""}
       />
     </div>
