@@ -36,6 +36,7 @@ export const taskRouter = createTRPCRouter({
         },
       });
     }),
+
   createCustomFriendTask: protectedProcedure
     .input(
       z.object({
