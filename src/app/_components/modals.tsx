@@ -197,7 +197,9 @@ export function NewUserModal(props: modalProps) {
               </button>
             ))}
           </div>
-          <button type="submit">Go</button>
+          <button type="submit" disabled={selected.length < 5}>
+            Go
+          </button>
         </form>
       </div>
     </div>

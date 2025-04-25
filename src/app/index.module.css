@@ -414,6 +414,11 @@
   transform: translateY(-1px);
 }
 
+.modalForm button[type="submit"]:disabled {
+  transform: translateY(-1px);
+  background-color: rgba(255, 255, 255, 0.423);
+}
+
 /* Modal responsiveness */
 @media (max-width: 768px) {
   .modal {
@@ -578,7 +583,6 @@
   text-align: center;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   margin-bottom: 1rem;
-  gap: 1rem;
   max-height: 70vh;
   overflow-y: scroll;
 }
@@ -678,6 +682,12 @@
   width: 20%;
 }
 
+.taskIconInput {
+  text-align: center;
+  width: 12.25vw;
+  height: 12.25vw;
+}
+
 .taskContentContainer {
   width: 100%;
   display: flex;
@@ -698,15 +708,68 @@
   margin: 0;
 }
 
-.taskInterests {
+.taskInterestSelector {
+  display: flex;
+  flex-direction: row;
   font-size: 1rem;
   line-height: 1.75rem;
   font-weight: lighter;
   margin: 0;
 }
 
+.taskInterestSelector p {
+  margin-bottom: 0;
+}
+
+.taskChoosenInterest {
+  position: relative;
+  background: white;
+  color: black;
+  border: grey 1px solid;
+  border-radius: 1rem;
+  padding: 0.25rem 0.5rem;
+}
+
+.taskChoosenInterestText {
+  position: relative;
+
+  border-radius: 1rem;
+  z-index: 1;
+  background-color: white;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.taskChoosenInterest::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: var(--text-glow);
+  transform: translate3d(0px, 5px, 0) scale(0.7);
+  filter: blur(20px);
+  opacity: 0.7;
+  transition: opacity 0.3s;
+}
+
+.taskChoosenInterest::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: inherit;
+  border-radius: inherit;
+}
+
 .taskContentContainer input,
-.taskContentContainer textarea {
+.taskContentContainer textarea,
+.taskInterestSelector select {
   padding: 0.5rem;
   border: none;
   border-radius: 0.5rem;
@@ -714,6 +777,19 @@
   width: 100%;
   box-sizing: border-box;
   font-size: 1rem;
+}
+
+.taskInterestSelector * {
+  width: fit-content;
+  height: fit-content;
+  margin: 1rem 0rem;
+  text-wrap-mode: nowrap;
+  text-align: left;
+}
+
+.taskInterestList {
+  display: flex;
+  flex-wrap: wrap;
 }
 
 /* Theme Settings
@@ -861,6 +937,7 @@
 
   --background-gradient: linear-gradient(to bottom, #a400ff, #e1b0ff, #f0e7ff);
   --header-gradient: linear-gradient(90deg, #a400ff, #e1b0ff);
+  --text-glow: linear-gradient(to top left, #a400ff 0%, #e1b0ff 100%);
   --text-primary: #ffffff;
   --text-secondary: #6c6c6c;
   --accent-color: #a400ff;
@@ -913,6 +990,7 @@
 .theme-sunset {
   --background-gradient: linear-gradient(to bottom, #ff7e5f, #feb47b, #ffe3b3);
   --header-gradient: linear-gradient(90deg, #ff7e5f, #feb47b);
+  --text-glow: linear-gradient(to top left, #ff7e5f, #feb47b);
   --text-primary: #3b2000;
   --text-secondary: #5c3c1e;
   --accent-color: #ff7e5f;
@@ -926,6 +1004,7 @@
 .theme-ocean {
   --background-gradient: linear-gradient(to bottom, #0072ff, #00c6ff, #a0eaff);
   --header-gradient: linear-gradient(90deg, #0072ff, #00c6ff);
+  --text-glow: linear-gradient(to top left, #0072ff, #00c6ff);
   --text-primary: #001d3a;
   --text-secondary: #003b5e;
   --accent-color: #00c6ff;
@@ -939,6 +1018,7 @@
 .theme-forest {
   --background-gradient: linear-gradient(to bottom, #0f9b0f, #78e08f, #eafaf1);
   --header-gradient: linear-gradient(90deg, #0f9b0f, #78e08f);
+  --text-glow: linear-gradient(to top left, #0f9b0f, #78e08f);
   --text-primary: #0a3f0a;
   --text-secondary: #1d5e1d;
   --accent-color: #0f9b0f;
@@ -952,6 +1032,7 @@
 .theme-ice {
   --background-gradient: linear-gradient(to bottom, #8e9eab, #eef2f3, #ffffff);
   --header-gradient: linear-gradient(90deg, #8e9eab, #eef2f3);
+  --text-glow: linear-gradient(to top left, #8e9eab, #eef2f3);
   --text-primary: #222222;
   --text-secondary: #444444;
   --accent-color: #8e9eab;
@@ -965,6 +1046,7 @@
 .theme-lava {
   --background-gradient: linear-gradient(to bottom, #ff4e50, #f9d423, #fff4d2);
   --header-gradient: linear-gradient(90deg, #ff4e50, #f9d423);
+  --text-glow: linear-gradient(to top left, #ff4e50, #f9d423);
   --text-primary: #3a1000;
   --text-secondary: #5e2a00;
   --accent-color: #ff4e50;
@@ -978,6 +1060,7 @@
 .theme-space {
   --background-gradient: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);
   --header-gradient: linear-gradient(90deg, #0f2027, #2c5364);
+  --text-glow: linear-gradient(to top left, #0f2027, #2c5364);
   --text-primary: #cfd8dc;
   --text-secondary: #90a4ae;
   --accent-color: #2c5364;
@@ -991,6 +1074,7 @@
 .theme-midnight {
   --background-gradient: linear-gradient(to bottom, #1a0033, #3b0a54, #5e1d80);
   --header-gradient: linear-gradient(90deg, #2c0049, #5e1d80);
+  --text-glow: linear-gradient(to top left, #2c0049, #5e1d80);
   --text-primary: #f5e8ff;
   --text-secondary: #cbb4e0;
   --accent-color: #5e1d80;
@@ -1004,6 +1088,7 @@
 .theme-obsidian {
   --background-gradient: linear-gradient(to bottom, #0a0a0a, #1a1a1a, #333333);
   --header-gradient: linear-gradient(90deg, #0a0a0a, #333333);
+  --text-glow: linear-gradient(to top left, #333333, #666666);
   --text-primary: #eeeeee;
   --text-secondary: #aaaaaa;
   --accent-color: #333333;
@@ -1017,6 +1102,7 @@
 .theme-velvet {
   --background-gradient: linear-gradient(to bottom, #2c001e, #4b0035, #7a1750);
   --header-gradient: linear-gradient(90deg, #4b0035, #7a1750);
+  --text-glow: linear-gradient(to top left, #4b0035, #7a1750);
   --text-primary: #ffddee;
   --text-secondary: #e5a8c8;
   --accent-color: #7a1750;
@@ -1030,6 +1116,7 @@
 .theme-twilight {
   --background-gradient: linear-gradient(to bottom, #0f2a2e, #145c72, #1ca8c7);
   --header-gradient: linear-gradient(90deg, #0f2a2e, #145c72);
+  --text-glow: linear-gradient(to top left, #145c72, #1ca8c7);
   --text-primary: #e0f7fa;
   --text-secondary: #80deea;
   --accent-color: #1ca8c7;

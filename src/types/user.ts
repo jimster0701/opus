@@ -10,7 +10,7 @@ export interface User {
   displayName: string;
   image: string;
   themePreset: string;
-  interests: string;
+  interests: string[];
   followers: string[];
   following: string[];
   accounts: Account[];

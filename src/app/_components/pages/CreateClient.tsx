@@ -5,7 +5,7 @@ import { LatestPost } from "../posts/latestPost";
 import CreateSelector from "../create/createSelector";
 
 interface CreateClientProps {
-  session?: any;
+  session: any;
   theme: string;
 }
 
@@ -22,7 +22,7 @@ export default function CreateClient(props: CreateClientProps) {
     >
       <div className={styles.container}>
         <LatestPost />
-        <CreateSelector />
+        <CreateSelector user={props.session.user} />
       </div>
     </main>
   );

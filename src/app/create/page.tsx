@@ -15,7 +15,7 @@ export default async function Create() {
     return (
       <HydrateClient>
         <Header userId={userId} />
-        <CreateClient theme={session.user.themePreset} />
+        <CreateClient theme={session.user.themePreset} session={session} />
         <Navbar />
       </HydrateClient>
     );
