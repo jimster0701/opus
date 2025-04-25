@@ -276,11 +276,12 @@
 }
 
 .closeModalButton {
+  margin: 0;
   position: absolute;
-  font-size: xx-large;
   font-weight: bold;
-  right: 50;
+  right: 0;
   top: 0;
+  padding: 1rem;
 }
 
 /* Gradient background with light circle effect */
@@ -461,6 +462,15 @@
   .choiceList {
     max-height: 30vh;
   }
+}
+
+/* Card Components
+------------------------------------------ */
+.cardContainer {
+  display: flex;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(170, 167, 167, 0.477);
+  background-color: rgba(170, 167, 167, 0.477);
 }
 
 /* Profile Components

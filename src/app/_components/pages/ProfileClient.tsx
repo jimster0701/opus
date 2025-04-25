@@ -7,6 +7,7 @@ import { useState } from "react";
 import { trpc } from "~/utils/trpc";
 import { useThemeStore } from "~/store/themeStore";
 import { Check, X } from "lucide-react";
+import { FollowerModal, FollowingModal } from "../modals";
 
 interface ProfileClientProps {
   session: any | null;
@@ -14,6 +15,8 @@ interface ProfileClientProps {
 
 export default function ProfileClient(props: ProfileClientProps) {
   const [changeDisplay, setChangeDisplay] = useState(false);
+  const [showFollowingModal, setShowFollowingModal] = useState(false);
+  const [showFollowerModal, setShowFollowerModal] = useState(false);
   const [displayName, setDisplayName] = useState("");
   const [displayNameError, setDisplayNameError] = useState("");
 
@@ -121,17 +124,33 @@ export default function ProfileClient(props: ProfileClientProps) {
               <div className={styles.flexRow}>
                 <p
                   className={`${styles.profileHeaderText} ${styles.profileHeaderFollowText}`}
+                  onClick={() => setShowFollowingModal(true)}
                 >
                   Following:{props.session.user.following.length}
                 </p>
                 <p
                   className={`${styles.profileHeaderText} ${styles.profileHeaderFollowText}`}
+                  onClick={() => setShowFollowerModal(true)}
                 >
                   Followers:{props.session.user.followers.length}
                 </p>
               </div>
             </div>
           </div>
+          {showFollowingModal && (
+            <FollowingModal
+              theme={props.session.user.themePreset}
+              onComplete={() => setShowFollowingModal(false)}
+              user={props.session.user}
+            />
+          )}
+          {showFollowerModal && (
+            <FollowerModal
+              theme={props.session.user.themePreset}
+              onComplete={() => setShowFollowerModal(false)}
+              user={props.session.user}
+            />
+          )}
         </div>
       )}
     </main>

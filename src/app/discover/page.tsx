@@ -14,7 +14,7 @@ export default async function Discover() {
     return (
       <HydrateClient>
         <Header userId={userId} />
-        <DiscoverClient theme={""} />
+        <DiscoverClient theme={session.user.themePreset} />
         <Navbar />
       </HydrateClient>
     );

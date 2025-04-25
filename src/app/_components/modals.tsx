@@ -5,6 +5,8 @@ import "~/styles/themes.css";
 import { shuffle } from "./util";
 import { useThemeStore } from "~/store/themeStore";
 import { SignOutButton } from "./settings/signOutButton";
+import { X } from "lucide-react";
+import { User } from "next-auth";
 
 interface modalProps {
   onComplete: () => void;
@@ -17,6 +19,53 @@ export function Modal() {
       <div className={styles.modalBackground} />
       <div className={styles.modal}>
         <h1>Hello, do this please :)</h1>
+      </div>
+    </div>
+  );
+}
+
+interface followerOrFollowingProps extends modalProps {
+  user: User;
+}
+
+export function FollowingModal(props: followerOrFollowingProps) {
+  const { theme, setTheme } = useThemeStore();
+  return (
+    <div className={styles.modalContainer}>
+      <div className={styles.modalBackground} onClick={props.onComplete} />
+      <div
+        className={
+          theme == "default"
+            ? `${styles.modal}`
+            : `${styles.modal} ${styles[`theme-${theme}`]}`
+        }
+      >
+        <p className={styles.closeModalButton} onClick={props.onComplete}>
+          <X width={45} height={45} />
+        </p>
+        <h1>Following</h1>
+        {props.user.id}
+      </div>
+    </div>
+  );
+}
+export function FollowerModal(props: followerOrFollowingProps) {
+  const { theme, setTheme } = useThemeStore();
+  const followers = "";
+  return (
+    <div className={styles.modalContainer}>
+      <div className={styles.modalBackground} onClick={props.onComplete} />
+      <div
+        className={
+          theme == "default"
+            ? `${styles.modal}`
+            : `${styles.modal} ${styles[`theme-${theme}`]}`
+        }
+      >
+        <p className={styles.closeModalButton} onClick={props.onComplete}>
+          <X width={45} height={45} />
+        </p>
+        <h1>Followers</h1>
       </div>
     </div>
   );
@@ -49,7 +98,7 @@ export function SettingsModal(props: modalProps) {
         }
       >
         <p className={styles.closeModalButton} onClick={props.onComplete}>
-          x
+          <X width={45} height={45} />
         </p>
         <h2 className={styles.opusText}>Settings</h2>
         <h3 className={styles.opusText}>Change The Theme</h3>
