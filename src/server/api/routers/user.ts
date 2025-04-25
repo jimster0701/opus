@@ -5,11 +5,12 @@ export const userRouter = createTRPCRouter({
   getNewUsersByInterests: protectedProcedure
     .input(z.object({ interests: z.array(z.string().min(1)) }))
     .mutation(async ({ ctx, input }) => {
+      const currentUserId = ctx.session.user.id;
       const users = await ctx.db.user.findMany({
         orderBy: { id: "desc" },
         where: {
           interests: { hasSome: input.interests },
-          NOT: { followers: { has: ctx.session.user.id } },
+          NOT: { followers: { some: { followerId: currentUserId } } },
         },
       });
 
@@ -19,11 +20,21 @@ export const userRouter = createTRPCRouter({
   getFriends: protectedProcedure
     .input(z.object({}))
     .mutation(async ({ ctx }) => {
+      const currentUserId = ctx.session.user.id;
+
       const users = await ctx.db.user.findMany({
         orderBy: { id: "desc" },
         where: {
-          followers: { has: ctx.session.user.id },
-          following: { has: ctx.session.user.id },
+          followers: {
+            some: {
+              followerId: currentUserId,
+            },
+          },
+          following: {
+            some: {
+              followingId: currentUserId,
+            },
+          },
         },
       });
 
@@ -41,7 +52,7 @@ export const userRouter = createTRPCRouter({
 
       const existingFollow = await ctx.db.follow.findUnique({
         where: {
-          followerId_followingId: {
+          follower_following_unique: {
             followerId: currentUserId,
             followingId: input.userId,
           },
@@ -65,7 +76,7 @@ export const userRouter = createTRPCRouter({
 
       return await ctx.db.follow.delete({
         where: {
-          followerId_followingId: {
+          follower_following_unique: {
             followerId: currentUserId,
             followingId: input.userId,
           },
