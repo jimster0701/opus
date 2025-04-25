@@ -6,7 +6,6 @@ import Image from "next/image";
 import { useState } from "react";
 import { trpc } from "~/utils/trpc";
 import { useThemeStore } from "~/store/themeStore";
-import { Session } from "inspector/promises";
 
 interface ProfileClientProps {
   session: any | null;
@@ -40,6 +39,7 @@ export default function ProfileClient(props: ProfileClientProps) {
               imageUrl={props.session.user.image}
               width={500}
               height={500}
+              session={props.session}
             />
             <div className={styles.flexColumn}>
               <div className={styles.flexRow}>

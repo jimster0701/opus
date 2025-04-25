@@ -10,6 +10,7 @@ interface ProfilePictureWrapperProps {
   imageUrl?: string;
   width: number;
   height: number;
+  session: any;
 }
 
 export function ProfilePictureWrapper(props: ProfilePictureWrapperProps) {
@@ -26,9 +27,12 @@ export function ProfilePictureWrapper(props: ProfilePictureWrapperProps) {
   useEffect(() => {
     console.log("Image URL:", props.imageUrl);
     if (props.imageUrl) {
-      setUploadedUrl(
-        `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/${props.imageUrl}`
-      );
+      if (props.imageUrl.includes("google"))
+        setUploadedUrl(props.session.user.image);
+      else
+        setUploadedUrl(
+          `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/${props.imageUrl}`
+        );
     }
   }, [props.imageUrl]);
 
