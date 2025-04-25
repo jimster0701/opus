@@ -1,5 +1,6 @@
 "use client";
 
+import { Check, X } from "lucide-react";
 import styles from "../../index.module.css";
 import { CldImage } from "next-cloudinary";
 import { useEffect, useState } from "react";
@@ -25,7 +26,6 @@ export function ProfilePictureWrapper(props: ProfilePictureWrapperProps) {
   const updateImage = trpc.user.updateProfilePicture.useMutation({});
 
   useEffect(() => {
-    console.log("Image URL:", props.imageUrl);
     if (props.imageUrl) {
       if (props.imageUrl.includes("google"))
         setUploadedUrl(props.session.user.image);
@@ -127,15 +127,21 @@ export function ProfilePictureWrapper(props: ProfilePictureWrapperProps) {
       {error && <p className={styles.error}>{error}</p>}
 
       {preview && (
-        <div className={styles.flexRow}>
-          <button onClick={handleUpload}>Ok</button>
+        <div className={styles.profileAvatarConfirmContainer}>
           <button
+            className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
+            onClick={handleUpload}
+          >
+            <Check />
+          </button>
+          <button
+            className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
             onClick={() => {
               setPreview("");
               setImage(null);
             }}
           >
-            Cancel
+            <X />
           </button>
         </div>
       )}

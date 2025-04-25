@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { trpc } from "~/utils/trpc";
 import { useThemeStore } from "~/store/themeStore";
+import { Check, X } from "lucide-react";
 
 interface ProfileClientProps {
   session: any | null;
@@ -14,7 +15,10 @@ interface ProfileClientProps {
 export default function ProfileClient(props: ProfileClientProps) {
   const [changeDisplay, setChangeDisplay] = useState(false);
   const [displayName, setDisplayName] = useState("");
+  const [displayNameError, setDisplayNameError] = useState("");
+
   const { theme, setTheme } = useThemeStore();
+
   const updateDisplayName = trpc.user.updateDisplayName.useMutation();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,30 +47,35 @@ export default function ProfileClient(props: ProfileClientProps) {
             />
             <div className={styles.flexColumn}>
               <div className={styles.flexRow}>
-                <p className={styles.profileHeaderText}>
-                  {props.session.user.name}
-                </p>
-                <p className={styles.profileHeaderText}>-</p>
                 {!changeDisplay ? (
-                  <div
-                    className={styles.flexRow}
-                    onClick={() => {
-                      setChangeDisplay(true);
-                    }}
-                  >
-                    <p
-                      className={styles.profileHeaderText}
-                      style={{ cursor: "pointer" }}
+                  <>
+                    <div
+                      className={styles.flexRow}
+                      onClick={() => {
+                        setChangeDisplay(true);
+                      }}
                     >
-                      {displayName || props.session.user.displayName}
-                    </p>
-                    <Image
-                      src="/images/pen.png"
-                      alt={""}
-                      width={15}
-                      height={15}
-                    />
-                  </div>
+                      <p
+                        className={styles.profileHeaderText}
+                        style={{ cursor: "pointer" }}
+                      >
+                        {displayName || props.session.user.displayName}
+                      </p>
+                      <Image
+                        src="/images/pen.png"
+                        alt={""}
+                        width={15}
+                        height={15}
+                      />
+                    </div>
+                    {props.session.user.name && (
+                      <>
+                        <h5 className={styles.profileHeaderUsernameText}>
+                          ({props.session.user.name})
+                        </h5>
+                      </>
+                    )}
+                  </>
                 ) : (
                   <form className={styles.flexRow} onSubmit={handleSubmit}>
                     <input
@@ -75,9 +84,37 @@ export default function ProfileClient(props: ProfileClientProps) {
                       placeholder={props.session.user.displayName}
                       required
                       value={displayName}
-                      onChange={(e) => setDisplayName(e.target.value)}
+                      onChange={(e) => {
+                        setDisplayName(e.target.value);
+                      }}
                     />
-                    <button type="submit">Save</button>
+                    <button
+                      className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
+                      onClick={(e) => {
+                        if (displayName.length == 0) {
+                          e.preventDefault();
+                          setDisplayNameError("Display name cannot be empty.");
+                        } else {
+                          setDisplayNameError("");
+                        }
+                      }}
+                      type="submit"
+                    >
+                      <Check />
+                    </button>
+                    <button
+                      className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
+                      onClick={() => {
+                        setDisplayName("");
+                        setChangeDisplay(false);
+                      }}
+                      type="button"
+                    >
+                      <X />
+                    </button>
+                    {displayNameError && (
+                      <div className={styles.formError}>{displayNameError}</div>
+                    )}
                   </form>
                 )}
               </div>
