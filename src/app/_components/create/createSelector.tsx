@@ -49,7 +49,7 @@ export default function CreateSelector(props: CreateTaskProps) {
       </div>
       {selectedTab == "post" && (
         <div className={styles.taskComponentContainer}>
-          <PostBox post={createdPost} userId={props.user.id} />
+          <PostBox post={createdPost} userId={props.user.id} editable={true} />
         </div>
       )}
       {selectedTab == "task" && (
