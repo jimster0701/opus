@@ -2,15 +2,17 @@
 import styles from "../../index.module.css";
 import { useThemeStore } from "~/store/themeStore";
 import { AllFriendsPosts } from "../posts/allFriendsPosts";
+import { Session } from "~/types/session";
 
 interface DiscoverClientProps {
-  session?: any;
+  session: Session;
   theme: string;
 }
 
 export default function DiscoverClient(props: DiscoverClientProps) {
   const { theme, setTheme } = useThemeStore();
   if (theme == "unset") setTheme(props.theme);
+  console.log(props.session.user);
   return (
     <main
       className={

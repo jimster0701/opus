@@ -9,16 +9,16 @@ interface AllFriendsPostsProps {
   userId: string;
 }
 
-export function AllFriendsPosts({ userId }: AllFriendsPostsProps) {
+export function AllFriendsPosts(props: AllFriendsPostsProps) {
   const [posts] = api.post.getAll.useSuspenseQuery();
-
+  console.log(props.userId);
   return (
     <>
       {posts &&
         posts.map((post) => (
           <Postbox
             key={post.id}
-            userId={userId}
+            userId={props.userId}
             post={post as unknown as Post}
           />
         ))}

@@ -16,6 +16,10 @@ export function Postbox(props: postProps) {
   const likePost = trpc.post.likePost.useMutation();
   const unlikePost = trpc.post.unlikePost.useMutation();
 
+  const cloudinaryPrefix = `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/`;
+
+  console.log(props.userId);
+
   const handleLike = () => {
     setLiked(!liked);
     if (liked) {
@@ -53,12 +57,15 @@ export function Postbox(props: postProps) {
           </p>
         </div>
         <p className={styles.postText}>{props.post.description}</p>
-        {props.post.imageUrl && props.post.imageUrl != "none" && (
-          <div className={styles.postImageContainer}>
-            <img className={styles.postImage} src={props.post.imageUrl!} />
-          </div>
-        )}
       </div>
+      {props.post.imageUrl && props.post.imageUrl != "none" && (
+        <div className={styles.postImageContainer}>
+          <img
+            className={styles.postImage}
+            src={cloudinaryPrefix + props.post.imageUrl!}
+          />
+        </div>
+      )}
     </div>
   );
 }

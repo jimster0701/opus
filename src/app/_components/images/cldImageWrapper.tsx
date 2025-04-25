@@ -20,7 +20,7 @@ export function ProfilePictureWrapper(props: ProfilePictureWrapperProps) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
   const [uploadedUrl, setUploadedUrl] = useState(
-    "https://res.cloudinary.com/dbf1p4ylk/image/upload/v1745329655/profile-pictures/default"
+    `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/v1745329655/profile-pictures/default`
   );
 
   const updateImage = trpc.user.updateProfilePicture.useMutation({});

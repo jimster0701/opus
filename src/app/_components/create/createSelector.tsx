@@ -5,7 +5,7 @@ import { Dispatch, SetStateAction, useState } from "react";
 import Taskbox from "../tasks/taskbox";
 import { Post } from "~/types/post";
 import { User } from "~/types/user";
-import { PostboxCreate } from "../posts/postboxCreate";
+import { PostboxCreate } from "./postboxCreate";
 
 interface CreateTaskProps {
   task?: Task;
