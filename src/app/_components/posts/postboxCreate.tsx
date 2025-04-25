@@ -2,7 +2,6 @@
 import { Post } from "~/types/post";
 import styles from "../../index.module.css";
 import { useState, ChangeEvent, FormEvent, useEffect } from "react";
-import Image from "next/image";
 import { trpc } from "~/utils/trpc";
 import { X } from "lucide-react";
 
@@ -107,12 +106,13 @@ export function PostboxCreate(props: postProps) {
       const newPost = await createPost.mutateAsync({
         name: formData.name,
         description: formData.description,
-        imageUrl: "",
+        imageUrl: "none",
       });
 
       // If there's an image, upload it and update the post
       if (image && newPost.id) {
         const cloudinaryPath = await handleUploadImage(newPost.id);
+        console.log(cloudinaryPath);
         if (cloudinaryPath) {
           // Update the post with the image URL
           await updateImage.mutateAsync({
@@ -130,8 +130,6 @@ export function PostboxCreate(props: postProps) {
       setImage(null);
       setPreview("");
       setError("");
-
-      // You might want to redirect or show a success message here
     } catch (error) {
       console.error("Error creating post:", error);
       setError("Failed to create post. Please try again.");
@@ -179,7 +177,7 @@ export function PostboxCreate(props: postProps) {
           />
 
           <div className={styles.imageUploadContainer}>
-            {!preview ? (
+            {!preview && (
               <label className={styles.postText}>
                 Add Image (Optional)
                 <input
@@ -189,32 +187,32 @@ export function PostboxCreate(props: postProps) {
                   style={{ display: "none" }}
                 />
               </label>
-            ) : (
-              <div className={styles.flexColumn}>
-                <div className={styles.imagePreviewContainer}>
-                  <img
-                    src={preview}
-                    alt="Preview"
-                    className={styles.imagePreview}
-                  />
-                </div>
-
-                <div className={styles.profileAvatarConfirmContainer}>
-                  <button
-                    type="button"
-                    className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
-                    onClick={cancelImageUpload}
-                  >
-                    <X />
-                  </button>
-                </div>
-              </div>
             )}
           </div>
 
           {uploading && <p className={styles.uploading}>Uploading...</p>}
           {error && <p className={styles.error}>{error}</p>}
         </div>
+        {preview && (
+          <div className={styles.flexColumn}>
+            <div className={styles.profileAvatarConfirmContainer}>
+              <button
+                type="button"
+                className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
+                onClick={cancelImageUpload}
+              >
+                <X />
+              </button>
+            </div>
+            <div className={styles.postImagePreviewContainer}>
+              <img
+                src={preview}
+                alt="Preview"
+                className={styles.imagePreview}
+              />
+            </div>
+          </div>
+        )}
       </div>
       <div className={styles.postSubmitContainer}>
         <button

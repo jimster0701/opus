@@ -53,6 +53,11 @@ export function Postbox(props: postProps) {
           </p>
         </div>
         <p className={styles.postText}>{props.post.description}</p>
+        {props.post.imageUrl && props.post.imageUrl != "none" && (
+          <div className={styles.postImageContainer}>
+            <img className={styles.postImage} src={props.post.imageUrl!} />
+          </div>
+        )}
       </div>
     </div>
   );

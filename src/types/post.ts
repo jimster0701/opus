@@ -28,6 +28,6 @@ export interface Post {
   createdBy: SimpleUser;
   likedBy: string[];
   tags: Tag[];
-  imageId: string | null;
+  imageUrl: string | null;
   comments: PostComment[];
 }

@@ -1,7 +1,7 @@
 "use client";
 import { Task, TaskType } from "~/types/task";
 import styles from "../../index.module.css";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import Taskbox from "../tasks/taskbox";
 import { Post } from "~/types/post";
 import { User } from "~/types/user";
@@ -10,6 +10,7 @@ import { PostboxCreate } from "../posts/postboxCreate";
 interface CreateTaskProps {
   task?: Task;
   user: User;
+  setSelectedTab: Dispatch<SetStateAction<string>>;
 }
 
 export default function CreateSelector(props: CreateTaskProps) {
@@ -33,19 +34,29 @@ export default function CreateSelector(props: CreateTaskProps) {
     createdBy: props.user,
     likedBy: [],
     tags: [],
-    imageId: "",
+    imageUrl: "",
     comments: [],
   });
   return (
     <div className={styles.taskList}>
       <div className={styles.taskTabContainer}>
         <button
-          autoFocus={selectedTab === "post"}
-          onClick={() => setSelectedTab("post")}
+          autoFocus={selectedTab === "post" || selectedTab == ""}
+          onClick={() => {
+            setSelectedTab("post");
+            props.setSelectedTab("post");
+          }}
         >
           Create post
         </button>
-        <button onClick={() => setSelectedTab("task")}>Create task</button>
+        <button
+          onClick={() => {
+            setSelectedTab("task");
+            props.setSelectedTab("task");
+          }}
+        >
+          Create task
+        </button>
       </div>
       {selectedTab == "post" && (
         <div className={styles.taskComponentContainer}>
