@@ -191,7 +191,7 @@ export function NewUserModal(props: modalProps) {
           </h3>
           <h4>
             {selected.length < 5 && (
-              <>Please choose at least: {5 - selected.length}</>
+              <>Please choose at least {5 - selected.length} more</>
             )}
             {selected.length >= 5 && (
               <>You have {25 - selected.length} choices left:</>

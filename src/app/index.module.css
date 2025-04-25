@@ -402,9 +402,11 @@
   transition: all 0.2s ease;
 }
 
-.opusButton:hover {
-  background-color: rgba(255, 255, 255, 0.3);
-  transform: translateY(-2px);
+@media (min-width: 640px) {
+  .opusButton:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+  }
 }
 
 .selectedOpusButton {
