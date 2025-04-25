@@ -41,7 +41,13 @@ export function SettingsModal(props: modalProps) {
   return (
     <div className={styles.modalContainer}>
       <div className={styles.modalBackground} onClick={props.onComplete} />
-      <div className={styles.modal}>
+      <div
+        className={
+          theme == "default"
+            ? `${styles.modal}`
+            : `${styles.modal} ${styles[`theme-${theme}`]}`
+        }
+      >
         <p className={styles.closeModalButton} onClick={props.onComplete}>
           x
         </p>
@@ -78,6 +84,7 @@ export function NewUserModal(props: modalProps) {
   const [displayName, setDisplayName] = useState("");
   const [selected, setSelected] = useState<string[]>([]);
   const [choices, setChoices] = useState<string[]>([]);
+  const { theme, setTheme } = useThemeStore();
 
   const hobbies = [
     "Music",
@@ -124,7 +131,7 @@ export function NewUserModal(props: modalProps) {
     "Photographer",
   ];
 
-  const mixedTags = useMemo(() => {
+  useMemo(() => {
     setChoices(shuffle([...hobbies, ...affiliations]));
   }, []);
 
@@ -152,7 +159,13 @@ export function NewUserModal(props: modalProps) {
   return (
     <div className={styles.modalContainer}>
       <div className={styles.modalBackground} />
-      <div className={styles.modal}>
+      <div
+        className={
+          theme == "default"
+            ? `${styles.modal}`
+            : `${styles.modal} ${styles[`theme-${theme}`]}`
+        }
+      >
         <h1>Welcome to Opus :)</h1>
         <p>
           Please complete your profile

@@ -7,25 +7,11 @@ import { api } from "~/trpc/react";
 interface TaskboxProps {
   task: Task;
   editable: boolean;
-  user: User;
+  user?: User;
   onTaskChange?: (updatedTask: Task) => void;
 }
 
 export default function Taskbox(props: TaskboxProps) {
-  const [selectedInterests, setSelectedInterests] = useState<string[]>(
-    props.task.interests
-  );
-  const [availableInterests, setAvailableInterests] = useState<string[]>(
-    props.user.interests
-  );
-  const [iconError, setIconError] = useState([false, ""]);
-  const [formError, setFormError] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const createTask = api.task.createCustomTask.useMutation({
-    onSuccess: async () => {},
-  });
-
   if (!props.editable)
     return (
       <div key={props.task.id} className={styles.taskContainer}>
@@ -41,7 +27,20 @@ export default function Taskbox(props: TaskboxProps) {
         </div>
       </div>
     );
-  else
+  else {
+    const [selectedInterests, setSelectedInterests] = useState<string[]>(
+      props.task.interests
+    );
+    const [availableInterests, setAvailableInterests] = useState<string[]>(
+      props.user!.interests
+    );
+    const [iconError, setIconError] = useState([false, ""]);
+    const [formError, setFormError] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const createTask = api.task.createCustomTask.useMutation({
+      onSuccess: async () => {},
+    });
     return (
       <>
         <div key={props.task.id} className={styles.taskContainer}>
@@ -138,48 +137,55 @@ export default function Taskbox(props: TaskboxProps) {
             </div>
           </div>
         </div>
-        <button
-          className={styles.opusButton}
-          disabled={isSubmitting}
-          onClick={async () => {
-            setFormError(""); // Clear previous errors
+        <div className={styles.taskSubmitContainer}>
+          <button
+            className={styles.opusButton}
+            disabled={isSubmitting}
+            onClick={async () => {
+              setFormError(""); // Clear previous errors
 
-            // Basic validation
-            if (!props.task.name.trim()) {
-              setFormError("Task name cannot be empty.");
-              return;
-            }
-            if (!props.task.description.trim()) {
-              setFormError("Task description cannot be empty.");
-              return;
-            }
-            if (!props.task.icon.trim()) {
-              setFormError("Task icon cannot be empty.");
-              return;
-            }
+              // Basic validation
+              if (!props.task.name.trim()) {
+                setFormError("Task name cannot be empty.");
+                return;
+              }
+              if (!props.task.description.trim()) {
+                setFormError("Task description cannot be empty.");
+                return;
+              }
+              if (!props.task.icon.trim()) {
+                setFormError("Task icon cannot be empty.");
+                return;
+              }
+              if (selectedInterests.length == 0) {
+                setFormError("Selected interests cannot be empty.");
+                return;
+              }
 
-            try {
-              setIsSubmitting(true);
-              await createTask.mutateAsync({
-                name: props.task.name,
-                icon: props.task.icon,
-                interests: selectedInterests,
-                description: props.task.description,
-              });
-              // Optionally reset form or show success
-            } catch (error: any) {
-              setFormError(
-                error?.message ||
-                  "Something went wrong while creating the task."
-              );
-            } finally {
-              setIsSubmitting(false);
-            }
-          }}
-        >
-          {isSubmitting ? "Creating..." : "Create"}
-        </button>
-        {formError && <div className={styles.formError}>{formError}</div>}
+              try {
+                setIsSubmitting(true);
+                await createTask.mutateAsync({
+                  name: props.task.name,
+                  icon: props.task.icon,
+                  interests: selectedInterests,
+                  description: props.task.description,
+                });
+                // Optionally reset form or show success
+              } catch (error: any) {
+                setFormError(
+                  error?.message ||
+                    "Something went wrong while creating the task."
+                );
+              } finally {
+                setIsSubmitting(false);
+              }
+            }}
+          >
+            {isSubmitting ? "Creating..." : "Create"}
+          </button>
+          {formError && <div className={styles.formError}>{formError}</div>}
+        </div>
       </>
     );
+  }
 }
