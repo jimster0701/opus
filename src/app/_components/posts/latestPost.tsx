@@ -33,7 +33,7 @@ export function LatestPost() {
           createPost.mutate({
             name: "Task name",
             description,
-            imageId: "imageId",
+            imageUrl: "imageId",
           });
         }}
         className={styles.form}

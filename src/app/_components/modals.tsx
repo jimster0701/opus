@@ -288,8 +288,8 @@ export function NewUserModal(props: modalProps) {
               <button
                 type="button"
                 key={tag}
-                className={`${styles.opusButton} ${
-                  selected.includes(tag) ? `${styles.selectedOpusButton}` : ""
+                className={`${styles.choiceButton} ${
+                  selected.includes(tag) ? `${styles.selectedChoiceButton}` : ""
                 }`}
                 onClick={() => toggleSelected(tag)}
               >

@@ -5,7 +5,7 @@ import { useState } from "react";
 import Taskbox from "../tasks/taskbox";
 import { Post } from "~/types/post";
 import { User } from "~/types/user";
-import { PostBox } from "../posts/postbox";
+import { PostboxCreate } from "../posts/postboxCreate";
 
 interface CreateTaskProps {
   task?: Task;
@@ -49,7 +49,7 @@ export default function CreateSelector(props: CreateTaskProps) {
       </div>
       {selectedTab == "post" && (
         <div className={styles.taskComponentContainer}>
-          <PostBox post={createdPost} userId={props.user.id} editable={true} />
+          <PostboxCreate post={createdPost} userId={props.user.id} />
         </div>
       )}
       {selectedTab == "task" && (

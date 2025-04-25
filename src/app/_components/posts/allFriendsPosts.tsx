@@ -2,7 +2,7 @@
 
 import { api } from "~/trpc/react";
 import styles from "../../index.module.css";
-import { PostBox } from "./postbox";
+import { Postbox } from "./postbox";
 import { Post } from "~/types/post";
 
 interface AllFriendsPostsProps {
@@ -16,7 +16,7 @@ export function AllFriendsPosts({ userId }: AllFriendsPostsProps) {
     <>
       {posts &&
         posts.map((post) => (
-          <PostBox
+          <Postbox
             key={post.id}
             userId={userId}
             post={post as unknown as Post}
