@@ -70,8 +70,8 @@ model User {
   displayName   String?
   interests     String[]
   themePreset   String?
-  followers     String[]
-  following     String[]
+  followers     Follow[] @relation("Followers")
+  following     Follow[] @relation("Following")
   accounts      Account[]
   posts         Post[]
   sessions      Session[]
@@ -79,6 +79,15 @@ model User {
   tags          Tag[]
   assignedtasks Task[]    @relation("TaskAssigned")
   ownTasks      Task[]    @relation("TaskOwn")
+}
+
+model Follow {
+  id          String  @id @default(uuid())
+  followerId  String
+  followingId String
+
+  follower    User    @relation("Followers", fields: [followerId], references: [id])
+  following   User    @relation("Following", fields: [followingId], references: [id])
 }
 
 model Task {

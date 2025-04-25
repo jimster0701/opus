@@ -11,8 +11,6 @@ async function main() {
       name: "System",
       email: "system@example.com",
       displayName: "System Account",
-      followers: [],
-      following: [],
     },
   });
 
