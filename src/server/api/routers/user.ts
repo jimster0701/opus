@@ -35,20 +35,27 @@ export const userRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { id: currentUserId } = ctx.session.user;
 
-      return ctx.db.$transaction([
-        ctx.db.user.update({
-          where: { id: input.userId },
-          data: {
-            followers: { push: currentUserId },
+      if (currentUserId === input.userId) {
+        throw new Error("You can't follow yourself");
+      }
+
+      const existingFollow = await ctx.db.follow.findUnique({
+        where: {
+          followerId_followingId: {
+            followerId: currentUserId,
+            followingId: input.userId,
           },
-        }),
-        ctx.db.user.update({
-          where: { id: currentUserId },
-          data: {
-            following: { push: input.userId },
-          },
-        }),
-      ]);
+        },
+      });
+
+      if (existingFollow) return existingFollow;
+
+      return await ctx.db.follow.create({
+        data: {
+          follower: { connect: { id: currentUserId } },
+          following: { connect: { id: input.userId } },
+        },
+      });
     }),
 
   removeFollowing: protectedProcedure
@@ -56,30 +63,14 @@ export const userRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const currentUserId = ctx.session.user.id;
 
-      const [targetUser, currentUser] = await Promise.all([
-        ctx.db.user.findUnique({ where: { id: input.userId } }),
-        ctx.db.user.findUnique({ where: { id: currentUserId } }),
-      ]);
-
-      if (!targetUser || !currentUser) throw new Error("User not found");
-
-      const newFollowers = targetUser.followers.filter(
-        (f) => f !== currentUserId
-      );
-      const newFollowing = currentUser.following.filter(
-        (f) => f !== input.userId
-      );
-
-      return await ctx.db.$transaction([
-        ctx.db.user.update({
-          where: { id: input.userId },
-          data: { followers: { set: newFollowers } },
-        }),
-        ctx.db.user.update({
-          where: { id: currentUserId },
-          data: { following: { set: newFollowing } },
-        }),
-      ]);
+      return await ctx.db.follow.delete({
+        where: {
+          followerId_followingId: {
+            followerId: currentUserId,
+            followingId: input.userId,
+          },
+        },
+      });
     }),
 
   updateDisplayName: protectedProcedure
