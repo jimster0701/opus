@@ -28,6 +28,13 @@ export default function ProfileClient(props: ProfileClientProps) {
     updateDisplayName.mutate({ newDisplayName: displayName });
     setChangeDisplay(false);
   };
+  const utils = trpc.useUtils();
+  const handleFollowersPrefetch = async () => {
+    await utils.user.getFollowers.prefetch({ userId: props.session.user.id });
+  };
+  const handleFollowingPrefetch = async () => {
+    await utils.user.getFollowers.prefetch({ userId: props.session.user.id });
+  };
 
   if (theme == "unset") setTheme(props.session.user.themePreset);
   return (
@@ -124,13 +131,19 @@ export default function ProfileClient(props: ProfileClientProps) {
               <div className={styles.flexRow}>
                 <p
                   className={`${styles.profileHeaderText} ${styles.profileHeaderFollowText}`}
-                  onClick={() => setShowFollowingModal(true)}
+                  onClick={() => {
+                    handleFollowingPrefetch();
+                    setShowFollowingModal(true);
+                  }}
                 >
                   Following:{props.session.user.following.length}
                 </p>
                 <p
                   className={`${styles.profileHeaderText} ${styles.profileHeaderFollowText}`}
-                  onClick={() => setShowFollowerModal(true)}
+                  onClick={() => {
+                    handleFollowersPrefetch();
+                    setShowFollowerModal(true);
+                  }}
                 >
                   Followers:{props.session.user.followers.length}
                 </p>
