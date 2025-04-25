@@ -105,6 +105,8 @@ export function NewUserModal(props: modalProps) {
     "Collecting",
     "Exploring",
     "Streaming",
+    "Fantasy Sports",
+    "Knitting",
   ];
 
   const affiliations = [
