@@ -1,3 +1,4 @@
+import { error } from "console";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
@@ -85,12 +86,16 @@ export const userRouter = createTRPCRouter({
   updateDisplayName: protectedProcedure
     .input(z.object({ newDisplayName: z.string().min(1) }))
     .mutation(async ({ ctx, input }) => {
-      return ctx.db.user.update({
-        where: { id: ctx.session.user.id },
-        data: {
-          displayName: input.newDisplayName,
-        },
-      });
+      if (input.newDisplayName.length < 20)
+        return ctx.db.user.update({
+          where: { id: ctx.session.user.id },
+          data: {
+            displayName: input.newDisplayName,
+          },
+        });
+      else {
+        throw error("Display name cannt be over 20 characters");
+      }
     }),
 
   updateInterests: protectedProcedure

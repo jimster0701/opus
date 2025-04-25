@@ -104,7 +104,15 @@ export default function ProfileClient(props: ProfileClientProps) {
                       required
                       value={displayName}
                       onChange={(e) => {
-                        setDisplayName(e.target.value);
+                        const newName = e.target.value;
+                        if (newName.length > 20) {
+                          setDisplayNameError(
+                            "Display name cannot be more than 20 characters"
+                          );
+                        } else {
+                          setDisplayNameError("");
+                          setDisplayName(newName);
+                        }
                       }}
                     />
                     <button
@@ -132,7 +140,9 @@ export default function ProfileClient(props: ProfileClientProps) {
                       <X />
                     </button>
                     {displayNameError && (
-                      <div className={styles.formError}>{displayNameError}</div>
+                      <div className={styles.errorTooltip}>
+                        {displayNameError}
+                      </div>
                     )}
                   </form>
                 )}

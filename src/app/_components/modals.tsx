@@ -147,6 +147,7 @@ export function NewUserModal(props: modalProps) {
   const [displayName, setDisplayName] = useState("");
   const [selected, setSelected] = useState<string[]>([]);
   const [choices, setChoices] = useState<string[]>([]);
+  const [submitError, setSubmitError] = useState([false, ""]);
   const { theme, setTheme } = useThemeStore();
 
   const hobbies = [
@@ -244,9 +245,23 @@ export function NewUserModal(props: modalProps) {
             placeholder="Username"
             required
             value={displayName}
-            onChange={(e) => setDisplayName(e.target.value)}
+            onChange={(e) => {
+              const newName = e.target.value;
+              if (newName.length > 20) {
+                setSubmitError([
+                  true,
+                  "Display name must be less than 20 characters",
+                ]);
+              } else {
+                setSubmitError([false, ""]);
+                setDisplayName(newName);
+              }
+            }}
             autoComplete="off"
           />
+          {submitError[0] && (
+            <div className={styles.errorTooltip}>{submitError[1]}</div>
+          )}
           <h3 className={styles.modalText}>
             Below is a list of hobbies and affiliations, <br />
             These will influence your tasks and social circles.
@@ -275,9 +290,15 @@ export function NewUserModal(props: modalProps) {
               </button>
             ))}
           </div>
-          <button type="submit" disabled={selected.length < 5}>
+          <button
+            type="submit"
+            disabled={selected.length < 5 || submitError[0] == true}
+          >
             Go
           </button>
+          {submitError[0] && (
+            <div className={styles.formError}>{submitError[1]}</div>
+          )}
         </form>
       </div>
     </div>
