@@ -27,64 +27,42 @@ export function Modal() {
 
 interface followerOrFollowingProps extends modalProps {
   user: User;
+  following?: any[];
+  followers?: any[];
 }
 
 export function FollowingModal(props: followerOrFollowingProps) {
   const { theme, setTheme } = useThemeStore();
-
-  const { data: following, isLoading } = trpc.user.getFollowing.useQuery({
-    userId: props.user.id,
-  });
-
-  if (isLoading)
-    return (
-      <div className={styles.modalContainer}>
-        <div className={styles.modalBackground} onClick={props.onComplete} />
-        <div
-          className={
-            theme == "default"
-              ? `${styles.modal}`
-              : `${styles.modal} ${styles[`theme-${theme}`]}`
-          }
-        >
-          <p className={styles.closeModalButton} onClick={props.onComplete}>
-            <X width={45} height={45} />
-          </p>
-          <div>Loading...</div>
-        </div>
+  return (
+    <div className={styles.modalContainer}>
+      <div className={styles.modalBackground} onClick={props.onComplete} />
+      <div
+        className={
+          theme == "default"
+            ? `${styles.modal}`
+            : `${styles.modal} ${styles[`theme-${theme}`]}`
+        }
+      >
+        <p className={styles.closeModalButton} onClick={props.onComplete}>
+          <X width={45} height={45} />
+        </p>
+        <h1>Following</h1>
+        {props.following?.map((user) => (
+          <div key={user.id} className={styles.cardContainer}>
+            <ProfilePicturePreviewWrapper
+              id={user.id}
+              imageUrl={user.following.image || undefined}
+              width={10}
+              height={10}
+              session={undefined}
+            />
+            <p className={styles.cardTitle}></p>
+            {user.following.displayName}
+          </div>
+        ))}
       </div>
-    );
-  else
-    return (
-      <div className={styles.modalContainer}>
-        <div className={styles.modalBackground} onClick={props.onComplete} />
-        <div
-          className={
-            theme == "default"
-              ? `${styles.modal}`
-              : `${styles.modal} ${styles[`theme-${theme}`]}`
-          }
-        >
-          <p className={styles.closeModalButton} onClick={props.onComplete}>
-            <X width={45} height={45} />
-          </p>
-          <h1>Following</h1>
-          {following?.map((user) => (
-            <div key={user.id} className={styles.cardContainer}>
-              <ProfilePicturePreviewWrapper
-                id={user.id}
-                imageUrl={user.following.image || undefined}
-                width={10}
-                height={10}
-                session={undefined}
-              />
-              <p className={styles.cardTitle}></p>
-              {user.following.displayName}
-            </div>
-          ))}
-        </div>
-      </div>
-    );
+    </div>
+  );
 }
 export function FollowerModal(props: followerOrFollowingProps) {
   const { theme, setTheme } = useThemeStore();

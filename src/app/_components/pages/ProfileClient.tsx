@@ -8,9 +8,10 @@ import { trpc } from "~/utils/trpc";
 import { useThemeStore } from "~/store/themeStore";
 import { Check, X } from "lucide-react";
 import { FollowerModal, FollowingModal } from "../modals";
+import { Session } from "~/types/session";
 
 interface ProfileClientProps {
-  session: any | null;
+  session: Session;
 }
 
 export default function ProfileClient(props: ProfileClientProps) {
@@ -21,6 +22,14 @@ export default function ProfileClient(props: ProfileClientProps) {
   const [displayNameError, setDisplayNameError] = useState("");
 
   const { theme, setTheme } = useThemeStore();
+
+  const { data: following } = trpc.user.getFollowing.useQuery({
+    userId: props.session.user.id,
+  });
+
+  const { data: followers } = trpc.user.getFollowing.useQuery({
+    userId: props.session.user.id,
+  });
 
   const updateDisplayName = trpc.user.updateDisplayName.useMutation();
   const handleSubmit = async (e: React.FormEvent) => {
@@ -136,7 +145,7 @@ export default function ProfileClient(props: ProfileClientProps) {
                     setShowFollowingModal(true);
                   }}
                 >
-                  Following:{props.session.user.following.length}
+                  Following:{following?.length}
                 </p>
                 <p
                   className={`${styles.profileHeaderText} ${styles.profileHeaderFollowText}`}
@@ -145,7 +154,7 @@ export default function ProfileClient(props: ProfileClientProps) {
                     setShowFollowerModal(true);
                   }}
                 >
-                  Followers:{props.session.user.followers.length}
+                  Followers:{followers?.length}
                 </p>
               </div>
             </div>

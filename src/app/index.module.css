@@ -496,7 +496,7 @@
   border-radius: 16px;
   padding: 1.5rem 1rem;
   text-align: center;
-  width: 80vw;
+  width: 100%;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   margin-bottom: 1rem;
   gap: 1rem;
@@ -505,7 +505,6 @@
 .profileHeaderText {
   font-size: large;
   font-weight: bold;
-  width: min-content;
   margin: 0px;
 }
 

@@ -8,13 +8,13 @@ import { Navbar } from "../_components/navbar";
 export default async function Profile() {
   const session = await auth();
   const userId = session?.user.id || "null";
-
-  return (
-    <HydrateClient>
-      {!session?.user && redirect("/")}
-      <Header userId={userId} profile={true} />
-      <ProfileClient session={session} />
-      <Navbar />
-    </HydrateClient>
-  );
+  if (session)
+    return (
+      <HydrateClient>
+        <Header userId={userId} profile={true} />
+        <ProfileClient session={session} />
+        <Navbar />
+      </HydrateClient>
+    );
+  else redirect("/");
 }
