@@ -18,7 +18,7 @@ model Post {
   likedBy     String[]
   comments    Comment[]
   tags        Tag[]     @relation("PostTags")
-  imageId     String?
+  imageUrl    String?
 
   @@index([name])
 }

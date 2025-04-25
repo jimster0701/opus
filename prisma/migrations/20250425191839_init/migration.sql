@@ -7,7 +7,7 @@ CREATE TABLE "Post" (
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "createdById" TEXT NOT NULL,
     "likedBy" TEXT[],
-    "imageId" TEXT,
+    "imageUrl" TEXT,
 
     CONSTRAINT "Post_pkey" PRIMARY KEY ("id")
 );
