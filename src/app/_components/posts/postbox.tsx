@@ -4,6 +4,7 @@ import styles from "../../index.module.css";
 import { useState } from "react";
 import Image from "next/image";
 import { trpc } from "~/utils/trpc";
+import { CommentSection } from "./commentSection";
 
 interface postProps {
   post: Post;
@@ -21,10 +22,10 @@ export function Postbox(props: postProps) {
   const handleLike = () => {
     setLiked(!liked);
     if (liked) {
-      setTempLike(0);
+      setTempLike(tempLike - 1);
       unlikePost.mutate({ postId: props.post.id, userId: props.userId });
     } else {
-      setTempLike(1);
+      setTempLike(tempLike + 1);
       likePost.mutate({ postId: props.post.id, userId: props.userId });
     }
   };
@@ -64,6 +65,7 @@ export function Postbox(props: postProps) {
           />
         </div>
       )}
+      <CommentSection post={props.post} />
     </div>
   );
 }
