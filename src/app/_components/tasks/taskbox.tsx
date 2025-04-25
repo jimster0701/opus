@@ -62,7 +62,7 @@ export default function Taskbox(props: TaskboxProps) {
                   setIconError([
                     true,
                     "Icon can't be longer than 2 characters",
-                    "Use emojis, initials or emoticons E.g.✨, LP, :]",
+                    "Use emojis, initials or emoticons E.g.🌲, LP, :]",
                   ]);
                 }
               }}

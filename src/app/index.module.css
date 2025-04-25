@@ -31,7 +31,7 @@
   border: 1px solid #f99;
   padding: 0.4rem;
   border-radius: 1rem;
-  font-size: 1rem;
+  font-size: 0.8rem;
   font-weight: 700;
   margin-top: 0.2rem;
 }
@@ -348,7 +348,7 @@
 }
 
 .modalForm input[type="text"]::placeholder {
-  color: var(--text-secondary);
+  color: var(--text-primary);
 }
 
 .modalText {
@@ -395,7 +395,7 @@
 /* Interest option buttons */
 .opusButton {
   background-color: rgba(255, 255, 255, 0.2);
-  color: var(--text-secondary);
+  color: var(--text-primary);
   border: none;
   border-radius: 20px;
   padding: 0.5rem 1.2rem;
@@ -829,7 +829,8 @@
 
 .taskContentContainer input,
 .taskContentContainer textarea,
-.taskInterestSelector select {
+.taskInterestSelector select,
+.taskIconContainer input {
   padding: 0.5rem;
   border: none;
   border-radius: 0.5rem;
