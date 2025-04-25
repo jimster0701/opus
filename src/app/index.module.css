@@ -22,6 +22,30 @@
   align-content: flex-start;
 }
 
+/* Error styling */
+.errorTooltip {
+  position: absolute;
+  background-color: #ffe0e0;
+  color: #a00;
+  border: 1px solid #f99;
+  padding: 0.4rem;
+  border-radius: 1rem;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-top: 0.2rem;
+}
+
+.formError {
+  color: #d8000c;
+  background-color: #ffd2d2;
+  border: 1px solid #d8000c;
+  padding: 0.5rem 1rem;
+  margin-top: 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
 /* Animation keyframes */
 @keyframes fadeIn {
   from {
@@ -71,7 +95,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 3rem;
+  text-align: center;
+  gap: 2rem;
   padding: 4rem 1rem;
 }
 
@@ -368,7 +393,7 @@
 /* Interest option buttons */
 .opusButton {
   background-color: rgba(255, 255, 255, 0.2);
-  color: white;
+  color: var(--text-secondary);
   border: none;
   border-radius: 20px;
   padding: 0.5rem 1.2rem;
@@ -684,8 +709,13 @@
 
 .taskIconInput {
   text-align: center;
+  font-size: 1.5rem;
   width: 12.25vw;
   height: 12.25vw;
+}
+
+.taskIconInput.inputError {
+  border: 1px solid red;
 }
 
 .taskContentContainer {

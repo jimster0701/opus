@@ -19,8 +19,8 @@ export default function CreateSelector(props: CreateTaskProps) {
     type: TaskType.generated,
     name: "Title",
     icon: ":0",
-    interests: ["Help"],
-    friends: [""],
+    interests: [],
+    friends: [],
     description: "Do this...",
   });
   const [createdPost, setCreatedPost] = useState<Post>({

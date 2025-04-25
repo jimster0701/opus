@@ -21,7 +21,8 @@ export default function CreateClient(props: CreateClientProps) {
       }
     >
       <div className={styles.container}>
-        <LatestPost />
+        <h1>Create something</h1>
+        <h2>Post about your daily tasks or create a new custom task</h2>
         <CreateSelector user={props.session.user} />
       </div>
     </main>
