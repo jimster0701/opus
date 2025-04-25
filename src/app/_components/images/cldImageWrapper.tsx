@@ -39,7 +39,6 @@ export function ProfilePictureWrapper(props: ProfilePictureWrapperProps) {
   const handleFileChange = (e: any) => {
     const file = e.target.files[0];
     if (file && file.type.startsWith("image/")) {
-      console.log("File selected:", file);
       setImage(file);
       setPreview(URL.createObjectURL(file));
     } else {

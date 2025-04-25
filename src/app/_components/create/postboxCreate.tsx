@@ -49,7 +49,6 @@ export function PostboxCreate(props: postProps) {
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && file.type.startsWith("image/")) {
-      console.log("File selected:", file);
       setImage(file);
       setPreview(URL.createObjectURL(file));
     } else {
@@ -112,7 +111,6 @@ export function PostboxCreate(props: postProps) {
       // If there's an image, upload it and update the post
       if (image && newPost.id) {
         const cloudinaryPath = await handleUploadImage(newPost.id);
-        console.log(cloudinaryPath);
         if (cloudinaryPath) {
           // Update the post with the image URL
           await updateImage.mutateAsync({

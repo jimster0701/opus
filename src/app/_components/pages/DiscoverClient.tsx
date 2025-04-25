@@ -12,7 +12,6 @@ interface DiscoverClientProps {
 export default function DiscoverClient(props: DiscoverClientProps) {
   const { theme, setTheme } = useThemeStore();
   if (theme == "unset") setTheme(props.theme);
-  console.log(props.session.user);
   return (
     <main
       className={

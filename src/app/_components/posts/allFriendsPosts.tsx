@@ -11,7 +11,6 @@ interface AllFriendsPostsProps {
 
 export function AllFriendsPosts(props: AllFriendsPostsProps) {
   const [posts] = api.post.getAll.useSuspenseQuery();
-  console.log(props.userId);
   return (
     <>
       {posts &&

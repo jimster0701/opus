@@ -11,7 +11,6 @@ export default async function Create() {
   if (session?.user) {
     const userId = session.user.id || "null";
     const tags = await api.tag.getAllTags.call({ userId });
-    console.log("Tags", tags);
     return (
       <HydrateClient>
         <Header userId={userId} />

@@ -18,8 +18,6 @@ export function Postbox(props: postProps) {
 
   const cloudinaryPrefix = `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/`;
 
-  console.log(props.userId);
-
   const handleLike = () => {
     setLiked(!liked);
     if (liked) {
