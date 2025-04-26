@@ -1,13 +1,13 @@
 -- CreateTable
 CREATE TABLE "Post" (
     "id" SERIAL NOT NULL,
-    "taskId" INTEGER NOT NULL,
     "description" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "createdById" TEXT NOT NULL,
-    "likedBy" TEXT[],
     "imageUrl" TEXT,
+    "likedBy" TEXT[],
+    "taskId" INTEGER NOT NULL,
 
     CONSTRAINT "Post_pkey" PRIMARY KEY ("id")
 );
@@ -62,7 +62,7 @@ CREATE TABLE "User" (
     "image" TEXT,
     "displayName" TEXT,
     "interests" TEXT[],
-    "themePreset" TEXT,
+    "themePreset" TEXT DEFAULT 'unset',
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );

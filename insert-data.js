@@ -10,6 +10,7 @@ async function main() {
       id: "system",
       name: "System",
       email: "system@example.com",
+      emailVerified: new Date(),
       displayName: "System Account",
     },
   });
