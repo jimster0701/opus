@@ -44,7 +44,7 @@ export default function DiscoverClient(props: DiscoverClientProps) {
             Discover posts
           </button>
         </div>
-        {selectedTab == "friends" && (
+        {(selectedTab == "friends" || selectedTab == "") && (
           <AllFriendsPosts userId={props.session?.user.id} />
         )}
       </div>

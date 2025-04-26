@@ -21,7 +21,10 @@ export function AllFriendsPosts(props: AllFriendsPostsProps) {
             post={post as unknown as Post}
           />
         ))}
-      {!posts && <p className={styles.showcaseText}>No posts yet.</p>}
+      {!posts ||
+        (posts.length == 0 && (
+          <p className={styles.showcaseText}>No posts yet.</p>
+        ))}
     </>
   );
 }
