@@ -1,5 +1,5 @@
 "use client";
-import { Post, Tag } from "~/types/post";
+import { Post } from "~/types/post";
 import styles from "../../index.module.css";
 import { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import { trpc } from "~/utils/trpc";
@@ -50,9 +50,11 @@ export function PostboxCreate(props: postboxCreateProps) {
   }, []);
 
   const handleInputChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
+    console.log(name);
+    console.log(value);
     setFormData({
       ...formData,
       [name]: value,
@@ -197,7 +199,7 @@ export function PostboxCreate(props: postboxCreateProps) {
         </div>
 
         <div className={styles.postContent}>
-          <div>
+          <div className={styles.flexRow}>
             <textarea
               name="description"
               value={formData.description}
@@ -223,12 +225,13 @@ export function PostboxCreate(props: postboxCreateProps) {
           </div>
           {uploading && <p className={styles.uploading}>Uploading...</p>}
           {error && <p className={styles.error}>{error}</p>}
-          <div>
+          <div className={styles.flexRow}>
+            <p>Select the task: </p>
             <select
               name="task"
               value={formData.taskId}
               className={styles.taskSelect}
-              //onChange={}
+              onChange={handleInputChange}
             >
               {props.availableTasks.map((task) => (
                 <option
@@ -294,6 +297,7 @@ export function PostboxCreate(props: postboxCreateProps) {
                     key={tag.id}
                     value={tag.id}
                   >
+                    {tag.icon}
                     {tag.name}
                   </option>
                 ))}

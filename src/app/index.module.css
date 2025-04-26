@@ -623,9 +623,10 @@ body {
 
 .postContent {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
   justify-content: flex-start;
-  gap: 1rem;
+  gap: 0.1rem;
   width: 100%;
 }
 
@@ -675,7 +676,14 @@ body {
   width: 100%;
   display: flex;
   flex-direction: row;
-  padding: 1rem;
+}
+
+.postTagSelector select {
+  display: flex;
+  padding: 0.25rem;
+  margin-left: 1rem;
+  max-height: 30vh;
+  width: 80%;
 }
 
 /* Tag Components
@@ -684,15 +692,21 @@ body {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  justify-content: flex-start;
+  width: 100%;
   margin-top: 0.1rem;
+  margin-bottom: 1em;
   gap: 0.2rem;
 }
 .tag {
+  display: flex;
   border: grey solid 0.1rem;
   border-radius: 1rem;
   width: fit-content;
   padding: 0.2rem;
   margin: 0.1rem 0;
+  font-size: small;
+  font-weight: 500;
 }
 
 /* Comment Components
