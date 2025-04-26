@@ -29,7 +29,7 @@ export default function TaskboxCreate(props: TaskboxCreateProps) {
   });
   return (
     <div>
-      <div key={props.task.id} className={styles.taskContainer}>
+      <div key={props.task.id} className={styles.taskCreateContainer}>
         <div className={styles.taskCreateIconContainer}>
           <input
             type="text"
@@ -47,8 +47,8 @@ export default function TaskboxCreate(props: TaskboxCreateProps) {
               } else {
                 setIconError([
                   true,
-                  "Icon can't be longer than 2 characters",
-                  "Use emojis, initials or emoticons E.g.🌲, LP, :]",
+                  "Icon can be 2 characters",
+                  "or one emoji E.g.🌲, LP, :]",
                 ]);
               }
             }}

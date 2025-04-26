@@ -69,10 +69,11 @@ body {
   color: #a00;
   border: 1px solid #f99;
   padding: 0.4rem;
+  width: 30vw;
   border-radius: 1rem;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   font-weight: 700;
-  margin-top: 1rem;
+  z-index: 10;
 }
 
 .formError {
@@ -923,6 +924,47 @@ body {
   padding: 0;
 }
 
+.taskCreateContainer {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: row;
+  width: 100%;
+  background: white;
+  border-radius: 16px;
+  padding: 0.51rem 0.75rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  margin-bottom: 0.5rem;
+  gap: 1rem;
+}
+
+.taskCreateContainer:hover {
+  background-color: rgb(255 255 255 / 0.2);
+  transition: background-color 150ms cubic-bezier(0.5, 0, 0.2, 1);
+}
+
+.taskCreateIconContainer {
+  position: relative;
+  width: 20%;
+  min-width: min-content;
+  height: auto;
+}
+
+.taskCreateIconContainer input {
+  padding: 0.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  background-color: #d7d7d7a5;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: x-large;
+}
+
+@media (max-width: 400px) {
+  .taskCreateIconContainer input {
+    font-size: large;
+  }
+}
+
 /* Task Components
 ------------------------------------------ */
 .taskList {
@@ -976,6 +1018,7 @@ body {
   transition: background-color 150ms cubic-bezier(0.5, 0, 0.2, 1);
 }
 
+/* Tab select */
 .taskTabContainer {
   display: flex;
   flex-direction: row;
@@ -1127,7 +1170,6 @@ body {
 
 .taskContentContainer input,
 .taskContentContainer textarea,
-.taskIconContainer input,
 .postContainer textarea {
   padding: 0.5rem;
   border: none;
