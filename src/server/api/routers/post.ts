@@ -69,15 +69,27 @@ export const postRouter = createTRPCRouter({
     return post ?? null;
   }),
 
-  getAll: protectedProcedure.query(async ({ ctx }) => {
+  getAllFriends: protectedProcedure.query(async ({ ctx }) => {
     const post = await ctx.db.post.findMany({
       orderBy: { createdAt: "desc" },
-      where: { createdBy: { id: ctx.session.user.id } },
+      where: { createdBy: { id: { in: ctx.session.user.following } } },
       include: { createdBy: true, comments: true },
     });
 
-    return post ?? null;
+    return post;
   }),
+
+  getAllUser: protectedProcedure
+    .input(z.object({ userId: z.string().min(1) }))
+    .query(async ({ ctx, input }) => {
+      const post = await ctx.db.post.findMany({
+        orderBy: { createdAt: "desc" },
+        where: { createdBy: { id: input.userId } },
+        include: { createdBy: true, comments: true },
+      });
+
+      return post ?? null;
+    }),
 
   likePost: protectedProcedure
     .input(z.object({ postId: z.number(), userId: z.string().min(1) }))

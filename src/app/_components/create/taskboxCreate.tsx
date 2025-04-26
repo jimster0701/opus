@@ -24,9 +24,7 @@ export default function TaskboxCreate(props: TaskboxCreateProps) {
   const [formError, setFormError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const createTask = api.task.createCustomTask.useMutation({
-    onSuccess: async () => {},
-  });
+  const createTask = api.task.createCustomTask.useMutation();
   return (
     <div>
       <div key={props.task.id} className={styles.taskCreateContainer}>

@@ -1,7 +1,7 @@
 import { TaskType } from "~/types/task";
 
 export const defaultTask = {
-  id: 1,
+  id: -1,
   type: TaskType.generated,
   name: "",
   icon: "🔮",
@@ -14,7 +14,7 @@ export const defaultTask = {
 };
 
 export const defaultPost = {
-  id: 0,
+  id: -1,
   name: "",
   task: defaultTask,
   description: "",

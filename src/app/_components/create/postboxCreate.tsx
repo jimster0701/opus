@@ -7,6 +7,7 @@ import { X } from "lucide-react";
 import { User } from "~/types/user";
 import { defaultTask } from "~/const/defaultVar";
 import { Task } from "~/types/task";
+import router from "next/router";
 
 interface postboxCreateProps {
   post: Post;
@@ -124,7 +125,7 @@ export function PostboxCreate(props: postboxCreateProps) {
       // First create the post
       const newPost = await createPost.mutateAsync({
         name: formData.name,
-        taskId: formData.taskId,
+        taskId: Number(formData.taskId),
         description: formData.description,
         imageUrl: "none",
       });
@@ -161,6 +162,8 @@ export function PostboxCreate(props: postboxCreateProps) {
       setImage(null);
       setPreview("");
       setError("");
+      // Redirect to profile
+      router.push("/profile");
     } catch (error) {
       console.error("Error creating post:", error);
       setError("Failed to create post. Please try again.");
@@ -206,6 +209,7 @@ export function PostboxCreate(props: postboxCreateProps) {
               placeholder="Write your post content here..."
               className={styles.postText}
               rows={4}
+              required
             />
 
             <div className={styles.imageUploadContainer}>
@@ -227,11 +231,13 @@ export function PostboxCreate(props: postboxCreateProps) {
           <div className={styles.flexRow}>
             <p>Based on:</p>
             <select
-              name="task"
+              name="taskId"
               value={formData.taskId}
               className={styles.taskSelect}
               onChange={handleInputChange}
+              required
             >
+              <option value={""}>Choose a task</option>
               {props.availableTasks.map((task) => (
                 <option
                   key={task.id}
