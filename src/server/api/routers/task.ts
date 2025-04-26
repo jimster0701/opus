@@ -12,8 +12,10 @@ export const taskRouter = createTRPCRouter({
       orderBy: { name: "desc" },
       where: {
         userId: ctx.session.user.id,
-        createdAt: Date(),
-        type: TaskType.generated || TaskType.generatedFriend,
+        createdAt: new Date(),
+        type: {
+          in: [TaskType.generated, TaskType.generatedFriend],
+        },
       },
     });
     return post ?? null;
@@ -24,7 +26,9 @@ export const taskRouter = createTRPCRouter({
       orderBy: { createdAt: "desc" },
       where: {
         userId: ctx.session.user.id,
-        type: TaskType.custom || TaskType.customFriend,
+        type: {
+          in: [TaskType.custom, TaskType.customFriend],
+        },
       },
     });
     return post ?? null;

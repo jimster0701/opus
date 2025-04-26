@@ -191,7 +191,6 @@ export function NewUserModal(props: modalProps) {
     "Influencer",
     "Developer",
     "Designer",
-    "Musician",
     "Photographer",
   ];
 
@@ -232,7 +231,7 @@ export function NewUserModal(props: modalProps) {
       >
         <h1>Welcome to Opus :)</h1>
         <p>
-          Please complete your profile
+          Please complete your profile.
           <br />
           Don't worry, all choices can be changed later.
         </p>
@@ -263,8 +262,9 @@ export function NewUserModal(props: modalProps) {
             <div className={styles.errorTooltip}>{submitError[1]}</div>
           )}
           <h3 className={styles.modalText}>
-            Below is a list of hobbies and affiliations, <br />
-            These will influence your tasks and social circles.
+            Below is a list of affiliations, <br />
+            Choose at least 5, These choices will influence the tasks you
+            receive and social circles you discover.
             <br />
           </h3>
           <h4>

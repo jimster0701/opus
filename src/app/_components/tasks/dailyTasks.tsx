@@ -5,6 +5,7 @@ import { useState } from "react";
 
 interface TaskListProps {
   tasks?: Task;
+  availableTasks: Task[];
 }
 
 export default function TaskList(props: TaskListProps) {
@@ -23,33 +24,20 @@ export default function TaskList(props: TaskListProps) {
       </div>
       {selectedTab == "daily" && (
         <div className={styles.taskComponentContainer}>
-          <Taskbox
-            task={{
-              id: 1,
-              type: TaskType.generated,
-              name: "Title",
-              icon: ":0",
-              interests: ["Help"],
-              description: "Do this...",
-            }}
-            editable={false}
-          />
+          {props.availableTasks
+            .filter((task) => task.type == TaskType.generated)
+            .map((task) => (
+              <Taskbox task={task} editable={false} />
+            ))}
         </div>
       )}
       {selectedTab == "friends" && (
         <div className={styles.taskComponentContainer}>
-          <Taskbox
-            task={{
-              id: 1,
-              type: TaskType.generated,
-              name: "Title",
-              icon: ":0",
-              interests: ["Help"],
-              friends: [""],
-              description: "Do this...",
-            }}
-            editable={false}
-          />
+          {props.availableTasks
+            .filter((task) => task.type == TaskType.generatedFriend)
+            .map((task) => (
+              <Taskbox task={task} editable={false} />
+            ))}
         </div>
       )}
     </div>

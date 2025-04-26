@@ -2,6 +2,8 @@
 import styles from "../../index.module.css";
 import { useThemeStore } from "~/store/themeStore";
 import TaskList from "../tasks/dailyTasks";
+import { trpc } from "~/utils/trpc";
+import { Task } from "~/types/task";
 
 interface HomeClientProps {
   session?: any;
@@ -11,6 +13,20 @@ interface HomeClientProps {
 export default function HomeClient(props: HomeClientProps) {
   const { theme, setTheme } = useThemeStore();
   if (theme == "unset") setTheme(props.theme);
+
+  const { data: dailyTasks, isLoading: isDailyLoading } =
+    trpc.task.getDailyTasks.useQuery();
+  const { data: customTasks, isLoading: isCustomLoading } =
+    trpc.task.getCustomTasks.useQuery();
+
+  if (!isDailyLoading && dailyTasks?.length == 0) {
+    // generate tasks using chat...
+  }
+
+  const availableTasks: Task[] = [
+    ...(dailyTasks || []),
+    ...(customTasks || []),
+  ];
   return (
     <main
       className={
@@ -31,7 +47,8 @@ export default function HomeClient(props: HomeClientProps) {
             <span>{props.session.user.displayName}</span>
           )}
         </h1>
-        <TaskList />
+        <br />
+        <TaskList availableTasks={availableTasks} />
       </div>
     </main>
   );
