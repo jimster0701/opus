@@ -9,7 +9,8 @@ datasource db {
 
 model Post {
   id          Int       @id @default(autoincrement())
-  name        String
+  taskId      Int
+  task        Task      @relation("TaskPost", fields: [taskId], references: [id])
   description String
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
@@ -19,8 +20,6 @@ model Post {
   comments    Comment[]
   tags        Tag[]     @relation("PostTags")
   imageUrl    String?
-
-  @@index([name])
 }
 
 model Comment {
@@ -70,8 +69,8 @@ model User {
   displayName   String?
   interests     String[]
   themePreset   String?
-  followers     Follow[] @relation("Followers")
-  following     Follow[] @relation("Following")
+  followers     Follow[]  @relation("Followers")
+  following     Follow[]  @relation("Following")
   accounts      Account[]
   posts         Post[]
   sessions      Session[]
@@ -82,11 +81,11 @@ model User {
 }
 
 model Follow {
-  id          String  @id @default(uuid())
+  id          String @id @default(uuid())
   followerId  String
   followingId String
-  follower    User    @relation("Followers", fields: [followerId], references: [id])
-  following   User    @relation("Following", fields: [followingId], references: [id])
+  follower    User   @relation("Followers", fields: [followerId], references: [id])
+  following   User   @relation("Following", fields: [followingId], references: [id])
 
   @@unique([followerId, followingId], name: "follower_following_unique")
 }
@@ -102,14 +101,15 @@ model Task {
   updatedAt   DateTime @updatedAt
   friends     User[]   @relation("TaskAssigned")
   userId      String
-  user        User     @relation("TaskOwn" ,fields: [userId], references: [id], onDelete: Cascade)
+  user        User     @relation("TaskOwn", fields: [userId], references: [id], onDelete: Cascade)
+  posts       Post[]   @relation("TaskPost")
 }
 
 model Tag {
   id        Int      @id @default(autoincrement())
   name      String
   icon      String
-  colour     String
+  colour    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   userId    String

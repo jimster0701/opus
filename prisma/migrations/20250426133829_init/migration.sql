@@ -1,7 +1,7 @@
 -- CreateTable
 CREATE TABLE "Post" (
     "id" SERIAL NOT NULL,
-    "name" TEXT NOT NULL,
+    "taskId" INTEGER NOT NULL,
     "description" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -124,9 +124,6 @@ CREATE TABLE "_TaskAssigned" (
 );
 
 -- CreateIndex
-CREATE INDEX "Post_name_idx" ON "Post"("name");
-
--- CreateIndex
 CREATE UNIQUE INDEX "Account_provider_providerAccountId_key" ON "Account"("provider", "providerAccountId");
 
 -- CreateIndex
@@ -155,6 +152,9 @@ CREATE UNIQUE INDEX "_TaskAssigned_AB_unique" ON "_TaskAssigned"("A", "B");
 
 -- CreateIndex
 CREATE INDEX "_TaskAssigned_B_index" ON "_TaskAssigned"("B");
+
+-- AddForeignKey
+ALTER TABLE "Post" ADD CONSTRAINT "Post_taskId_fkey" FOREIGN KEY ("taskId") REFERENCES "Task"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Post" ADD CONSTRAINT "Post_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
