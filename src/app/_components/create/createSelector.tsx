@@ -6,6 +6,7 @@ import Taskbox from "../tasks/taskbox";
 import { Post } from "~/types/post";
 import { User } from "~/types/user";
 import { PostboxCreate } from "./postboxCreate";
+import { defaultPost, defaultTask } from "~/const/defaultVar";
 
 interface CreateTaskProps {
   task?: Task;
@@ -15,30 +16,14 @@ interface CreateTaskProps {
 
 export default function CreateSelector(props: CreateTaskProps) {
   const [selectedTab, setSelectedTab] = useState("post");
-  const [createdTask, setCreatedTask] = useState<Task>({
-    id: 1,
-    type: TaskType.generated,
-    name: "Title",
-    icon: ":0",
-    interests: [],
-    friends: [],
-    description: "Do this...",
-  });
+  const [createdTask, setCreatedTask] = useState<Task>(defaultTask);
   const [createdPost, setCreatedPost] = useState<Post>({
-    id: 0,
-    name: "",
-    description: "",
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    ...defaultPost,
     createdById: props.user.id,
     createdBy: props.user,
-    likedBy: [],
-    tags: [],
-    imageUrl: "",
-    comments: [],
   });
   return (
-    <div className={styles.taskList}>
+    <div className={styles.createContainer}>
       <div className={styles.taskTabContainer}>
         <button
           autoFocus={selectedTab === "post" || selectedTab == ""}
@@ -60,7 +45,7 @@ export default function CreateSelector(props: CreateTaskProps) {
       </div>
       {selectedTab == "post" && (
         <div className={styles.taskComponentContainer}>
-          <PostboxCreate post={createdPost} userId={props.user.id} />
+          <PostboxCreate post={createdPost} user={props.user} />
         </div>
       )}
       {selectedTab == "task" && (

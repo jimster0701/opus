@@ -38,8 +38,10 @@ export default function CreateClient(props: CreateClientProps) {
       }
     >
       <div className={styles.container}>
-        <h1>Create {titleWord}</h1>
-        <h2>Post about your daily tasks or create a new custom task</h2>
+        <h1 className={styles.createPageText}>Create {titleWord}</h1>
+        <h2 className={styles.createPageText}>
+          Post about your daily tasks or create a new custom task
+        </h2>
         <CreateSelector
           user={props.session.user}
           setSelectedTab={setSelectedTab}

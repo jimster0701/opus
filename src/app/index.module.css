@@ -665,6 +665,20 @@ body {
   max-height: 50vh;
 }
 
+/* Tag Components
+------------------------------------------ */
+.tagContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 0.1rem;
+}
+.tag {
+  border: grey solid 0.1rem;
+  border-radius: 1rem;
+  width: fit-content;
+  padding: 0.1rem;
+}
+
 /* Comment Components
 ------------------------------------------ */
 .commentSectionContainer {
@@ -771,6 +785,26 @@ body {
   font-size: 11px;
   color: rgba(255, 255, 255, 0.5);
   margin-left: 8px;
+}
+
+/* Create Components 
+------------------------------------------ */
+.createPageText {
+  color: var(--text-primary);
+}
+
+.createContainer {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  width: 100%;
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+  max-height: fit-content;
 }
 
 /* Task Components
