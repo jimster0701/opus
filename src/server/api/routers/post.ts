@@ -18,6 +18,7 @@ export const postRouter = createTRPCRouter({
   create: protectedProcedure
     .input(
       z.object({
+        name: z.string().min(1),
         taskId: z.number(),
         description: z.string().min(1),
         imageUrl: z.string().min(1),
@@ -26,6 +27,7 @@ export const postRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       return ctx.db.post.create({
         data: {
+          name: input.name,
           task: { connect: { id: input.taskId } },
           description: input.description,
           imageUrl: input.imageUrl,

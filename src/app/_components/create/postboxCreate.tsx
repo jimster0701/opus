@@ -53,8 +53,6 @@ export function PostboxCreate(props: postboxCreateProps) {
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    console.log(name);
-    console.log(value);
     setFormData({
       ...formData,
       [name]: value,
@@ -122,11 +120,10 @@ export function PostboxCreate(props: postboxCreateProps) {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setUploading(true);
-
     try {
       // First create the post
       const newPost = await createPost.mutateAsync({
+        name: formData.name,
         taskId: formData.taskId,
         description: formData.description,
         imageUrl: "none",
@@ -134,6 +131,7 @@ export function PostboxCreate(props: postboxCreateProps) {
 
       // If there's an image, upload it and update the post
       if (image && newPost.id) {
+        setUploading(true);
         const cloudinaryPath = await handleUploadImage(newPost.id);
         if (cloudinaryPath) {
           // Update the post with the image URL
@@ -159,6 +157,7 @@ export function PostboxCreate(props: postboxCreateProps) {
         taskId: 0,
         description: "",
       });
+      setSelectedTags([]);
       setImage(null);
       setPreview("");
       setError("");
@@ -198,7 +197,7 @@ export function PostboxCreate(props: postboxCreateProps) {
           <h3>{newPostTime}</h3>
         </div>
 
-        <div className={styles.postContent}>
+        <div className={styles.postCreateContent}>
           <div className={styles.flexRow}>
             <textarea
               name="description"
@@ -226,7 +225,7 @@ export function PostboxCreate(props: postboxCreateProps) {
           {uploading && <p className={styles.uploading}>Uploading...</p>}
           {error && <p className={styles.error}>{error}</p>}
           <div className={styles.flexRow}>
-            <p>Select the task: </p>
+            <p>Based on:</p>
             <select
               name="task"
               value={formData.taskId}
@@ -239,8 +238,8 @@ export function PostboxCreate(props: postboxCreateProps) {
                   value={task.id}
                   className={styles.taskSelectOption}
                 >
-                  <p className={styles.postText}>{task.icon}</p>
-                  <p className={styles.postText}>{task.name}</p>
+                  {task.icon}
+                  {task.name}
                 </option>
               ))}
             </select>
@@ -249,13 +248,16 @@ export function PostboxCreate(props: postboxCreateProps) {
         {preview && (
           <div className={styles.flexColumn}>
             <div className={styles.postImagePreviewContainer}>
-              <button
-                type="button"
-                className={`${styles.opusButton} ${styles.profileAvatarDeleteButton}`}
-                onClick={cancelImageUpload}
-              >
-                <X />
-              </button>
+              <div className={styles.flexRow}>
+                <p>Delete image: </p>
+                <button
+                  type="button"
+                  className={`${styles.opusButton} ${styles.postImagePreviewCancelButton}`}
+                  onClick={cancelImageUpload}
+                >
+                  <X />
+                </button>
+              </div>
               <img
                 src={preview}
                 alt="Preview"
@@ -269,6 +271,7 @@ export function PostboxCreate(props: postboxCreateProps) {
             ?.filter((tag) => selectedTags.includes(tag.id))
             .map((tag) => (
               <p
+                key={tag.id}
                 style={{ borderColor: tag.colour }}
                 className={styles.tag}
                 onClick={() => {

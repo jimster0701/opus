@@ -582,7 +582,7 @@ body {
   gap: 0.5rem;
 }
 
-.profileAvatarDeleteButton {
+.profileAvatarConfirmButton {
   display: flex;
   width: fit-content;
   padding: 0;
@@ -623,7 +623,7 @@ body {
 
 .postContent {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: flex-start;
   justify-content: flex-start;
   gap: 0.1rem;
@@ -643,24 +643,10 @@ body {
   margin: 0;
 }
 
-.postCreateTitleContainer {
-  width: 100%;
-}
-
-.postCreateTitleContainer input {
-  padding: 0.5rem;
-  border: none;
-  border-radius: 0.5rem;
-  background-color: #d7d7d7a5;
-  width: 65%;
-  box-sizing: border-box;
-  font-size: 1rem;
-}
-
 .postImagePreviewContainer {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: flex-start;
   gap: 0.1rem;
 }
 
@@ -886,6 +872,35 @@ body {
   max-height: fit-content;
 }
 
+.postCreateTitleContainer {
+  width: 100%;
+}
+
+.postCreateTitleContainer input {
+  padding: 0.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  background-color: #d7d7d7a5;
+  width: 65%;
+  box-sizing: border-box;
+  font-size: 1rem;
+}
+
+.postCreateContent {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 0.1rem;
+  width: 100%;
+}
+
+.postImagePreviewCancelButton {
+  display: flex;
+  width: fit-content;
+  padding: 0;
+}
+
 /* Task Components
 ------------------------------------------ */
 .taskList {
@@ -1100,6 +1115,10 @@ body {
   width: 100%;
   box-sizing: border-box;
   font-size: 1rem;
+}
+
+.taskSelect {
+  padding-top: 0.1rem;
 }
 
 .taskInterestSelector * {
