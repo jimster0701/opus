@@ -700,13 +700,12 @@ body {
 }
 .tag {
   display: flex;
-  border: grey solid 0.1rem;
+  border: grey solid 2px;
+  color: black;
   border-radius: 1rem;
   width: fit-content;
   padding: 0.2rem;
   margin: 0.1rem 0;
-  font-size: small;
-  font-weight: 500;
 }
 
 /* Comment Components
@@ -1048,14 +1047,13 @@ body {
   position: relative;
   background: white;
   color: black;
-  border: grey 1px solid;
+  border: var(--accent-color) 1px solid;
   border-radius: 1rem;
   padding: 0.25rem 0.5rem;
 }
 
 .taskChoosenInterestText {
   position: relative;
-
   border-radius: 1rem;
   z-index: 1;
   background-color: white;

@@ -3,6 +3,7 @@ import styles from "../../index.module.css";
 import { User } from "~/types/user";
 import { useState } from "react";
 import { api } from "~/trpc/react";
+import { redirect } from "next/navigation";
 
 interface TaskboxProps {
   task: Task;
@@ -79,7 +80,7 @@ export default function Taskbox(props: TaskboxProps) {
               type="text"
               className={styles.taskTitle}
               value={props.task.name}
-              placeholder="Title"
+              placeholder="Task title"
               onChange={(e) =>
                 props.onTaskChange?.({
                   ...props.task,
@@ -90,7 +91,7 @@ export default function Taskbox(props: TaskboxProps) {
             <textarea
               className={styles.taskText}
               value={props.task.description}
-              placeholder="Description"
+              placeholder="Do this..."
               onChange={(e) =>
                 props.onTaskChange?.({
                   ...props.task,
@@ -130,7 +131,7 @@ export default function Taskbox(props: TaskboxProps) {
                       setAvailableInterests([...availableInterests, interest]);
                     }}
                   >
-                    {interest}
+                    {interest} X
                   </p>
                 </div>
               ))}
@@ -170,7 +171,7 @@ export default function Taskbox(props: TaskboxProps) {
                   interests: selectedInterests,
                   description: props.task.description,
                 });
-                // Optionally reset form or show success
+                redirect("/profile");
               } catch (error: any) {
                 setFormError(
                   error?.message ||

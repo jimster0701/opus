@@ -3,14 +3,14 @@ import { TaskType } from "~/types/task";
 export const defaultTask = {
   id: 1,
   type: TaskType.generated,
-  name: "Task Title",
+  name: "",
   icon: "🔮",
   userId: "",
   friends: [],
   createdAt: new Date(),
   updatedAt: new Date(),
   interests: [],
-  description: "Do this...",
+  description: "",
 };
 
 export const defaultPost = {
