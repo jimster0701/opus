@@ -4,17 +4,25 @@ import { useThemeStore } from "~/store/themeStore";
 import CreateSelector from "../create/createSelector";
 import { useEffect, useState } from "react";
 import { Task } from "~/types/task";
+import { trpc } from "~/utils/trpc";
 
 interface CreateClientProps {
   session: any;
   theme: string;
-  availableTasks: Task[];
 }
 
 export default function CreateClient(props: CreateClientProps) {
   const [selectedTab, setSelectedTab] = useState("");
   const [titleWord, setTitleWord] = useState("something");
   const { theme, setTheme } = useThemeStore();
+
+  const dailyTasks = trpc.task.getDailyTasks.useQuery();
+  const customTasks = trpc.task.getCustomTasks.useQuery();
+
+  const availableTasks: Task[] = [
+    ...(dailyTasks.data || []),
+    ...(customTasks.data || []),
+  ];
 
   useEffect(() => {
     switch (selectedTab) {
@@ -46,7 +54,7 @@ export default function CreateClient(props: CreateClientProps) {
         <CreateSelector
           user={props.session.user}
           setSelectedTab={setSelectedTab}
-          availableTasks={props.availableTasks}
+          availableTasks={availableTasks}
         />
       </div>
     </main>

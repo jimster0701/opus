@@ -10,24 +10,13 @@ import { Task } from "~/types/task";
 
 export default async function Create() {
   const session = await auth();
-  const dailyTasks = trpc.task.getDailyTasks.useQuery();
-  const customTasks = trpc.task.getCustomTasks.useQuery();
-
-  const availableTasks: Task[] = [
-    ...(dailyTasks.data || []),
-    ...(customTasks.data || []),
-  ];
   if (session?.user) {
     const userId = session.user.id || "null";
     const tags = await api.tag.getAllTags.call({ userId });
     return (
       <HydrateClient>
         <Header userId={userId} />
-        <CreateClient
-          theme={session.user.themePreset}
-          session={session}
-          availableTasks={availableTasks}
-        />
+        <CreateClient theme={session.user.themePreset} session={session} />
         <Navbar />
       </HydrateClient>
     );

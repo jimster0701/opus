@@ -3,6 +3,7 @@ import styles from "../../index.module.css";
 import { useThemeStore } from "~/store/themeStore";
 import { AllFriendsPosts } from "../posts/allFriendsPosts";
 import { Session } from "~/types/session";
+import { useState } from "react";
 
 interface DiscoverClientProps {
   session: Session;
@@ -10,6 +11,7 @@ interface DiscoverClientProps {
 }
 
 export default function DiscoverClient(props: DiscoverClientProps) {
+  const [selectedTab, setSelectedTab] = useState("");
   const { theme, setTheme } = useThemeStore();
   if (theme == "unset") setTheme(props.theme);
   return (
@@ -21,7 +23,26 @@ export default function DiscoverClient(props: DiscoverClientProps) {
       }
     >
       <div className={styles.container}>
-        <AllFriendsPosts userId={props.session?.user.id} />
+        <div className={styles.discoverTabContainer}>
+          <button
+            autoFocus={selectedTab === "friends"}
+            onClick={() => {
+              setSelectedTab("friends");
+            }}
+          >
+            Friends posts
+          </button>
+          <button
+            onClick={() => {
+              setSelectedTab("discover");
+            }}
+          >
+            Discover posts
+          </button>
+        </div>
+        {selectedTab == "friends" && (
+          <AllFriendsPosts userId={props.session?.user.id} />
+        )}
       </div>
     </main>
   );

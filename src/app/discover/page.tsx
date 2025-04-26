@@ -8,7 +8,6 @@ import DiscoverClient from "../_components/pages/DiscoverClient";
 
 export default async function Discover() {
   const session = await auth();
-
   if (session?.user) {
     const userId = session.user.id || "null";
     return (

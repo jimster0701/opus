@@ -68,7 +68,7 @@ model User {
   image         String?
   displayName   String?
   interests     String[]
-  themePreset   String?
+  themePreset   String?   @default("unset")
   followers     Follow[]  @relation("Followers")
   following     Follow[]  @relation("Following")
   accounts      Account[]
