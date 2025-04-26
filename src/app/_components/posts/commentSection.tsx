@@ -3,6 +3,7 @@ import { Post, PostComment } from "~/types/post";
 import styles from "../../index.module.css";
 import { useState } from "react";
 import { trpc } from "~/utils/trpc";
+import { ProfilePicturePreviewWrapper } from "../images/cldImageWrapper";
 
 interface commentSectionProps {
   post: Post;
@@ -50,21 +51,24 @@ export function CommentSection(props: commentSectionProps) {
       <div className={styles.commentSectionList}>
         {comments && comments.length > 0 ? (
           comments.map((comment, index) => {
-            console.log(props.post.comments);
-            console.log(comment);
             if (comment.createdBy)
               return (
                 <div key={index} className={styles.commentContainer}>
-                  <p className={styles.commentTitle}>
-                    {comment.createdBy.displayName}
-                  </p>
+                  <div className={styles.flexRow}>
+                    <ProfilePicturePreviewWrapper
+                      id={comment.createdBy.id}
+                      imageUrl={comment.createdBy.image}
+                      width={0}
+                      height={0}
+                    />
+                    <p className={styles.commentTitle}>
+                      {comment.createdBy.displayName}
+                    </p>
+                  </div>
                   <p className={styles.commentContent}>{comment.message}</p>
-                  <span className={styles.commentTimestamp}>
-                    {new Date(comment.createdAt).toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </span>
+                  <p className={styles.commentTimestamp}>
+                    {comment.createdAt.toDateString()}
+                  </p>
                 </div>
               );
           })

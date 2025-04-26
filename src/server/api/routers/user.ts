@@ -3,6 +3,19 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
 export const userRouter = createTRPCRouter({
+  getImageUrl: protectedProcedure
+    .input(z.object({ userId: z.string().min(1) }))
+    .query(async ({ ctx, input }) => {
+      const imageUrl = await ctx.db.user.findUnique({
+        where: {
+          id: input.userId,
+        },
+        select: { image: true },
+      });
+
+      return imageUrl;
+    }),
+
   getNewUsersByInterests: protectedProcedure
     .input(z.object({ interests: z.array(z.string().min(1)) }))
     .mutation(async ({ ctx, input }) => {

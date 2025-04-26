@@ -6,11 +6,7 @@ import { CldImage } from "next-cloudinary";
 import { useEffect, useState } from "react";
 import { trpc } from "~/utils/trpc";
 
-interface ProfilePictureWrapperProps {
-  id: string | undefined;
-  imageUrl?: string;
-  width: number;
-  height: number;
+interface ProfilePictureWrapperProps extends ProfilePicturePreviewWrapperProps {
   session: any;
 }
 
@@ -151,20 +147,28 @@ export function ProfilePictureWrapper(props: ProfilePictureWrapperProps) {
   );
 }
 
+interface ProfilePicturePreviewWrapperProps {
+  id: string;
+  imageUrl: string;
+  width: number;
+  height: number;
+}
+
 export function ProfilePicturePreviewWrapper(
-  props: ProfilePictureWrapperProps
+  props: ProfilePicturePreviewWrapperProps
 ) {
   const [src, setSrc] = useState(
     `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/v1745329655/profile-pictures/default`
   );
-
-  if (props.imageUrl) {
-    if (props.imageUrl.includes("google")) setSrc(props.session.user.image);
-    else
-      setSrc(
-        `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/${props.imageUrl}`
-      );
-  }
+  useEffect(() => {
+    if (props.imageUrl) {
+      if (props.imageUrl.includes("google")) setSrc(props.imageUrl);
+      else
+        setSrc(
+          `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/${props.imageUrl}`
+        );
+    }
+  }, []);
   return (
     <div className={styles.profileAvatarWrapper}>
       <img

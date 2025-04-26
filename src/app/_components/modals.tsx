@@ -51,10 +51,9 @@ export function FollowingModal(props: followerOrFollowingProps) {
           <div key={user.id} className={styles.cardContainer}>
             <ProfilePicturePreviewWrapper
               id={user.id}
-              imageUrl={user.following.image || undefined}
+              imageUrl={user.following.image}
               width={10}
               height={10}
-              session={undefined}
             />
             <p className={styles.cardTitle}></p>
             {user.following.displayName}
