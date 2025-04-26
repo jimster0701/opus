@@ -15,6 +15,7 @@ export const defaultTask = {
 
 export const defaultPost = {
   id: 0,
+  name: "",
   task: defaultTask,
   description: "",
   createdAt: new Date(),

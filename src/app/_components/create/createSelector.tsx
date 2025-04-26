@@ -2,11 +2,11 @@
 import { Task, TaskType } from "~/types/task";
 import styles from "../../index.module.css";
 import { Dispatch, SetStateAction, useState } from "react";
-import Taskbox from "../tasks/taskbox";
 import { Post } from "~/types/post";
 import { User } from "~/types/user";
 import { PostboxCreate } from "./postboxCreate";
 import { defaultPost, defaultTask } from "~/const/defaultVar";
+import TaskboxCreate from "./taskboxCreate";
 
 interface CreateTaskProps {
   user: User;
@@ -54,9 +54,8 @@ export default function CreateSelector(props: CreateTaskProps) {
       )}
       {selectedTab == "task" && (
         <div className={styles.taskComponentContainer}>
-          <Taskbox
+          <TaskboxCreate
             task={createdTask}
-            editable={true}
             user={props.user}
             onTaskChange={setCreatedTask}
           />
