@@ -10,7 +10,22 @@ export const taskRouter = createTRPCRouter({
   getDailyTasks: protectedProcedure.query(async ({ ctx }) => {
     const post = await ctx.db.task.findMany({
       orderBy: { name: "desc" },
-      where: { userId: ctx.session.user.id, createdAt: Date() },
+      where: {
+        userId: ctx.session.user.id,
+        createdAt: Date(),
+        type: TaskType.generated || TaskType.generatedFriend,
+      },
+    });
+    return post ?? null;
+  }),
+
+  getCustomTasks: protectedProcedure.query(async ({ ctx }) => {
+    const post = await ctx.db.task.findMany({
+      orderBy: { createdAt: "desc" },
+      where: {
+        userId: ctx.session.user.id,
+        type: TaskType.custom || TaskType.customFriend,
+      },
     });
     return post ?? null;
   }),
