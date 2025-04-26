@@ -324,7 +324,6 @@ body {
 /* Modal typography */
 .modal h1 {
   font-size: 2.5rem;
-  margin-bottom: 1.5rem;
   font-weight: 700;
   position: relative;
   z-index: 1;
