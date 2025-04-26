@@ -9,6 +9,7 @@ datasource db {
 
 model Post {
   id          Int       @id @default(autoincrement())
+  name        String
   description String
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
@@ -27,9 +28,10 @@ model Comment {
   message     String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  likedBy     String[]
   createdById String
-  createdBy   User     @relation(fields: [createdById], references: [id])
   postId      Int
+  createdBy   User     @relation(fields: [createdById], references: [id])
   post        Post     @relation(fields: [postId], references: [id])
 }
 
@@ -99,9 +101,9 @@ model Task {
   description String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  friends     User[]   @relation("TaskAssigned")
   userId      String
   user        User     @relation("TaskOwn", fields: [userId], references: [id], onDelete: Cascade)
+  friends     User[]   @relation("TaskAssigned")
   posts       Post[]   @relation("TaskPost")
 }
 
