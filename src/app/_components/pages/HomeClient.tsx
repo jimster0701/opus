@@ -1,10 +1,11 @@
 "use client";
 import styles from "../../index.module.css";
 import { useThemeStore } from "~/store/themeStore";
-import TaskList from "../tasks/dailyTasks";
+import TaskList from "../tasks/taskList";
 import { trpc } from "~/utils/trpc";
 import { Task } from "~/types/task";
 import { useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 
 interface HomeClientProps {
   session?: any;
@@ -13,24 +14,25 @@ interface HomeClientProps {
 
 export default function HomeClient(props: HomeClientProps) {
   const { theme, setTheme } = useThemeStore();
+  const searchParams = useSearchParams();
+  const preselectedTab = searchParams.get("selectedTab");
+
   useEffect(() => {
     if (theme === "unset") {
       setTheme(props.theme);
     }
   }, [theme, props.theme, setTheme]);
 
-  const { data: dailyTasks, isLoading: isDailyLoading } =
-    trpc.task.getDailyTasks.useQuery();
-  const { data: customTasks, isLoading: isCustomLoading } =
-    trpc.task.getCustomTasks.useQuery();
+  const dailyTasks = trpc.task.getDailyTasks.useQuery();
+  const customTasks = trpc.task.getCustomTasks.useQuery();
 
-  if (!isDailyLoading && dailyTasks?.length == 0) {
+  if (!dailyTasks.isLoading && dailyTasks.data?.length == 0) {
     // generate tasks using chat...
   }
 
   const availableTasks: Task[] = [
-    ...(dailyTasks || []),
-    ...(customTasks || []),
+    ...(dailyTasks.data || []),
+    ...(customTasks.data || []),
   ];
   return (
     <main
@@ -53,7 +55,10 @@ export default function HomeClient(props: HomeClientProps) {
           )}
         </h1>
         <br />
-        <TaskList availableTasks={availableTasks} />
+        <TaskList
+          preselectedTab={preselectedTab}
+          availableTasks={availableTasks}
+        />
       </div>
     </main>
   );
