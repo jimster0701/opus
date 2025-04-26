@@ -1,6 +1,6 @@
 import { Navbar } from "./_components/navbar";
 import { auth } from "~/server/auth";
-import { api, HydrateClient } from "~/trpc/server";
+import { HydrateClient } from "~/trpc/server";
 import { NewUserModalWrapper } from "./_components/modalWrappers";
 import Header from "./_components/header";
 import HomeClient from "./_components/pages/HomeClient";
@@ -12,12 +12,9 @@ export default async function Home() {
   const userId = session?.user.id || "null";
 
   if (session) {
-    if (session?.user) {
-      void api.post.getLatest.prefetch();
-    }
     return (
       <HydrateClient>
-        <Header userId={userId} />
+        <Header userId={userId} theme={session.user.themePreset} />
         <HomeClient session={session} theme={session.user.themePreset} />
         <NewUserModalWrapper displayName={session?.user.displayName ?? null} />
         <Navbar />

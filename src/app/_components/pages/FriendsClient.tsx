@@ -1,4 +1,5 @@
 "use client";
+import { useEffect } from "react";
 import styles from "../../index.module.css";
 import { useThemeStore } from "~/store/themeStore";
 
@@ -9,7 +10,11 @@ interface FriendsClientProps {
 
 export default function FriendsClient(props: FriendsClientProps) {
   const { theme, setTheme } = useThemeStore();
-  if (theme == "unset") setTheme(props.theme);
+  useEffect(() => {
+    if (theme === "unset") {
+      setTheme(props.theme);
+    }
+  }, [theme, props.theme, setTheme]);
   return (
     <main
       className={

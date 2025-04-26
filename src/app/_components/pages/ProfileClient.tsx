@@ -3,7 +3,7 @@
 import styles from "../../index.module.css";
 import { ProfilePictureWrapper } from "../images/cldImageWrapper";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { trpc } from "~/utils/trpc";
 import { useThemeStore } from "~/store/themeStore";
 import { Check, X } from "lucide-react";
@@ -12,6 +12,7 @@ import { Session } from "~/types/session";
 
 interface ProfileClientProps {
   session: Session;
+  theme: string;
 }
 
 export default function ProfileClient(props: ProfileClientProps) {
@@ -45,7 +46,11 @@ export default function ProfileClient(props: ProfileClientProps) {
     await utils.user.getFollowers.prefetch({ userId: props.session.user.id });
   };
 
-  if (theme == "unset") setTheme(props.session.user.themePreset);
+  useEffect(() => {
+    if (theme === "unset") {
+      setTheme(props.theme);
+    }
+  }, [theme, props.theme, setTheme]);
   return (
     <main
       className={

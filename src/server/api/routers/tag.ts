@@ -7,11 +7,16 @@ import {
 
 export const tagRouter = createTRPCRouter({
   getAllTags: protectedProcedure.query(async ({ ctx }) => {
-    const post = await ctx.db.tag.findMany({
-      orderBy: { name: "desc" },
-      where: { userId: ctx.session.user.id },
+    const tags = await ctx.db.tag.findMany({
+      orderBy: { id: "desc" },
+      where: { OR: [{ userId: "system" }, { userId: ctx.session.user.id }] },
+      include: {
+        user: {
+          select: { id: true, name: true, displayName: true, image: true },
+        },
+      },
     });
-
-    return post ?? null;
+    console.log(tags);
+    return tags ?? null;
   }),
 });

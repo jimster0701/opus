@@ -3,7 +3,7 @@ import styles from "../../index.module.css";
 import { useThemeStore } from "~/store/themeStore";
 import { AllFriendsPosts } from "../posts/allFriendsPosts";
 import { Session } from "~/types/session";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface DiscoverClientProps {
   session: Session;
@@ -13,7 +13,11 @@ interface DiscoverClientProps {
 export default function DiscoverClient(props: DiscoverClientProps) {
   const [selectedTab, setSelectedTab] = useState("");
   const { theme, setTheme } = useThemeStore();
-  if (theme == "unset") setTheme(props.theme);
+  useEffect(() => {
+    if (theme === "unset") {
+      setTheme(props.theme);
+    }
+  }, [theme, props.theme, setTheme]);
   return (
     <main
       className={

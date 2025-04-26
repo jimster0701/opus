@@ -4,6 +4,7 @@ import { useThemeStore } from "~/store/themeStore";
 import TaskList from "../tasks/dailyTasks";
 import { trpc } from "~/utils/trpc";
 import { Task } from "~/types/task";
+import { useEffect } from "react";
 
 interface HomeClientProps {
   session?: any;
@@ -12,7 +13,11 @@ interface HomeClientProps {
 
 export default function HomeClient(props: HomeClientProps) {
   const { theme, setTheme } = useThemeStore();
-  if (theme == "unset") setTheme(props.theme);
+  useEffect(() => {
+    if (theme === "unset") {
+      setTheme(props.theme);
+    }
+  }, [theme, props.theme, setTheme]);
 
   const { data: dailyTasks, isLoading: isDailyLoading } =
     trpc.task.getDailyTasks.useQuery();

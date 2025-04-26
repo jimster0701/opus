@@ -11,8 +11,8 @@ export default async function Profile() {
   if (session)
     return (
       <HydrateClient>
-        <Header userId={userId} profile={true} />
-        <ProfileClient session={session} />
+        <Header userId={userId} theme={session.user.themePreset} />
+        <ProfileClient session={session} theme={session.user.themePreset} />
         <Navbar />
       </HydrateClient>
     );

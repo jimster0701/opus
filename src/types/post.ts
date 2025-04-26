@@ -1,11 +1,5 @@
 import { Task } from "./task";
-
-export interface SimpleUser {
-  id: string;
-  name: string | null;
-  displayName: string;
-  image: string;
-}
+import { SimpleUser } from "./user";
 
 export interface PostComment {
   id: number;
@@ -21,14 +15,15 @@ export interface Tag {
   icon: string;
   name: string;
   colour: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
   userId: string;
   user: SimpleUser;
 }
 
 export interface Post {
   id: number;
+  name: string;
   task: Task;
   description: string;
   createdAt: Date;

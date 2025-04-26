@@ -2,17 +2,22 @@
 import styles from "../index.module.css";
 import Image from "next/image";
 import { SettingsModal } from "./modals";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useThemeStore } from "~/store/themeStore";
 
 interface HeaderProps {
   userId: string;
-  profile?: boolean;
+  theme: string;
 }
 
 export default function Header(props: HeaderProps) {
   const [showSettings, setShowSettings] = useState(false);
   const { theme, setTheme } = useThemeStore();
+  useEffect(() => {
+    if (theme === "unset") {
+      setTheme(props.theme);
+    }
+  }, [theme, props.theme, setTheme]);
 
   return (
     <div

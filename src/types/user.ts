@@ -3,6 +3,13 @@ import { Post, Tag } from "./post";
 import { Session } from "./session";
 import { Task } from "./task";
 
+export interface SimpleUser {
+  id: string;
+  name: string;
+  displayName: string;
+  image: string;
+}
+
 export interface User {
   id: string;
   name: string;
