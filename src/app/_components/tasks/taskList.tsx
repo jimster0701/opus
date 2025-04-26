@@ -4,12 +4,14 @@ import Taskbox from "./taskbox";
 import { useState } from "react";
 
 interface TaskListProps {
-  tasks?: Task;
+  preselectedTab: string | null;
   availableTasks: Task[];
 }
 
 export default function TaskList(props: TaskListProps) {
-  const [selectedTab, setSelectedTab] = useState("daily");
+  const [selectedTab, setSelectedTab] = useState(
+    props.preselectedTab ?? "daily"
+  );
 
   return (
     <div className={styles.taskList}>
@@ -20,23 +22,23 @@ export default function TaskList(props: TaskListProps) {
         >
           Daily tasks
         </button>
-        <button onClick={() => setSelectedTab("friends")}>Friend tasks</button>
+        <button onClick={() => setSelectedTab("custom")}>Your tasks</button>
       </div>
       {selectedTab == "daily" && (
         <div className={styles.taskComponentContainer}>
           {props.availableTasks
             .filter((task) => task.type == TaskType.generated)
             .map((task) => (
-              <Taskbox task={task} editable={false} />
+              <Taskbox task={task} />
             ))}
         </div>
       )}
-      {selectedTab == "friends" && (
+      {selectedTab == "custom" && (
         <div className={styles.taskComponentContainer}>
           {props.availableTasks
-            .filter((task) => task.type == TaskType.generatedFriend)
+            .filter((task) => task.type == TaskType.custom)
             .map((task) => (
-              <Taskbox task={task} editable={false} />
+              <Taskbox task={task} />
             ))}
         </div>
       )}
