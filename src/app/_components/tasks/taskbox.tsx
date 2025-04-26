@@ -99,20 +99,29 @@ export default function Taskbox(props: TaskboxProps) {
                 })
               }
             />
-            <div className={styles.taskInterestSelector}>
+            <div className={styles.opusSelectorContainer}>
               <p>Based on:</p>
               <select
+                multiple
+                className={styles.opusSelector}
                 onChange={(e) => {
                   const value = e.target.value;
-                  setSelectedInterests([...selectedInterests, value]);
+                  if (value) {
+                    setSelectedInterests([...selectedInterests, value]);
 
-                  const newArray = availableInterests.filter((i) => i != value);
-                  setAvailableInterests(newArray);
+                    const newArray = availableInterests.filter(
+                      (i) => i != value
+                    );
+                    setAvailableInterests(newArray);
+                  }
                 }}
-                value=""
               >
                 {availableInterests.map((interest) => (
-                  <option key={interest} value={interest}>
+                  <option
+                    className={styles.selectOption}
+                    key={interest}
+                    value={interest}
+                  >
                     {interest}
                   </option>
                 ))}
@@ -171,7 +180,8 @@ export default function Taskbox(props: TaskboxProps) {
                   interests: selectedInterests,
                   description: props.task.description,
                 });
-                redirect("/profile");
+
+                redirect("/");
               } catch (error: any) {
                 setFormError(
                   error?.message ||

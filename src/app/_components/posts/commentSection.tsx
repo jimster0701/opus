@@ -1,7 +1,8 @@
 "use client";
-import { Post } from "~/types/post";
+import { Post, PostComment } from "~/types/post";
 import styles from "../../index.module.css";
 import { useState } from "react";
+import { trpc } from "~/utils/trpc";
 
 interface commentSectionProps {
   post: Post;
@@ -9,7 +10,17 @@ interface commentSectionProps {
 
 export function CommentSection(props: commentSectionProps) {
   const [comment, setComment] = useState("");
-  console.log(props.post);
+  const [comments, setComments] = useState(props.post.comments);
+  const utils = trpc.useUtils();
+
+  const createComment = trpc.comment.createComment.useMutation({
+    onSuccess: async () => {
+      await utils.post.invalidate();
+    },
+  });
+
+  console.log(comments);
+
   return (
     <div className={styles.commentSectionContainer}>
       <div className={styles.commentSectionInputContainer}>
@@ -21,10 +32,14 @@ export function CommentSection(props: commentSectionProps) {
         />
         <button
           className={styles.commentSubmitButton}
-          onClick={() => {
+          onClick={async () => {
             if (comment.trim()) {
-              // create comment
+              const newComment = await createComment.mutateAsync({
+                message: comment,
+                postId: props.post.id,
+              });
               setComment("");
+              setComments([...comments, newComment as PostComment]);
             }
           }}
         >
@@ -34,8 +49,8 @@ export function CommentSection(props: commentSectionProps) {
         </button>
       </div>
       <div className={styles.commentSectionList}>
-        {props.post.comments && props.post.comments.length > 0 ? (
-          props.post.comments.map((comment, index) => (
+        {comments && comments.length > 0 ? (
+          comments.map((comment, index) => (
             <div key={index} className={styles.commentContainer}>
               <p className={styles.commentTitles}>
                 {comment.createdBy.name}

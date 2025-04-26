@@ -23,6 +23,28 @@ body {
   transition: all 0.2s ease;
 }
 
+.opusSelectorContainer {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.opusSelector {
+  display: flex;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  background-color: #d7d7d7a5;
+  width: 60%;
+  height: fit-content;
+  box-sizing: border-box;
+  font-size: 1rem;
+}
+
+.selectOption {
+  margin: 0;
+}
+
 /* Flexbox utilities */
 .flexRow {
   display: flex;
@@ -1105,7 +1127,6 @@ body {
 
 .taskContentContainer input,
 .taskContentContainer textarea,
-.taskInterestSelector select,
 .taskIconContainer input,
 .postContainer textarea {
   padding: 0.5rem;
@@ -1124,7 +1145,6 @@ body {
 .taskInterestSelector * {
   width: fit-content;
   height: fit-content;
-  margin: 1rem 0rem;
   text-wrap-mode: nowrap;
   text-align: left;
 }

@@ -19,7 +19,7 @@ model Post {
   taskId      Int
   task        Task      @relation("TaskPost", fields: [taskId], references: [id])
   createdBy   User      @relation(fields: [createdById], references: [id])
-  comments    Comment[]
+  comments    Comment[] @relation("PostComments")
   tags        Tag[]     @relation("PostTags")
 }
 
@@ -31,8 +31,8 @@ model Comment {
   likedBy     String[]
   createdById String
   postId      Int
-  createdBy   User     @relation(fields: [createdById], references: [id])
-  post        Post     @relation(fields: [postId], references: [id])
+  createdBy   User     @relation("UserComments", fields: [createdById], references: [id])
+  post        Post     @relation("PostComments", fields: [postId], references: [id])
 }
 
 model Account {
@@ -76,7 +76,7 @@ model User {
   accounts      Account[]
   posts         Post[]
   sessions      Session[]
-  comments      Comment[]
+  comments      Comment[] @relation("UserComments")
   tags          Tag[]
   assignedtasks Task[]    @relation("TaskAssigned")
   ownTasks      Task[]    @relation("TaskOwn")
