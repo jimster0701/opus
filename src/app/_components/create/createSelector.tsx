@@ -9,8 +9,8 @@ import { PostboxCreate } from "./postboxCreate";
 import { defaultPost, defaultTask } from "~/const/defaultVar";
 
 interface CreateTaskProps {
-  task?: Task;
   user: User;
+  availableTasks: Task[];
   setSelectedTab: Dispatch<SetStateAction<string>>;
 }
 
@@ -45,7 +45,11 @@ export default function CreateSelector(props: CreateTaskProps) {
       </div>
       {selectedTab == "post" && (
         <div className={styles.taskComponentContainer}>
-          <PostboxCreate post={createdPost} user={props.user} />
+          <PostboxCreate
+            post={createdPost}
+            user={props.user}
+            availableTasks={props.availableTasks}
+          />
         </div>
       )}
       {selectedTab == "task" && (

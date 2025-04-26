@@ -1,13 +1,14 @@
 "use client";
 import styles from "../../index.module.css";
 import { useThemeStore } from "~/store/themeStore";
-import { LatestPost } from "../posts/latestPost";
 import CreateSelector from "../create/createSelector";
 import { useEffect, useState } from "react";
+import { Task } from "~/types/task";
 
 interface CreateClientProps {
   session: any;
   theme: string;
+  availableTasks: Task[];
 }
 
 export default function CreateClient(props: CreateClientProps) {
@@ -45,6 +46,7 @@ export default function CreateClient(props: CreateClientProps) {
         <CreateSelector
           user={props.session.user}
           setSelectedTab={setSelectedTab}
+          availableTasks={props.availableTasks}
         />
       </div>
     </main>
