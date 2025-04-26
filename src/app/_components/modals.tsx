@@ -150,52 +150,37 @@ export function NewUserModal(props: modalProps) {
   const [submitError, setSubmitError] = useState([false, ""]);
   const { theme, setTheme } = useThemeStore();
 
-  const hobbies = [
+  const interests = [
     "Music",
     "Art",
+    "Design",
     "Sports",
-    "Technology",
-    "Travel",
-    "Food",
-    "Fashion",
     "Fitness",
+    "Technology",
+    "Coding",
+    "Travel",
+    "Exploration",
+    "Food",
+    "Cooking",
+    "Fashion",
+    "Style",
     "Gaming",
+    "Streaming",
     "Photography",
     "Reading",
     "Writing",
     "Crafting",
-    "Dancing",
-    "Hiking",
-    "Fishing",
-    "Camping",
+    "DIY",
+    "Outdoor Activities",
     "Volunteering",
-    "Learning",
-    "Coding",
-    "Designing",
-    "Building",
-    "Collecting",
-    "Exploring",
-    "Streaming",
-    "Fantasy Sports",
-    "Knitting",
-  ];
-
-  const affiliations = [
-    "Student",
-    "Hobbyist",
-    "Artist",
-    "Business Owner",
-    "Freelancer",
-    "Entrepreneur",
-    "Creator",
-    "Influencer",
-    "Developer",
-    "Designer",
-    "Photographer",
+    "Community",
+    "Entrepreneurship",
+    "Business",
+    "Content Creation",
   ];
 
   useMemo(() => {
-    setChoices(shuffle([...hobbies, ...affiliations]));
+    setChoices(shuffle(interests));
   }, []);
 
   const updateTags = trpc.user.updateInterests.useMutation({});
