@@ -5,8 +5,11 @@ export const defaultTask = {
   type: TaskType.generated,
   name: "Task Title",
   icon: "🔮",
-  interests: [],
+  userId: "",
   friends: [],
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  interests: [],
   description: "Do this...",
 };
 
