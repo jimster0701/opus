@@ -22,7 +22,9 @@ export const commentRouter = createTRPCRouter({
           createdById: ctx.session.user.id,
         },
         include: {
-          createdBy: true,
+          createdBy: {
+            select: { id: true, displayName: true, name: true, image: true },
+          },
         },
       });
     }),

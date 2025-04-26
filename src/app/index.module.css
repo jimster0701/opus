@@ -517,6 +517,14 @@ body {
 /* Profile Components
 ------------------------------------------ */
 /* Profile header */
+.profileHeaderContainer {
+  padding-bottom: 0;
+}
+
+.profileUserPostContainer {
+  padding-top: 0;
+}
+
 .profileHeader {
   display: flex;
   flex-direction: row;
@@ -740,49 +748,33 @@ body {
   background-color: rgba(255, 255, 255, 0.1);
   color: var(--text-secondary);
   font-size: 14px;
-  transition: all 0.2s ease;
-}
-
-.commentSectionInputContainer input::placeholder {
-  color: rgb(103, 103, 103);
-}
-
-.commentSectionInputContainer input:focus {
-  outline: none;
-  border-color: rgba(137, 137, 137, 0.892);
-  background-color: rgba(232, 232, 232, 0.15);
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
 }
 
 .commentSectionList {
   display: flex;
   flex-direction: column;
-  gap: 0.1rem;
+  gap: 10px;
 }
 
 .commentContainer {
+  background: #fafafa;
   padding: 10px 14px;
+  border: 2px solid var(--accent-color);
   border-radius: 12px;
-  background-color: rgba(147, 147, 147, 0.322);
-  transition: background-color 0.2s ease;
+  display: flex;
+  flex-direction: row;
 }
 
-.commentContainer:hover {
-  background-color: rgba(138, 138, 138, 0.1);
-}
-
-.commentTitles {
-  font-size: 13px;
+.commentTitle {
   font-weight: 600;
-  color: var(--text-secondary);
-  margin: 0 0 4px 0;
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 4px;
 }
 
 .commentContent {
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.8);
-  margin: 0;
-  line-height: 1.4;
+  color: #333;
 }
 
 .commentSubmitButton {

@@ -19,8 +19,6 @@ export function CommentSection(props: commentSectionProps) {
     },
   });
 
-  console.log(comments);
-
   return (
     <div className={styles.commentSectionContainer}>
       <div className={styles.commentSectionInputContainer}>
@@ -48,22 +46,28 @@ export function CommentSection(props: commentSectionProps) {
           </svg>
         </button>
       </div>
+
       <div className={styles.commentSectionList}>
         {comments && comments.length > 0 ? (
-          comments.map((comment, index) => (
-            <div key={index} className={styles.commentContainer}>
-              <p className={styles.commentTitles}>
-                {comment.createdBy.name}
-                <span className={styles.commentTimestamp}>
-                  {new Date(comment.createdAt).toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </span>
-              </p>
-              <p className={styles.commentContent}>{comment.message}</p>
-            </div>
-          ))
+          comments.map((comment, index) => {
+            console.log(props.post.comments);
+            console.log(comment);
+            if (comment.createdBy)
+              return (
+                <div key={index} className={styles.commentContainer}>
+                  <p className={styles.commentTitle}>
+                    {comment.createdBy.displayName}
+                  </p>
+                  <p className={styles.commentContent}>{comment.message}</p>
+                  <span className={styles.commentTimestamp}>
+                    {new Date(comment.createdAt).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </span>
+                </div>
+              );
+          })
         ) : (
           <div className={styles.noComments}>
             No comments yet. Be the first!
