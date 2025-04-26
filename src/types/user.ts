@@ -1,6 +1,7 @@
 import { Account } from "./account";
-import { Post } from "./post";
+import { Post, Tag } from "./post";
 import { Session } from "./session";
+import { Task } from "./task";
 
 export interface User {
   id: string;
@@ -16,4 +17,8 @@ export interface User {
   accounts: Account[];
   posts: Post[];
   sessions: Session[];
+  comments: Comment[];
+  tags: Tag[];
+  assignedtasks: Task[];
+  ownTasks: Task[];
 }

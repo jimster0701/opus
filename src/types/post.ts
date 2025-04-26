@@ -1,7 +1,10 @@
+import { Task } from "./task";
+
 export interface SimpleUser {
   id: string;
   name: string | null;
-  displayName: string | null;
+  displayName: string;
+  image: string;
 }
 
 export interface PostComment {
@@ -14,13 +17,19 @@ export interface PostComment {
 }
 
 export interface Tag {
+  id: number;
   icon: string;
   name: string;
+  colour: string;
+  createdAt: string;
+  updatedAt: string;
+  userId: string;
+  user: SimpleUser;
 }
 
 export interface Post {
   id: number;
-  name: string;
+  task: Task;
   description: string;
   createdAt: Date;
   updatedAt: Date;
