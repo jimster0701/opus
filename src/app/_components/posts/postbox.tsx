@@ -65,6 +65,15 @@ export function Postbox(props: postProps) {
           />
         </div>
       )}
+      {props.post.tags && (
+        <div className={styles.tagContainer}>
+          {props.post.tags.map((tag) => (
+            <p style={{ borderColor: tag.colour }} className={styles.tag}>
+              {tag.name}
+            </p>
+          ))}
+        </div>
+      )}
       <CommentSection post={props.post} />
     </div>
   );

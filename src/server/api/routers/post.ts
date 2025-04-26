@@ -18,7 +18,7 @@ export const postRouter = createTRPCRouter({
   create: protectedProcedure
     .input(
       z.object({
-        name: z.string().min(1),
+        taskId: z.number(),
         description: z.string().min(1),
         imageUrl: z.string().min(1),
       })
@@ -26,7 +26,7 @@ export const postRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       return ctx.db.post.create({
         data: {
-          name: input.name,
+          task: { connect: { id: input.taskId } },
           description: input.description,
           imageUrl: input.imageUrl,
           likedBy: [],
@@ -41,6 +41,20 @@ export const postRouter = createTRPCRouter({
       return ctx.db.post.update({
         where: { id: input.id },
         data: { imageUrl: input.imageUrl },
+      });
+    }),
+
+  updateTags: protectedProcedure
+    .input(z.object({ id: z.number().min(1), tags: z.array(z.number()) }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.post.update({
+        where: { id: input.id },
+        data: {
+          tags: {
+            set: [],
+            connect: input.tags.map((tagId) => ({ id: tagId })),
+          },
+        },
       });
     }),
 

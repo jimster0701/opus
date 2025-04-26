@@ -7,10 +7,13 @@ export enum TaskType {
 
 export interface Task {
   id: number;
-  type: TaskType;
+  type: TaskType | string;
   name: string;
   icon: string;
-  interests: string[];
+  userId: string;
   friends?: string[];
+  createdAt: Date;
+  updatedAt: Date;
+  interests: string[];
   description: string;
 }

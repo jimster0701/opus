@@ -1,18 +1,22 @@
 "use client";
-import { Post } from "~/types/post";
+import { Post, Tag } from "~/types/post";
 import styles from "../../index.module.css";
 import { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import { trpc } from "~/utils/trpc";
 import { X } from "lucide-react";
+import { User } from "~/types/user";
+import { defaultTask } from "~/const/defaultVar";
+import { Task } from "~/types/task";
 
-interface postProps {
+interface postboxCreateProps {
   post: Post;
-  userId: string;
+  user: User;
+  availableTasks: Task[];
 }
 
-export function PostboxCreate(props: postProps) {
+export function PostboxCreate(props: postboxCreateProps) {
   const [formData, setFormData] = useState({
-    name: props.post.name || "",
+    taskId: props.post.task.id || defaultTask.id,
     description: props.post.description || "",
   });
 
@@ -20,6 +24,8 @@ export function PostboxCreate(props: postProps) {
   const [image, setImage] = useState<File | null>(null);
   const [preview, setPreview] = useState<string>("");
   const [uploading, setUploading] = useState(false);
+  const [selectedTags, setSelectedTags] = useState<number[]>([]);
+  const [availableTags, setAvailableTags] = useState<Tag[]>([]);
   const [error, setError] = useState("");
   const [uploadedUrl, setUploadedUrl] = useState("");
   const utils = trpc.useUtils();
@@ -32,12 +38,20 @@ export function PostboxCreate(props: postProps) {
     },
   });
 
+  const updateTags = trpc.post.updateTags.useMutation({
+    onSuccess: async () => {
+      await utils.post.invalidate();
+      setSelectedTags([]);
+      setAvailableTags([]);
+    },
+  });
+
   useEffect(() => {
     setNewPostTime(new Date().toLocaleString());
   }, []);
 
   const handleInputChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setFormData({
@@ -103,7 +117,7 @@ export function PostboxCreate(props: postProps) {
     try {
       // First create the post
       const newPost = await createPost.mutateAsync({
-        name: formData.name,
+        taskId: formData.taskId,
         description: formData.description,
         imageUrl: "none",
       });
@@ -120,9 +134,18 @@ export function PostboxCreate(props: postProps) {
         }
       }
 
+      // If there are tags, upload the tags
+      if (selectedTags.length > 0) {
+        // Update the post with the tags
+        await updateTags.mutateAsync({
+          tags: selectedTags,
+          id: newPost.id,
+        });
+      }
+
       // Reset form after successful submission
       setFormData({
-        name: "",
+        taskId: 0,
         description: "",
       });
       setImage(null);
@@ -151,15 +174,24 @@ export function PostboxCreate(props: postProps) {
           >
             <h2>{props.post.createdBy?.displayName || "New Post"}</h2>
             <p className={styles.postText}>-</p>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
+            <select
+              name="task"
+              value={formData.taskId}
+              className={styles.taskSelect}
               onChange={handleInputChange}
-              placeholder="Post Title"
-              className={styles.postText}
               required
-            />
+            >
+              {props.availableTasks.map((task) => (
+                <option
+                  key={task.id}
+                  value={task.id}
+                  className={styles.taskSelectOption}
+                >
+                  <p className={styles.postText}>{task.icon}</p>
+                  <p className={styles.postText}>{task.name}</p>
+                </option>
+              ))}
+            </select>
           </div>
           <h3>{newPostTime}</h3>
         </div>
@@ -211,6 +243,29 @@ export function PostboxCreate(props: postProps) {
             </div>
           </div>
         )}
+        <div className={styles.postTagSelector}>
+          <p>Tags:</p>
+          <select
+            onChange={(e) => {
+              const value = Number(e.target.value);
+              setSelectedTags([...selectedTags, value]);
+
+              const newArray = availableTags.filter((i) => i.id != value);
+              setAvailableTags(newArray);
+            }}
+            value=""
+          >
+            {availableTags.map((tag) => (
+              <option
+                style={{ borderColor: tag.colour }}
+                key={tag.id}
+                value={tag.id}
+              >
+                {tag.name}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
       <div className={styles.postSubmitContainer}>
         <button
