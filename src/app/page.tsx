@@ -6,7 +6,6 @@ import Header from "./_components/header";
 import HomeClient from "./_components/pages/HomeClient";
 import styles from "./index.module.css";
 import NotLoggedIn from "./_components/pages/NotLoggedIn";
-import { Task } from "~/types/task";
 
 export default async function Home() {
   const session = await auth();
