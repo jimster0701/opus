@@ -229,7 +229,6 @@ export function PostboxCreate(props: postboxCreateProps) {
               value={formData.taskId}
               className={styles.taskSelect}
               //onChange={}
-              required
             >
               {props.availableTasks.map((task) => (
                 <option
@@ -246,16 +245,14 @@ export function PostboxCreate(props: postboxCreateProps) {
         </div>
         {preview && (
           <div className={styles.flexColumn}>
-            <div className={styles.profileAvatarConfirmContainer}>
+            <div className={styles.postImagePreviewContainer}>
               <button
                 type="button"
-                className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
+                className={`${styles.opusButton} ${styles.profileAvatarDeleteButton}`}
                 onClick={cancelImageUpload}
               >
                 <X />
               </button>
-            </div>
-            <div className={styles.postImagePreviewContainer}>
               <img
                 src={preview}
                 alt="Preview"
@@ -264,10 +261,27 @@ export function PostboxCreate(props: postboxCreateProps) {
             </div>
           </div>
         )}
+        <div className={styles.tagContainer}>
+          {getTags.data
+            ?.filter((tag) => selectedTags.includes(tag.id))
+            .map((tag) => (
+              <p
+                style={{ borderColor: tag.colour }}
+                className={styles.tag}
+                onClick={() => {
+                  setSelectedTags(selectedTags.filter((t) => t != tag.id));
+                }}
+              >
+                {tag.icon}
+                {tag.name} X
+              </p>
+            ))}
+        </div>
         <div className={styles.postTagSelector}>
           <p>Tags:</p>
           {!getTags.isLoading && (
             <select
+              multiple
               name="tags"
               value={selectedTags.map(String)}
               onChange={handleTagSelectChange}
@@ -289,15 +303,6 @@ export function PostboxCreate(props: postboxCreateProps) {
           {getTags.error && (
             <div className={styles.formError}>{getTags.error.message}</div>
           )}
-        </div>
-        <div className={styles.tagContainer}>
-          {getTags.data
-            ?.filter((tag) => selectedTags.includes(tag.id))
-            .map((tag) => (
-              <p style={{ borderColor: tag.colour }} className={styles.tag}>
-                {tag.name}
-              </p>
-            ))}
         </div>
       </div>
       <div className={styles.postSubmitContainer}>

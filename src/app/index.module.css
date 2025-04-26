@@ -582,9 +582,10 @@ body {
   gap: 0.5rem;
 }
 
-.profileAvatarConfirmButton {
+.profileAvatarDeleteButton {
+  display: flex;
+  width: fit-content;
   padding: 0;
-  padding-top: 0.5rem;
 }
 
 /* Post Components
@@ -626,7 +627,6 @@ body {
   justify-content: flex-start;
   gap: 1rem;
   width: 100%;
-  padding-bottom: 1rem;
 }
 
 .postLikes {
@@ -656,6 +656,13 @@ body {
   font-size: 1rem;
 }
 
+.postImagePreviewContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.1rem;
+}
+
 .postImagePreviewContainer,
 .postImagePreviewContainer img,
 .postImageContainer,
@@ -664,18 +671,28 @@ body {
   max-height: 50vh;
 }
 
+.postTagSelector {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  padding: 1rem;
+}
+
 /* Tag Components
 ------------------------------------------ */
 .tagContainer {
   display: flex;
   flex-direction: row;
-  gap: 0.1rem;
+  flex-wrap: wrap;
+  margin-top: 0.1rem;
+  gap: 0.2rem;
 }
 .tag {
   border: grey solid 0.1rem;
   border-radius: 1rem;
   width: fit-content;
-  padding: 0.1rem;
+  padding: 0.2rem;
+  margin: 0.1rem 0;
 }
 
 /* Comment Components
