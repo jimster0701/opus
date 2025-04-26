@@ -109,6 +109,9 @@ export function ProfilePictureWrapper(props: ProfilePictureWrapperProps) {
             width={props.width}
             height={props.height}
             className={styles.profileAvatar}
+            onErrorCapture={(e) => {
+              e.currentTarget.src = `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/v1745329655/profile-pictures/default`;
+            }}
             alt={""}
           />
         )}
