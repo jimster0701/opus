@@ -2,9 +2,9 @@
 
 import { Check, X } from "lucide-react";
 import styles from "../../index.module.css";
-import { CldImage } from "next-cloudinary";
 import { useEffect, useState } from "react";
 import { trpc } from "~/utils/trpc";
+import Image from "next/image";
 
 interface ProfilePictureWrapperProps extends ProfilePicturePreviewWrapperProps {
   session: any;
@@ -30,11 +30,11 @@ export function ProfilePictureWrapper(props: ProfilePictureWrapperProps) {
           `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/${props.imageUrl}`
         );
     }
-  }, [props.imageUrl]);
+  }, [props.imageUrl, props.session.user.image]);
 
   const handleFileChange = (e: any) => {
     const file = e.target.files[0];
-    if (file && file.type.startsWith("image/")) {
+    if (file?.type.startsWith("image/")) {
       setImage(file);
       setPreview(URL.createObjectURL(file));
     } else {
@@ -60,7 +60,7 @@ export function ProfilePictureWrapper(props: ProfilePictureWrapperProps) {
 
       if (!deleteRes.ok) {
         throw new Error(
-          deleteResult.error || "Failed to delete existing image."
+          deleteResult.error ?? "Failed to delete existing image."
         );
       }
 
@@ -97,10 +97,10 @@ export function ProfilePictureWrapper(props: ProfilePictureWrapperProps) {
     <div className={styles.flexColumn}>
       <div className={styles.profileAvatarWrapper}>
         {preview && (
-          <img src={preview} alt="Preview" className={styles.profileAvatar} />
+          <Image src={preview} alt="Preview" className={styles.profileAvatar} />
         )}
         {!preview && (
-          <img
+          <Image
             src={uploadedUrl}
             width={props.width}
             height={props.height}
@@ -160,6 +160,7 @@ export function ProfilePicturePreviewWrapper(
   const [src, setSrc] = useState(
     `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/v1745329655/profile-pictures/default`
   );
+
   useEffect(() => {
     if (props.imageUrl) {
       if (props.imageUrl.includes("google")) setSrc(props.imageUrl);
@@ -168,10 +169,11 @@ export function ProfilePicturePreviewWrapper(
           `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/${props.imageUrl}`
         );
     }
-  }, []);
+  }, [props.imageUrl]);
+
   return (
     <div className={styles.profileAvatarWrapper}>
-      <img
+      <Image
         src={src}
         width={props.width}
         height={props.height}

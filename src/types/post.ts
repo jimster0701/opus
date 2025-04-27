@@ -1,5 +1,5 @@
-import { Task } from "./task";
-import { SimpleUser } from "./user";
+import { type Task } from "./task";
+import { type SimpleUser } from "./user";
 
 export interface PostComment {
   id: number;

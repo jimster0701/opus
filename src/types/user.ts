@@ -1,7 +1,7 @@
-import { Account } from "./account";
-import { Post, Tag } from "./post";
-import { Session } from "./session";
-import { Task } from "./task";
+import { type Account } from "./account";
+import { type Post, type Tag } from "./post";
+import { type Session } from "./session";
+import { type Task } from "./task";
 
 export interface SimpleUser {
   id: string;

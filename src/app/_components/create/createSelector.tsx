@@ -1,9 +1,9 @@
 "use client";
-import { Task, TaskType } from "~/types/task";
+import { type Task } from "~/types/task";
 import styles from "../../index.module.css";
-import { Dispatch, SetStateAction, useState } from "react";
-import { Post } from "~/types/post";
-import { User } from "~/types/user";
+import { type Dispatch, type SetStateAction, useState } from "react";
+import { type Post } from "~/types/post";
+import { type User } from "~/types/user";
 import { PostboxCreate } from "./postboxCreate";
 import { defaultPost, defaultTask } from "~/const/defaultVar";
 import TaskboxCreate from "./taskboxCreate";
@@ -49,6 +49,7 @@ export default function CreateSelector(props: CreateTaskProps) {
             post={createdPost}
             user={props.user}
             availableTasks={props.availableTasks}
+            onPostChange={setCreatedPost}
           />
         </div>
       )}

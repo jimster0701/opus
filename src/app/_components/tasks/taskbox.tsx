@@ -1,7 +1,7 @@
 "use client";
-import { Task } from "~/types/task";
+import { type Task } from "~/types/task";
 import styles from "../../index.module.css";
-import { User } from "~/types/user";
+import { type User } from "~/types/user";
 
 interface TaskboxProps {
   task: Task;

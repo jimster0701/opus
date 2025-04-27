@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Home, Search, PlusCircle, Users, User } from "lucide-react";
 
 export function Navbar() {
-  const { theme, setTheme } = useThemeStore();
+  const { theme } = useThemeStore();
   return (
     <nav
       className={

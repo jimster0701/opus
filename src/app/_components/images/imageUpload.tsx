@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Image from "next/image";
 
 export default function ImageUpload() {
   const [image, setImage] = useState(null);
@@ -9,7 +10,7 @@ export default function ImageUpload() {
 
   const handleFileChange = (e: any) => {
     const file = e.target.files[0];
-    if (file && file.type.startsWith("image/")) {
+    if (file?.type.startsWith("image/")) {
       setImage(file);
       setPreview(URL.createObjectURL(file));
     } else {
@@ -55,7 +56,7 @@ export default function ImageUpload() {
       {preview && (
         <div className="mb-4">
           <p>Preview:</p>
-          <img
+          <Image
             src={preview}
             alt="Preview"
             className="rounded-lg shadow w-full"
@@ -77,7 +78,7 @@ export default function ImageUpload() {
         <div className="mt-4">
           <p>Uploaded Image:</p>
           <a href={uploadedUrl} target="_blank" rel="noopener noreferrer">
-            <img
+            <Image
               src={uploadedUrl}
               alt="Uploaded"
               className="rounded shadow w-full mt-2"

@@ -1,5 +1,5 @@
 import { auth } from "~/server/auth";
-import { api, HydrateClient } from "~/trpc/server";
+import { HydrateClient } from "~/trpc/server";
 import { redirect } from "next/navigation";
 import FriendsClient from "../_components/pages/FriendsClient";
 import { Navbar } from "../_components/navbar";

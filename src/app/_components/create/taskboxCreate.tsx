@@ -1,7 +1,7 @@
 "use client";
-import { Task } from "~/types/task";
+import { type Task } from "~/types/task";
 import styles from "../../index.module.css";
-import { User } from "~/types/user";
+import { type User } from "~/types/user";
 import { useState } from "react";
 import { api } from "~/trpc/react";
 import { useRouter } from "next/navigation";
@@ -165,7 +165,7 @@ export default function TaskboxCreate(props: TaskboxCreateProps) {
               router.push("/?selectedTab=custom");
             } catch (error: any) {
               setFormError(
-                error?.message ||
+                error?.message ??
                   "Something went wrong while creating the task."
               );
             } finally {

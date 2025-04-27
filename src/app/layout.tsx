@@ -4,6 +4,7 @@ import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
 
 import { TRPCReactProvider } from "~/trpc/react";
+import Script from "next/script";
 
 export const metadata: Metadata = {
   title: "Opus",
@@ -19,9 +20,12 @@ export default function RootLayout({
       <head>
         <link rel="manifest" href="/manifest.json" />
         <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
-        <script src="https://widget.cloudinary.com/v2.0/global/all.js"></script>
       </head>
       <body className={GeistSans.className}>
+        <Script
+          src="https://widget.cloudinary.com/v2.0/global/all.js"
+          strategy="lazyOnload"
+        />
         <TRPCReactProvider>{children}</TRPCReactProvider>
       </body>
     </html>

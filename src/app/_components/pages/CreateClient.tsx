@@ -3,7 +3,7 @@ import styles from "../../index.module.css";
 import { useThemeStore } from "~/store/themeStore";
 import CreateSelector from "../create/createSelector";
 import { useEffect, useState } from "react";
-import { Task } from "~/types/task";
+import { type Task } from "~/types/task";
 import { trpc } from "~/utils/trpc";
 
 interface CreateClientProps {
@@ -20,8 +20,8 @@ export default function CreateClient(props: CreateClientProps) {
   const customTasks = trpc.task.getCustomTasks.useQuery();
 
   const availableTasks: Task[] = [
-    ...(dailyTasks.data || []),
-    ...(customTasks.data || []),
+    ...(dailyTasks.data ?? []),
+    ...(customTasks.data ?? []),
   ];
 
   useEffect(() => {

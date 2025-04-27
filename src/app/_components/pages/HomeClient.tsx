@@ -3,7 +3,7 @@ import styles from "../../index.module.css";
 import { useThemeStore } from "~/store/themeStore";
 import TaskList from "../tasks/taskList";
 import { trpc } from "~/utils/trpc";
-import { Task } from "~/types/task";
+import { type Task } from "~/types/task";
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 
@@ -31,8 +31,8 @@ export default function HomeClient(props: HomeClientProps) {
   }
 
   const availableTasks: Task[] = [
-    ...(dailyTasks.data || []),
-    ...(customTasks.data || []),
+    ...(dailyTasks.data ?? []),
+    ...(customTasks.data ?? []),
   ];
   return (
     <main

@@ -1,9 +1,9 @@
 "use client";
 
 import styles from "../../index.module.css";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useThemeStore } from "~/store/themeStore";
-import { Session } from "~/types/session";
+import { type Session } from "~/types/session";
 import ProfileHeader from "../profile/profileHeader";
 import { AllUserPosts } from "../posts/allUserPosts";
 

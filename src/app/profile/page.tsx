@@ -7,7 +7,7 @@ import { Navbar } from "../_components/navbar";
 
 export default async function Profile() {
   const session = await auth();
-  const userId = session?.user.id || "null";
+  const userId = session?.user.id ?? "null";
   if (session)
     return (
       <HydrateClient>

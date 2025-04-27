@@ -1,10 +1,10 @@
 // Import your necessary dependencies
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 
 interface openAIRequestProps {
-  interests: String;
-  unique?: String;
+  interests: string;
+  unique?: string;
 }
 
 // This function is now internal, not exported

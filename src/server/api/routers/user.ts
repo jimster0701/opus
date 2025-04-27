@@ -1,4 +1,3 @@
-import { error } from "console";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
@@ -118,7 +117,7 @@ export const userRouter = createTRPCRouter({
           },
         });
       else {
-        throw error("Display name cannt be over 20 characters");
+        throw new Error("Display name cannt be over 20 characters");
       }
     }),
 

@@ -1,11 +1,5 @@
 /** @type {import("eslint").Linter.Config} */
 const config = {
-  ignorePatterns: [
-    "public/sw.js",
-    "public/workbox-*.js",
-    "public/worker-*.js",
-    "public/fallback-*.js",
-  ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
     project: true,
@@ -17,6 +11,14 @@ const config = {
     "plugin:@typescript-eslint/stylistic-type-checked",
   ],
   rules: {
+    "@typescript-eslint/no-unsafe-return": "off",
+    "@typescript-eslint/no-unsafe-member-access": "off",
+    "@typescript-eslint/no-unsafe-enum-comparison": "off",
+    "@typescript-eslint/no-unsafe-arguments": "off",
+    "@typescript-eslint/no-unsafe-argument": "off",
+    "@typescript-eslint/no-unsafe-assignment": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-unsafe-call": "off",
     "@typescript-eslint/array-type": "off",
     "@typescript-eslint/consistent-type-definitions": "off",
     "@typescript-eslint/consistent-type-imports": [

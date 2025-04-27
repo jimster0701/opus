@@ -1,5 +1,5 @@
 "use client";
-import { Post, PostComment } from "~/types/post";
+import { type Post, type PostComment } from "~/types/post";
 import styles from "../../index.module.css";
 import { useState } from "react";
 import { trpc } from "~/utils/trpc";

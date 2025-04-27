@@ -1,5 +1,5 @@
 "use client";
-import { Post } from "~/types/post";
+import { type Post } from "~/types/post";
 import styles from "../../index.module.css";
 import { useState } from "react";
 import Image from "next/image";
@@ -59,16 +59,21 @@ export function Postbox(props: postProps) {
       </div>
       {props.post.imageUrl && props.post.imageUrl != "none" && (
         <div className={styles.postImageContainer}>
-          <img
+          <Image
             className={styles.postImage}
-            src={cloudinaryPrefix + props.post.imageUrl!}
+            src={cloudinaryPrefix + props.post.imageUrl}
+            alt={""}
           />
         </div>
       )}
       {props.post.tags && (
         <div className={styles.tagContainer}>
           {props.post.tags.map((tag) => (
-            <p style={{ borderColor: tag.colour }} className={styles.tag}>
+            <p
+              key={tag.id}
+              style={{ borderColor: tag.colour }}
+              className={styles.tag}
+            >
               {tag.name}
             </p>
           ))}

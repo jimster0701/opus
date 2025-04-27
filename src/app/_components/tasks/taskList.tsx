@@ -1,4 +1,4 @@
-import { Task, TaskType } from "~/types/task";
+import { type Task, TaskType } from "~/types/task";
 import styles from "../../index.module.css";
 import Taskbox from "./taskbox";
 import { useState } from "react";
@@ -29,7 +29,7 @@ export default function TaskList(props: TaskListProps) {
           {props.availableTasks
             .filter((task) => task.type == TaskType.generated)
             .map((task) => (
-              <Taskbox task={task} />
+              <Taskbox key={task.id} task={task} />
             ))}
         </div>
       )}
@@ -38,7 +38,7 @@ export default function TaskList(props: TaskListProps) {
           {props.availableTasks
             .filter((task) => task.type == TaskType.custom)
             .map((task) => (
-              <Taskbox task={task} />
+              <Taskbox key={task.id} task={task} />
             ))}
         </div>
       )}

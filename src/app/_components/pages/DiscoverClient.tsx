@@ -2,7 +2,7 @@
 import styles from "../../index.module.css";
 import { useThemeStore } from "~/store/themeStore";
 import { AllFriendsPosts } from "../posts/allFriendsPosts";
-import { Session } from "~/types/session";
+import { type Session } from "~/types/session";
 import { useEffect, useState } from "react";
 
 interface DiscoverClientProps {

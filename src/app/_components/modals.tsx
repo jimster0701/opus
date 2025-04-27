@@ -6,7 +6,7 @@ import { shuffle } from "./util";
 import { useThemeStore } from "~/store/themeStore";
 import { SignOutButton } from "./settings/signOutButton";
 import { X } from "lucide-react";
-import { User } from "~/types/user";
+import { type User } from "~/types/user";
 import { ProfilePicturePreviewWrapper } from "./images/cldImageWrapper";
 
 interface modalProps {
@@ -32,7 +32,7 @@ interface followerOrFollowingProps extends modalProps {
 }
 
 export function FollowingModal(props: followerOrFollowingProps) {
-  const { theme, setTheme } = useThemeStore();
+  const { theme } = useThemeStore();
   return (
     <div className={styles.modalContainer}>
       <div className={styles.modalBackground} onClick={props.onComplete} />
@@ -64,7 +64,7 @@ export function FollowingModal(props: followerOrFollowingProps) {
   );
 }
 export function FollowerModal(props: followerOrFollowingProps) {
-  const { theme, setTheme } = useThemeStore();
+  const { theme } = useThemeStore();
   return (
     <div className={styles.modalContainer}>
       <div className={styles.modalBackground} onClick={props.onComplete} />
@@ -147,38 +147,37 @@ export function NewUserModal(props: modalProps) {
   const [selected, setSelected] = useState<string[]>([]);
   const [choices, setChoices] = useState<string[]>([]);
   const [submitError, setSubmitError] = useState([false, ""]);
-  const { theme, setTheme } = useThemeStore();
-
-  const interests = [
-    "Music",
-    "Art",
-    "Design",
-    "Sports",
-    "Fitness",
-    "Technology",
-    "Coding",
-    "Travel",
-    "Exploration",
-    "Food",
-    "Cooking",
-    "Fashion",
-    "Style",
-    "Gaming",
-    "Streaming",
-    "Photography",
-    "Reading",
-    "Writing",
-    "Crafting",
-    "DIY",
-    "Outdoor Activities",
-    "Volunteering",
-    "Community",
-    "Entrepreneurship",
-    "Business",
-    "Content Creation",
-  ];
+  const { theme } = useThemeStore();
 
   useMemo(() => {
+    const interests = [
+      "Music",
+      "Art",
+      "Design",
+      "Sports",
+      "Fitness",
+      "Technology",
+      "Coding",
+      "Travel",
+      "Exploration",
+      "Food",
+      "Cooking",
+      "Fashion",
+      "Style",
+      "Gaming",
+      "Streaming",
+      "Photography",
+      "Reading",
+      "Writing",
+      "Crafting",
+      "DIY",
+      "Outdoor Activities",
+      "Volunteering",
+      "Community",
+      "Entrepreneurship",
+      "Business",
+      "Content Creation",
+    ];
     setChoices(shuffle(interests));
   }, []);
 
@@ -217,7 +216,7 @@ export function NewUserModal(props: modalProps) {
         <p>
           Please complete your profile.
           <br />
-          Don't worry, all choices can be changed later.
+          {"Don't worry, all choices can be changed later."}
         </p>
         <form className={styles.modalForm} onSubmit={handleSubmit}>
           <label htmlFor="newDisplayName">Choose your display name:</label>

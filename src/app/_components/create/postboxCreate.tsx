@@ -1,25 +1,27 @@
 "use client";
-import { Post } from "~/types/post";
+import { type Post } from "~/types/post";
 import styles from "../../index.module.css";
-import { useState, ChangeEvent, FormEvent, useEffect } from "react";
+import { useState, type ChangeEvent, type FormEvent, useEffect } from "react";
 import { trpc } from "~/utils/trpc";
 import { X } from "lucide-react";
-import { User } from "~/types/user";
+import { type User } from "~/types/user";
 import { defaultTask } from "~/const/defaultVar";
-import { Task } from "~/types/task";
+import { type Task } from "~/types/task";
 import router from "next/router";
+import Image from "next/image";
 
 interface postboxCreateProps {
   post: Post;
   user: User;
   availableTasks: Task[];
+  onPostChange?: (updatedPost: Post) => void;
 }
 
 export function PostboxCreate(props: postboxCreateProps) {
   const [formData, setFormData] = useState({
-    name: props.post.name || "",
-    taskId: props.post.task.id || defaultTask.id,
-    description: props.post.description || "",
+    name: props.post.name ?? "",
+    taskId: props.post.task.id ?? defaultTask.id,
+    description: props.post.description ?? "",
   });
 
   const [newPostTime, setNewPostTime] = useState("");
@@ -72,7 +74,7 @@ export function PostboxCreate(props: postboxCreateProps) {
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file && file.type.startsWith("image/")) {
+    if (file?.type.startsWith("image/")) {
       setImage(file);
       setPreview(URL.createObjectURL(file));
     } else {
@@ -163,7 +165,14 @@ export function PostboxCreate(props: postboxCreateProps) {
       setPreview("");
       setError("");
       // Redirect to profile
-      router.push("/profile");
+      await router
+        .push("/profile")
+        .catch((err) => {
+          console.error("Error redirecting to profile:", err);
+        })
+        .then(() => {
+          console.log("Redirected to profile");
+        });
     } catch (error) {
       console.error("Error creating post:", error);
       setError("Failed to create post. Please try again.");
@@ -264,7 +273,7 @@ export function PostboxCreate(props: postboxCreateProps) {
                   <X />
                 </button>
               </div>
-              <img
+              <Image
                 src={preview}
                 alt="Preview"
                 className={styles.imagePreview}

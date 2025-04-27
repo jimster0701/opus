@@ -34,7 +34,7 @@ export function PWAInstallHelper() {
               Go into the page settings <EllipsisVertical />
             </p>
             <p>Scroll until you find:</p>
-            <p>"Add to home screen"</p>
+            <p>{"Add to home screen"}</p>
           </div>
           <ArrowUp
             className={styles.pwaHelperArrow}

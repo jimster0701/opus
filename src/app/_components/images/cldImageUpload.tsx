@@ -13,7 +13,6 @@ export function CldImageUploadProfile(props: CldImageUploadProps) {
         folder: "profile-pictures",
         publicId: props.id,
       }}
-      onSuccess={(result) => {}}
     />
   );
 }

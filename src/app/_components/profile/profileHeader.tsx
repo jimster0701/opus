@@ -7,7 +7,7 @@ import { useState } from "react";
 import { trpc } from "~/utils/trpc";
 import { Check, X } from "lucide-react";
 import { FollowerModal, FollowingModal } from "../modals";
-import { Session } from "~/types/session";
+import { type Session } from "~/types/session";
 
 interface ProfileHeaderProps {
   session: Session;
@@ -136,8 +136,8 @@ export default function ProfileHeader(props: ProfileHeaderProps) {
           <div className={styles.flexRow}>
             <p
               className={`${styles.profileHeaderText} ${styles.profileHeaderFollowText}`}
-              onClick={() => {
-                handleFollowingPrefetch();
+              onClick={async () => {
+                await handleFollowingPrefetch();
                 setShowFollowingModal(true);
               }}
             >
@@ -145,8 +145,8 @@ export default function ProfileHeader(props: ProfileHeaderProps) {
             </p>
             <p
               className={`${styles.profileHeaderText} ${styles.profileHeaderFollowText}`}
-              onClick={() => {
-                handleFollowersPrefetch();
+              onClick={async () => {
+                await handleFollowersPrefetch();
                 setShowFollowerModal(true);
               }}
             >
