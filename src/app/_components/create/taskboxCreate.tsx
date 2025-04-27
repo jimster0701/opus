@@ -28,62 +28,69 @@ export default function TaskboxCreate(props: TaskboxCreateProps) {
   return (
     <div>
       <div key={props.task.id} className={styles.taskCreateContainer}>
-        <div className={styles.taskCreateIconContainer}>
-          <input
-            type="text"
-            className={`${styles.taskIconInput} ${
-              iconError[0] ? styles.inputError : ""
-            }`}
-            value={props.task.icon}
-            onChange={(e) => {
-              if (e.target.value.length <= 2) {
-                setIconError([false, ""]);
+        <div className={styles.taskCreateHeader}>
+          <div className={styles.taskCreateIconContainer}>
+            <input
+              type="text"
+              className={`${styles.taskIconInput} ${
+                iconError[0] ? styles.inputError : ""
+              }`}
+              value={props.task.icon}
+              onChange={(e) => {
+                if (e.target.value.length <= 2) {
+                  setIconError([false, ""]);
+                  props.onTaskChange?.({
+                    ...props.task,
+                    icon: e.target.value,
+                  });
+                } else {
+                  setIconError([
+                    true,
+                    "Icon can be 2 characters",
+                    "or one emoji E.g.🌲, LP, :]",
+                  ]);
+                }
+              }}
+            />
+            {iconError[0] && (
+              <div className={styles.errorTooltip}>
+                {iconError[1]}
+                <br /> {iconError[2]}
+              </div>
+            )}
+          </div>
+          <div className={styles.taskContentContainer}>
+            <input
+              type="text"
+              className={styles.taskTitle}
+              value={props.task.name}
+              placeholder="Task title"
+              onChange={(e) =>
                 props.onTaskChange?.({
                   ...props.task,
-                  icon: e.target.value,
-                });
-              } else {
-                setIconError([
-                  true,
-                  "Icon can be 2 characters",
-                  "or one emoji E.g.🌲, LP, :]",
-                ]);
+                  name: e.target.value,
+                })
               }
-            }}
-          />
-          {iconError[0] && (
-            <div className={styles.errorTooltip}>
-              {iconError[1]}
-              <br /> {iconError[2]}
-            </div>
-          )}
+            />
+            <textarea
+              className={styles.taskText}
+              value={props.task.description}
+              placeholder="Do this..."
+              onChange={(e) =>
+                props.onTaskChange?.({
+                  ...props.task,
+                  description: e.target.value,
+                })
+              }
+            />
+          </div>
         </div>
-        <div className={styles.taskContentContainer}>
-          <input
-            type="text"
-            className={styles.taskTitle}
-            value={props.task.name}
-            placeholder="Task title"
-            onChange={(e) =>
-              props.onTaskChange?.({
-                ...props.task,
-                name: e.target.value,
-              })
-            }
-          />
-          <textarea
-            className={styles.taskText}
-            value={props.task.description}
-            placeholder="Do this..."
-            onChange={(e) =>
-              props.onTaskChange?.({
-                ...props.task,
-                description: e.target.value,
-              })
-            }
-          />
+        <div className={styles.taskInterestsContainer}>
           <div className={styles.opusSelectorContainer}>
-            <p>Based on:</p>
+            <div>
+              <p>Based on:</p>
+              <h6>(Your interests)</h6>
+            </div>
             <select
               multiple
               className={styles.opusSelector}

@@ -113,28 +113,34 @@ export function SettingsModal(props: modalProps) {
         <p className={styles.closeModalButton} onClick={props.onComplete}>
           <X width={45} height={45} />
         </p>
-        <h2 className={styles.opusText}>Settings</h2>
-        <h3 className={styles.opusText}>Change The Theme</h3>
-        <div className={styles.themeList}>
-          {allThemes.map((theme) => (
-            <div
-              className={styles.themeOption}
-              key={theme}
-              onClick={() => {
-                setTheme(theme);
-                updateThemePreset.mutate({ theme: theme });
-              }}
-            >
-              <p className={`${styles.themeText} ${styles.opusText}`}>
-                {theme}
-              </p>
+        <h2 className={`${styles.opusText} ${styles.settingsTitle}`}>
+          Settings
+        </h2>
+        <div className={styles.settingsContainer}>
+          <h3 className={`${styles.opusText} ${styles.themeTitle}`}>
+            Change The Theme
+          </h3>
+          <div className={styles.themeList}>
+            {allThemes.map((theme) => (
               <div
-                className={`${styles.themePreset} ${
-                  styles[`theme-${theme}-preview`]
-                }`}
-              />
-            </div>
-          ))}
+                className={styles.themeOption}
+                key={theme}
+                onClick={() => {
+                  setTheme(theme);
+                  updateThemePreset.mutate({ theme: theme });
+                }}
+              >
+                <p className={`${styles.themeText} ${styles.opusText}`}>
+                  {theme}
+                </p>
+                <div
+                  className={`${styles.themePreset} ${
+                    styles[`theme-${theme}-preview`]
+                  }`}
+                />
+              </div>
+            ))}
+          </div>
         </div>
         <SignOutButton />
       </div>
@@ -147,6 +153,7 @@ export function NewUserModal(props: modalProps) {
   const [selected, setSelected] = useState<string[]>([]);
   const [choices, setChoices] = useState<string[]>([]);
   const [submitError, setSubmitError] = useState([false, ""]);
+  const [choiceError, setChoiceError] = useState([false, ""]);
   const { theme } = useThemeStore();
 
   useMemo(() => {
@@ -246,19 +253,19 @@ export function NewUserModal(props: modalProps) {
           )}
           <h3 className={styles.modalText}>
             Below is a list of affiliations, <br />
-            Choose at least 5, These choices will influence the tasks you
+            Choose at least 3, These choices will influence the tasks you
             receive and social circles you discover.
             <br />
           </h3>
           <h4>
-            {selected.length < 5 && (
-              <>Please choose at least {5 - selected.length} more</>
+            {selected.length < 3 && (
+              <>Please choose at least {3 - selected.length} more</>
             )}
-            {selected.length >= 5 && (
-              <>You have {25 - selected.length} choices left:</>
+            {selected.length >= 3 && (
+              <>You have {15 - selected.length} choices left:</>
             )}
           </h4>
-          <h5>You can have up to 25 interests.</h5>
+          <h5>You can have up to 15 interests.</h5>
           <div className={styles.choiceList}>
             {choices.map((tag) => (
               <button
@@ -267,7 +274,19 @@ export function NewUserModal(props: modalProps) {
                 className={`${styles.choiceButton} ${
                   selected.includes(tag) ? `${styles.selectedChoiceButton}` : ""
                 }`}
-                onClick={() => toggleSelected(tag)}
+                onClick={() => {
+                  if (selected.includes(tag)) {
+                    toggleSelected(tag);
+                    setChoiceError([false, ""]);
+                  }
+
+                  if (selected.length == 15) {
+                    setChoiceError([
+                      true,
+                      "You can only select up to 15 interests",
+                    ]);
+                  } else toggleSelected(tag);
+                }}
               >
                 {tag}
               </button>
@@ -275,12 +294,17 @@ export function NewUserModal(props: modalProps) {
           </div>
           <button
             type="submit"
-            disabled={selected.length < 5 || submitError[0] == true}
+            disabled={
+              selected.length < 3 ||
+              selected.length > 15 ||
+              submitError[0] == true ||
+              choiceError[0] == true
+            }
           >
             Go
           </button>
-          {submitError[0] && (
-            <div className={styles.formError}>{submitError[1]}</div>
+          {choiceError[0] && (
+            <div className={styles.formError}>{choiceError[1]}</div>
           )}
         </form>
       </div>

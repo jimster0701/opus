@@ -13,6 +13,43 @@ export const userRouter = createTRPCRouter({
       return user ?? null;
     }),
 
+  getFriends: protectedProcedure.query(async ({ ctx }) => {
+    const currentUserId = ctx.session.user.id;
+
+    const friends = await ctx.db.follow.findMany({
+      where: {
+        OR: [{ followerId: currentUserId }, { followingId: currentUserId }],
+      },
+      include: {
+        follower: true,
+        following: true,
+      },
+    });
+
+    // Filter and map to return unique friend details
+    const friendList = friends.map((relation) => {
+      return relation.followerId === currentUserId
+        ? relation.following
+        : relation.follower;
+    });
+
+    return friendList;
+  }),
+
+  deleteUser: protectedProcedure.mutation(async ({ ctx }) => {
+    const user = await ctx.db.user.findUnique({
+      where: { id: ctx.session.user.id },
+    });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    return await ctx.db.user.delete({
+      where: { id: ctx.session.user.id },
+    });
+  }),
+
   getImageUrl: protectedProcedure
     .input(z.object({ userId: z.string().min(1) }))
     .query(async ({ ctx, input }) => {

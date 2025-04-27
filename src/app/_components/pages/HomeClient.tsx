@@ -55,6 +55,9 @@ export default function HomeClient(props: HomeClientProps) {
           )}
         </h1>
         <br />
+        <p className={`${styles.homeDescription} ${styles.opusText}`}>
+          Here are your tasks for today:
+        </p>
         <TaskList
           preselectedTab={preselectedTab}
           availableTasks={availableTasks}

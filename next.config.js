@@ -14,6 +14,11 @@ const config = {
         hostname: "res.cloudinary.com",
         pathname: "/**", // Allow all paths under res.cloudinary.com
       },
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+        pathname: "/**",
+      },
     ],
   },
 };

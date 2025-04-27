@@ -26,21 +26,22 @@ export default function CreateSelector(props: CreateTaskProps) {
     <div className={styles.createContainer}>
       <div className={styles.taskTabContainer}>
         <button
-          autoFocus={selectedTab === "post" || selectedTab == ""}
-          onClick={() => {
-            setSelectedTab("post");
-            props.setSelectedTab("post");
-          }}
-        >
-          Create post
-        </button>
-        <button
+          autoFocus={selectedTab === "task" || selectedTab == ""}
           onClick={() => {
             setSelectedTab("task");
             props.setSelectedTab("task");
           }}
         >
           Create task
+        </button>
+        <button
+          autoFocus={selectedTab === "post"}
+          onClick={() => {
+            setSelectedTab("post");
+            props.setSelectedTab("post");
+          }}
+        >
+          Create post
         </button>
       </div>
       {selectedTab == "post" && (

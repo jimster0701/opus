@@ -92,7 +92,6 @@ export function ProfilePictureWrapper(props: ProfilePictureWrapperProps) {
       setUploading(false);
     }
   };
-
   return (
     <div className={styles.flexColumn}>
       <div className={styles.profileAvatarWrapper}>
