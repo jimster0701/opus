@@ -1,6 +1,6 @@
 import { auth } from "~/server/auth";
 import { api, HydrateClient } from "~/trpc/server";
-import styles from "./index.module.css";
+import styles from "../../index.module.css";
 
 export default async function profile() {
   const session = await auth();
