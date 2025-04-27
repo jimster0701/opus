@@ -173,6 +173,42 @@ body {
     max-width: 1536px;
   }
 }
+/* PWA Helper components
+------------------------------------------ */
+.pwaHelperContainer {
+  display: flex;
+  z-index: 10;
+  width: 100%;
+  top: 0px;
+  position: absolute;
+  justify-content: flex-end;
+
+  padding: 0.25rem 1rem;
+}
+
+.pwaHelperTextContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+  color: white;
+  font-size: medium;
+  padding: 1rem 0.5rem;
+  border-radius: 1rem;
+  margin-top: 2rem;
+  background: var(--modal-background);
+}
+
+.pwaHelperTextContainer p {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0;
+  align-items: center;
+}
+
+.pwaHelperArrow {
+  rotate: 30deg;
+}
 
 /* Header & Navigation
 ------------------------------------------ */
