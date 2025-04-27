@@ -4,6 +4,7 @@ import { useThemeStore } from "~/store/themeStore";
 import { AllFriendsPosts } from "../posts/allFriendsPosts";
 import { type Session } from "~/types/session";
 import { useEffect, useState } from "react";
+import { AllInterestPosts } from "../posts/allInterestPosts";
 
 interface DiscoverClientProps {
   session: Session;
@@ -46,6 +47,12 @@ export default function DiscoverClient(props: DiscoverClientProps) {
         </div>
         {(selectedTab == "friends" || selectedTab == "") && (
           <AllFriendsPosts userId={props.session?.user.id} />
+        )}
+        {selectedTab == "discover" && (
+          <AllInterestPosts
+            userId={props.session?.user.id}
+            session={props.session}
+          />
         )}
       </div>
     </main>

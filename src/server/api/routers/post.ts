@@ -105,6 +105,32 @@ export const postRouter = createTRPCRouter({
       return post ?? null;
     }),
 
+  getAllInterest: protectedProcedure
+    .input(z.object({ interests: z.array(z.string().min(1)) }))
+    .query(async ({ ctx, input }) => {
+      const post = await ctx.db.post.findMany({
+        orderBy: { createdAt: "desc" },
+        where: { task: { interests: { hasSome: input.interests } } },
+        include: {
+          createdBy: true,
+          comments: {
+            include: {
+              createdBy: {
+                select: {
+                  id: true,
+                  displayName: true,
+                  name: true,
+                  image: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      return post ?? null;
+    }),
+
   likePost: protectedProcedure
     .input(z.object({ postId: z.number(), userId: z.string().min(1) }))
     .mutation(async ({ ctx, input }) => {
