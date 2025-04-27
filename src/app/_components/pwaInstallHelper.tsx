@@ -24,7 +24,10 @@ export function PWAInstallHelper() {
     checkStandalone();
     checkMobile();
   }, []);
-  if (!isStandalone && isMobile)
+
+  console.log("isStandalone", isStandalone);
+  console.log("isMobile", isMobile);
+  if (isMobile && !isStandalone)
     return (
       <div className={styles.modalContainer}>
         <div className={styles.modalBackground}></div>
