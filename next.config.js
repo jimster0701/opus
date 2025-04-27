@@ -6,14 +6,28 @@ import "./src/env.js";
 import withPWA from "next-pwa";
 
 /** @type {import('next').NextConfig} */
-const config = {};
-
-const pwaConfig = withPWA({
-  dest: "public",
-  disable: process.env.NODE_ENV === "development",
-  register: true,
-  skipWaiting: true,
-});
+const config = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        pathname: "/**", // Allow all paths under res.cloudinary.com
+      },
+    ],
+  },
+};
+const finalConfig =
+  process.env.NODE_ENV === "development"
+    ? config
+    : withPWA(
+        {
+          dest: "public",
+          register: true,
+          skipWaiting: true,
+        },
+        config
+      );
 
 // Export safely
-export default pwaConfig(config);
+export default finalConfig;
