@@ -24,6 +24,9 @@ export default function Attributors() {
       >
         Setting icons created by Phoenix Group - Flaticon
       </a>
+      <a href="https://www.flaticon.com/free-icons/user" title="user icons">
+        User icons created by Becris - Flaticon
+      </a>
     </div>
   );
 }
