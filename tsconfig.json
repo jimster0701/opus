@@ -27,7 +27,11 @@
     "baseUrl": ".",
     "paths": {
       "~/*": ["./src/*"]
-    }
+    },
+
+    /* Types */
+    "typeRoots": ["./node_modules/@types", "./types"],
+    "types": []
   },
   "include": [
     ".eslintrc.cjs",

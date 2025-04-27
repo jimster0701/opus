@@ -17,6 +17,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
         <script src="https://widget.cloudinary.com/v2.0/global/all.js"></script>
       </head>
       <body className={GeistSans.className}>
