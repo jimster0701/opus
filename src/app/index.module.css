@@ -1346,22 +1346,6 @@
 /* Theme Switcher
 ------------------------------------------ */
 /* Update text color based on theme */
-:root {
-  /* Default Theme Variables */
-
-  --background-gradient: linear-gradient(to bottom, #a400ff, #e1b0ff, #f0e7ff);
-  --header-gradient: linear-gradient(90deg, #a400ff, #e1b0ff);
-  --text-glow: linear-gradient(to top left, #a400ff 0%, #e1b0ff 100%);
-  --text-primary: #ffffff;
-  --text-secondary: #6c6c6c;
-  --accent-color: #a400ff;
-  --modal-background: radial-gradient(
-    circle at center,
-    #bd41ff 0%,
-    #a400ff 100%
-  );
-}
-
 .opusText {
   color: var(--text-primary);
 }
