@@ -188,7 +188,7 @@ export function NewUserModal(props: modalProps) {
     setChoices(shuffle(interests));
   }, []);
 
-  const updateTags = trpc.user.updateInterests.useMutation({});
+  const updateInterests = trpc.user.updateInterests.useMutation({});
   const updateDisplayName = trpc.user.updateDisplayName.useMutation({
     onSuccess: () => {
       props.onComplete();
@@ -197,7 +197,7 @@ export function NewUserModal(props: modalProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    updateTags.mutate({ interests: selected });
+    updateInterests.mutate({ interests: selected });
     updateDisplayName.mutate({ newDisplayName: displayName });
   };
 
@@ -267,16 +267,18 @@ export function NewUserModal(props: modalProps) {
           </h4>
           <h5>You can have up to 15 interests.</h5>
           <div className={styles.choiceList}>
-            {choices.map((tag) => (
+            {choices.map((interest) => (
               <button
                 type="button"
-                key={tag}
+                key={interest}
                 className={`${styles.choiceButton} ${
-                  selected.includes(tag) ? `${styles.selectedChoiceButton}` : ""
+                  selected.includes(interest)
+                    ? `${styles.selectedChoiceButton}`
+                    : ""
                 }`}
                 onClick={() => {
-                  if (selected.includes(tag)) {
-                    toggleSelected(tag);
+                  if (selected.includes(interest)) {
+                    toggleSelected(interest);
                     setChoiceError([false, ""]);
                   }
 
@@ -285,10 +287,10 @@ export function NewUserModal(props: modalProps) {
                       true,
                       "You can only select up to 15 interests",
                     ]);
-                  } else toggleSelected(tag);
+                  } else toggleSelected(interest);
                 }}
               >
-                {tag}
+                {interest}
               </button>
             ))}
           </div>

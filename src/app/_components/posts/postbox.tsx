@@ -66,15 +66,15 @@ export function Postbox(props: postProps) {
           />
         </div>
       )}
-      {props.post.tags && (
+      {props.post.task.interests && (
         <div className={styles.tagContainer}>
-          {props.post.tags.map((tag) => (
+          {props.post.task.interests.map((interest) => (
             <p
-              key={tag.id}
-              style={{ borderColor: tag.colour }}
+              key={interest[1]}
+              style={{ borderColor: interest[3] }}
               className={styles.tag}
             >
-              {tag.name}
+              {interest[0]}
             </p>
           ))}
         </div>

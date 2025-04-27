@@ -28,23 +28,13 @@ export function PostboxCreate(props: postboxCreateProps) {
   const [image, setImage] = useState<File | null>(null);
   const [preview, setPreview] = useState<string>("");
   const [uploading, setUploading] = useState(false);
-  const [selectedTags, setSelectedTags] = useState<number[]>([]);
   const [error, setError] = useState("");
   const utils = trpc.useUtils();
-
-  const getTags = trpc.tag.getAllTags.useQuery();
 
   const createPost = trpc.post.create.useMutation();
   const updateImage = trpc.post.updateImage.useMutation({
     onSuccess: async () => {
       await utils.post.invalidate();
-    },
-  });
-
-  const updateTags = trpc.post.updateTags.useMutation({
-    onSuccess: async () => {
-      await utils.post.invalidate();
-      setSelectedTags([]);
     },
   });
 
@@ -60,16 +50,6 @@ export function PostboxCreate(props: postboxCreateProps) {
       ...formData,
       [name]: value,
     });
-  };
-
-  const handleTagSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    const ids = [...selectedTags, Number(value)];
-    setFormData({
-      ...formData,
-      [name]: ids,
-    });
-    setSelectedTags(ids);
   };
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -145,22 +125,12 @@ export function PostboxCreate(props: postboxCreateProps) {
         }
       }
 
-      // If there are tags, upload the tags
-      if (selectedTags.length > 0) {
-        // Update the post with the tags
-        await updateTags.mutateAsync({
-          tags: selectedTags,
-          id: newPost.id,
-        });
-      }
-
       // Reset form after successful submission
       setFormData({
         name: "",
         taskId: 0,
         description: "",
       });
-      setSelectedTags([]);
       setImage(null);
       setPreview("");
       setError("");
@@ -281,52 +251,8 @@ export function PostboxCreate(props: postboxCreateProps) {
             </div>
           </div>
         )}
-        <div className={styles.tagContainer}>
-          {getTags.data
-            ?.filter((tag) => selectedTags.includes(tag.id))
-            .map((tag) => (
-              <p
-                key={tag.id}
-                style={{ borderColor: tag.colour }}
-                className={styles.tag}
-                onClick={() => {
-                  setSelectedTags(selectedTags.filter((t) => t != tag.id));
-                }}
-              >
-                {tag.icon}
-                {tag.name} X
-              </p>
-            ))}
-        </div>
-        <div className={styles.postTagSelector}>
-          <p>Tags:</p>
-          {!getTags.isLoading && (
-            <select
-              multiple
-              name="tags"
-              value={selectedTags.map(String)}
-              onChange={handleTagSelectChange}
-            >
-              {getTags.data
-                ?.filter((tag) => !selectedTags.includes(tag.id))
-                .map((tag) => (
-                  <option
-                    style={{ borderColor: tag.colour }}
-                    key={tag.id}
-                    value={tag.id}
-                  >
-                    {tag.icon}
-                    {tag.name}
-                  </option>
-                ))}
-            </select>
-          )}
-          {getTags.isLoading && <div>Loading...</div>}
-          {getTags.error && (
-            <div className={styles.formError}>{getTags.error.message}</div>
-          )}
-        </div>
       </div>
+
       <div className={styles.postSubmitContainer}>
         <button
           type="submit"

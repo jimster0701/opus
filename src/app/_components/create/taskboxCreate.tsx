@@ -85,9 +85,9 @@ export default function TaskboxCreate(props: TaskboxCreateProps) {
             />
           </div>
         </div>
-        <div className={styles.taskInterestsContainer}>
+        <div className={styles.taskCreateInterestContainer}>
           <div className={styles.opusSelectorContainer}>
-            <div>
+            <div className={styles.taskCreateSelectorText}>
               <p>Based on:</p>
               <h6>(Your interests)</h6>
             </div>

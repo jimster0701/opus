@@ -24,7 +24,7 @@
   border: none;
   border-radius: 0.5rem;
   background-color: #d7d7d7a5;
-  width: 60%;
+  width: 65%;
   height: fit-content;
   box-sizing: border-box;
   font-size: 1rem;
@@ -713,20 +713,6 @@
   max-height: 50vh;
 }
 
-.postTagSelector {
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-}
-
-.postTagSelector select {
-  display: flex;
-  padding: 0.25rem;
-  margin-left: 1rem;
-  max-height: 30vh;
-  width: 80%;
-}
-
 /* Tag Components
 ------------------------------------------ */
 .tagContainer {
@@ -982,6 +968,19 @@
   .taskCreateIconContainer input {
     font-size: large;
   }
+}
+
+.taskCreateInterestContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.taskCreateSelectorText * {
+  margin: 0;
 }
 
 /* Task Components
