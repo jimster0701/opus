@@ -16,3 +16,9 @@ a {
 * {
   box-sizing: border-box;
 }
+
+/* Hide scrollbars globally */
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent; /* make scrollbar transparent */
+}
