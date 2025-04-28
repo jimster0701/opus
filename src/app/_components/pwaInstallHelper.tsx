@@ -4,6 +4,7 @@ import styles from "../index.module.css";
 import { useEffect, useState } from "react";
 export function PWAInstallHelper() {
   const [showModal, setShowModal] = useState(false);
+  const [userAgent, setUserAgent] = useState("");
   const [isStandalone, setIsStandalone] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -18,6 +19,9 @@ export function PWAInstallHelper() {
     const checkMobile = () => {
       const isMobileDevice = /iPhone|iPad|iPod|Android/i.test(
         navigator.userAgent
+      );
+      setUserAgent(
+        navigator.userAgent.match(/iPhone|iPad|iPod|Android/)?.[0] ?? String()
       );
       setIsMobile(isMobileDevice);
     };
@@ -52,7 +56,7 @@ export function PWAInstallHelper() {
     }
   }, [isMobile, isStandalone]);
 
-  if (showModal && isChrome()) {
+  if (showModal && userAgent == "Android" && isChrome()) {
     return (
       <div className={styles.modalContainer}>
         <div
