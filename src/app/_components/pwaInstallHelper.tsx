@@ -46,9 +46,11 @@ export function PWAInstallHelper() {
     return false;
   };
 
-  if (isMobile && !isStandalone) {
-    setShowModal(true);
-  }
+  useEffect(() => {
+    if (isMobile && !isStandalone) {
+      setShowModal(true);
+    }
+  }, [isMobile, isStandalone]);
 
   if (showModal && isChrome()) {
     return (

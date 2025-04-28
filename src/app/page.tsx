@@ -23,7 +23,7 @@ export default async function Home() {
   }
   return (
     <HydrateClient>
-      {<PWAInstallHelper />}
+      <PWAInstallHelper />
       <NotLoggedIn />
     </HydrateClient>
   );
