@@ -11,7 +11,7 @@ interface TaskboxProps {
 }
 
 export default function Taskbox(props: TaskboxProps) {
-  const interests = trpc.interest.getInterests.useQuery({
+  const interests = trpc.interest.getInterestsById.useQuery({
     interestIds: props.task.interestIds,
   });
   return (

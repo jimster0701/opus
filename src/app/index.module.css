@@ -578,6 +578,10 @@
   margin: 0;
 }
 
+.profileHeaderUsernameForm {
+  flex-wrap: nowrap;
+}
+
 .profileHeaderFollowText {
   font-size: medium;
   font-weight: normal;

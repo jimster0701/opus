@@ -7,7 +7,7 @@ export const userRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const user = await ctx.db.user.findUnique({
         where: { id: input.id },
-        include: { followers: true, following: true },
+        include: { followers: true, following: true, createdInterests: true },
       });
 
       return user ?? null;
@@ -36,18 +36,15 @@ export const userRouter = createTRPCRouter({
     return friendList;
   }),
 
-  deleteUser: protectedProcedure.mutation(async ({ ctx }) => {
-    const user = await ctx.db.user.findUnique({
-      where: { id: ctx.session.user.id },
+  getCreatedInterests: protectedProcedure.query(async ({ ctx }) => {
+    const createdInterests = await ctx.db.user.findUnique({
+      where: {
+        id: ctx.session.user.id,
+      },
+      select: { createdInterests: true },
     });
 
-    if (!user) {
-      throw new Error("User not found");
-    }
-
-    return await ctx.db.user.delete({
-      where: { id: ctx.session.user.id },
-    });
+    return createdInterests;
   }),
 
   getImageUrl: protectedProcedure

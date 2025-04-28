@@ -34,7 +34,7 @@ export default function HomeClient(props: HomeClientProps) {
     ...(dailyTasks.data ?? []),
     ...(customTasks.data ?? []),
   ];
-  console.log(customTasks.data);
+
   return (
     <main
       className={
@@ -56,9 +56,9 @@ export default function HomeClient(props: HomeClientProps) {
           )}
         </h1>
         <br />
-        <p className={`${styles.homeDescription} ${styles.opusText}`}>
+        <h3 className={`${styles.homeDescription} ${styles.opusText}`}>
           Here are your tasks for today:
-        </p>
+        </h3>
         <TaskList
           preselectedTab={preselectedTab}
           availableTasks={availableTasks}

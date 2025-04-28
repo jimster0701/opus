@@ -21,7 +21,7 @@ export const interestRouter = createTRPCRouter({
       });
     }),
 
-  getInterests: protectedProcedure
+  getInterestsById: protectedProcedure
     .input(
       z.object({
         interestIds: z.array(z.number().min(1)),

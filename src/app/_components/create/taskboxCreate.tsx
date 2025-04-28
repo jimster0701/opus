@@ -3,25 +3,35 @@ import styles from "../../index.module.css";
 import { type Task } from "~/types/task";
 import { type User } from "~/types/user";
 import { type Interest } from "~/types/interest";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { api } from "~/trpc/react";
 import { useRouter } from "next/navigation";
 import { defaultInterests } from "~/const/defaultVar";
+import { trpc } from "~/utils/trpc";
 
 interface TaskboxCreateProps {
   task: Task;
   user: User;
-  onTaskChange?: (updatedTask: Task) => void;
+  onTaskChange: (updatedTask: Task) => void;
 }
 
 export default function TaskboxCreate(props: TaskboxCreateProps) {
   const router = useRouter();
 
-  const [selectedInterests, setSelectedInterests] = useState<number[]>([]);
-  const [availableInterests, setAvailableInterests] = useState<Interest[]>([
-    ...defaultInterests,
-    ...props.user.createdInterests,
-  ]);
+  const createdInterests = trpc.user.getCreatedInterests.useQuery();
+
+  const [selectedInterests, setSelectedInterests] = useState<Interest[]>([]);
+
+  const [availableInterests, setAvailableInterests] =
+    useState<Interest[]>(defaultInterests);
+  useEffect(() => {
+    if (createdInterests.isLoading) return;
+    setAvailableInterests((prev) => [
+      ...prev,
+      ...(createdInterests.data?.createdInterests as Interest[]),
+    ]);
+  }, [createdInterests.data?.createdInterests, createdInterests.isLoading]);
+
   const [removedInterests, setRemovedInterests] = useState<Interest[]>([]);
   const [iconError, setIconError] = useState([false, ""]);
   const [formError, setFormError] = useState("");
@@ -100,11 +110,14 @@ export default function TaskboxCreate(props: TaskboxCreateProps) {
               onChange={(e) => {
                 const value = e.target.value;
                 if (value) {
-                  setSelectedInterests([...selectedInterests, Number(value)]);
+                  const interest = availableInterests.find(
+                    (i) => i.id == Number(value)
+                  );
+                  setSelectedInterests([...selectedInterests, interest!]);
 
                   setRemovedInterests([
                     ...removedInterests,
-                    ...availableInterests.filter((i) => (i.id = Number(value))),
+                    ...availableInterests.filter((i) => i.id == Number(value)),
                   ]);
 
                   setAvailableInterests(
@@ -125,27 +138,30 @@ export default function TaskboxCreate(props: TaskboxCreateProps) {
               ))}
             </select>
           </div>
-          <div className={styles.taskInterestList}>
-            {selectedInterests.map((interest, index) => (
-              <div className={styles.taskChoosenInterest} key={index}>
-                <p
-                  className={styles.taskChoosenInterestText}
-                  onClick={() => {
-                    const newArray = selectedInterests.filter(
-                      (i) => i != interest
-                    );
-                    setSelectedInterests(newArray);
-                    setAvailableInterests([
-                      ...availableInterests,
-                      ...removedInterests.filter((i) => i.id == interest),
-                    ]);
-                  }}
-                >
-                  {interest} X
-                </p>
-              </div>
-            ))}
-          </div>
+        </div>
+        <div className={styles.taskInterestList}>
+          {selectedInterests.map((interest, index) => (
+            <div className={styles.taskChoosenInterest} key={index}>
+              <p
+                className={styles.taskChoosenInterestText}
+                onClick={() => {
+                  const newArray = selectedInterests.filter(
+                    (i) => i != interest
+                  );
+                  setSelectedInterests(newArray);
+                  setRemovedInterests(
+                    removedInterests.filter((i) => i.id != interest.id)
+                  );
+                  setAvailableInterests([
+                    ...availableInterests,
+                    ...removedInterests.filter((i) => i.id == interest.id),
+                  ]);
+                }}
+              >
+                {interest.name} X
+              </p>
+            </div>
+          ))}
         </div>
       </div>
       <div className={styles.taskSubmitContainer}>
@@ -178,7 +194,7 @@ export default function TaskboxCreate(props: TaskboxCreateProps) {
               await createTask.mutateAsync({
                 name: props.task.name,
                 icon: props.task.icon,
-                interestIds: selectedInterests,
+                interestIds: selectedInterests.map((i) => i.id),
                 description: props.task.description,
               });
               // Success redirect and show new task

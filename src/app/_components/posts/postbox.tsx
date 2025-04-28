@@ -17,7 +17,7 @@ export function Postbox(props: postProps) {
   const likePost = trpc.post.likePost.useMutation();
   const unlikePost = trpc.post.unlikePost.useMutation();
 
-  const interests = trpc.interest.getInterests.useQuery({
+  const interests = trpc.interest.getInterestsById.useQuery({
     interestIds: props.post.task.interestIds,
   });
 

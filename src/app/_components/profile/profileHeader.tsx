@@ -84,7 +84,10 @@ export default function ProfileHeader(props: ProfileHeaderProps) {
                 )}
               </>
             ) : (
-              <form className={styles.flexRow} onSubmit={handleSubmit}>
+              <form
+                className={`${styles.flexRow} ${styles.profileHeaderUsernameForm}`}
+                onSubmit={handleSubmit}
+              >
                 <input
                   type="text"
                   name="newDisplayName"

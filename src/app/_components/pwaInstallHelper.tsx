@@ -3,6 +3,7 @@ import { ArrowUp, EllipsisVertical, Smartphone } from "lucide-react";
 import styles from "../index.module.css";
 import { useEffect, useState } from "react";
 export function PWAInstallHelper() {
+  const [showModal, setShowModal] = useState(false);
   const [isStandalone, setIsStandalone] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -28,8 +29,7 @@ export function PWAInstallHelper() {
   const isChrome = () => {
     if (typeof window !== "undefined" && typeof navigator !== "undefined") {
       const uaData = (navigator as any).userAgentData;
-      if (uaData && uaData.brands) {
-        console.log(uaData.brands);
+      if (uaData?.brands.length > 0) {
         const isChrome = uaData.brands.some((brand: any) =>
           brand.brand.includes("Google Chrome")
         );
@@ -45,10 +45,18 @@ export function PWAInstallHelper() {
     }
     return false;
   };
-  if (isChrome() && isMobile && !isStandalone) {
+
+  if (isMobile && !isStandalone) {
+    setShowModal(true);
+  }
+
+  if (showModal && isChrome()) {
     return (
       <div className={styles.modalContainer}>
-        <div className={styles.modalBackground}></div>
+        <div
+          className={styles.modalBackground}
+          onClick={() => setShowModal(false)}
+        ></div>
         <div className={styles.pwaHelperContainer}>
           <div className={styles.pwaHelperTextContainer}>
             <p>
@@ -68,10 +76,13 @@ export function PWAInstallHelper() {
         </div>
       </div>
     );
-  } else if (isMobile && !isChrome()) {
+  } else if (showModal && !isChrome()) {
     return (
       <div className={styles.modalContainer}>
-        <div className={styles.modalBackground}></div>
+        <div
+          className={styles.modalBackground}
+          onClick={() => setShowModal(false)}
+        ></div>
         <div className={styles.pwaHelperContainer}>
           <div className={styles.pwaHelperTextContainer}>
             <h2>Welcome to Opus</h2>

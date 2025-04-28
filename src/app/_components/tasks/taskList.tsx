@@ -52,7 +52,7 @@ export default function TaskList(props: TaskListProps) {
             ))}
           {customCount == 0 && (
             <p className={styles.noTaskText}>
-              You can create a task using the create page :)
+              Create a task using the create page.
             </p>
           )}
         </div>

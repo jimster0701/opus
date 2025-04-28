@@ -159,10 +159,8 @@ export function NewUserModal(props: modalProps) {
   const { theme } = useThemeStore();
 
   useMemo(() => {
-    console.log(defaultInterests.length);
     setChoices(shuffle(defaultInterests));
-    console.log(choices.length);
-  }, [choices.length]);
+  }, []);
 
   const updateInterests = trpc.user.updateInterests.useMutation({});
   const updateDisplayName = trpc.user.updateDisplayName.useMutation({
