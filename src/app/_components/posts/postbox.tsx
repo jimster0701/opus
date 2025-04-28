@@ -5,6 +5,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { trpc } from "~/utils/trpc";
 import { CommentSection } from "./commentSection";
+import { ProfilePicturePreviewWrapper } from "../images/cldImageWrapper";
 
 interface postProps {
   post: Post;
@@ -37,13 +38,24 @@ export function Postbox(props: postProps) {
     <div className={styles.postContainer} key={props.post.id}>
       <div className={styles.postHeader}>
         <div className={styles.flexRow}>
-          <h2>{props.post.createdBy.displayName}</h2>
-          <p className={styles.postText}>-</p>
-          <p className={styles.postText}>{props.post.name}</p>
+          <ProfilePicturePreviewWrapper
+            id={props.post.createdBy.id}
+            imageUrl={props.post.createdBy.image}
+            width={10}
+            height={10}
+          />
+          <h2 className={styles.postHeaderH2}>
+            {props.post.createdBy.displayName}
+          </h2>
         </div>
-        <h3>{props.post.createdAt.toLocaleString()}</h3>
+        <h3 className={styles.postHeaderDate}>
+          {props.post.createdAt.toLocaleString()}
+        </h3>
       </div>
-      <div className={styles.postContent}>
+      <div className={styles.postTitleContainer}>
+        <h3 className={styles.postTitle}>{props.post.name}</h3>
+      </div>
+      <div className={styles.postContentContainer}>
         <div className={styles.postLikes} onClick={() => handleLike()}>
           {liked ? (
             <Image
@@ -67,6 +79,8 @@ export function Postbox(props: postProps) {
             className={styles.postImage}
             src={cloudinaryPrefix + props.post.imageUrl}
             alt={""}
+            width={100}
+            height={100}
           />
         </div>
       )}
