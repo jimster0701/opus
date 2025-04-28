@@ -64,13 +64,13 @@ export const userRouter = createTRPCRouter({
     }),
 
   getNewUsersByInterests: protectedProcedure
-    .input(z.object({ interests: z.array(z.string().min(1)) }))
+    .input(z.object({ interestIds: z.array(z.number()) }))
     .mutation(async ({ ctx, input }) => {
       const currentUserId = ctx.session.user.id;
       const users = await ctx.db.user.findMany({
         orderBy: { id: "desc" },
         where: {
-          interests: { hasSome: input.interests },
+          interestIds: { hasSome: input.interestIds },
           NOT: { followers: { some: { followerId: currentUserId } } },
         },
       });
@@ -159,11 +159,11 @@ export const userRouter = createTRPCRouter({
     }),
 
   updateInterests: protectedProcedure
-    .input(z.object({ interests: z.array(z.string().min(1)) }))
+    .input(z.object({ interestIds: z.array(z.number()) }))
     .mutation(async ({ ctx, input }) => {
       return ctx.db.user.update({
         where: { id: ctx.session.user.id },
-        data: { interests: input.interests },
+        data: { interestIds: input.interestIds },
       });
     }),
 
