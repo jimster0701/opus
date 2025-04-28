@@ -45,7 +45,7 @@ export default function TaskboxCreate(props: TaskboxCreateProps) {
           <div className={styles.taskCreateIconContainer}>
             <input
               type="text"
-              className={`${styles.taskIconInput} ${
+              className={`${styles.taskCreateIconInput} ${
                 iconError[0] ? styles.inputError : ""
               }`}
               value={props.task.icon}
@@ -128,7 +128,7 @@ export default function TaskboxCreate(props: TaskboxCreateProps) {
             >
               {availableInterests.map((interest) => (
                 <option
-                  className={styles.selectOption}
+                  className={styles.taskCreateSelectOption}
                   key={interest.id}
                   value={interest.id}
                 >
@@ -141,9 +141,16 @@ export default function TaskboxCreate(props: TaskboxCreateProps) {
         </div>
         <div className={styles.taskInterestList}>
           {selectedInterests.map((interest, index) => (
-            <div className={styles.taskChoosenInterest} key={index}>
+            <div
+              className={styles.glowingNugget}
+              style={{
+                border: `${interest.colour} 1px solid`,
+                ["--text-glow" as any]: `linear-gradient(to bottom right,rgb(0, 0, 0) , ${interest.colour})`,
+              }}
+              key={index}
+            >
               <p
-                className={styles.taskChoosenInterestText}
+                className={styles.glowingNuggetText}
                 onClick={() => {
                   const newArray = selectedInterests.filter(
                     (i) => i != interest

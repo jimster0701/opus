@@ -24,14 +24,11 @@
   border: none;
   border-radius: 0.5rem;
   background-color: #d7d7d7a5;
-  width: 65%;
   height: fit-content;
   box-sizing: border-box;
   font-size: 1rem;
-}
-
-.selectOption {
-  margin: 0;
+  max-width: 30vw;
+  text-overflow: ellipsis;
 }
 
 /* Flexbox utilities */
@@ -130,8 +127,9 @@
   gap: 0;
   padding: 2rem 1rem;
   overflow: scroll;
-  max-height: 84vh;
+  max-height: 87.5vh;
 }
+
 /* Responsive container breakpoints */
 @media (min-width: 640px) {
   .container {
@@ -257,6 +255,7 @@
   bottom: 0;
   z-index: 100;
   box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+  height: 10vh;
 }
 
 .navbarItem {
@@ -623,6 +622,12 @@
   transition: background-color 0.3s ease;
 }
 
+@media (max-width: 500px) {
+  .profileAvatarPreview {
+    width: 10vw;
+    height: 10vw;
+  }
+}
 @media (max-width: 640px) {
   .profileAvatar {
     width: 20vw;
@@ -673,10 +678,16 @@
   justify-content: space-between;
   gap: 0.5rem;
   width: 100%;
+  padding: 0.5rem 0;
 }
 
-.postHeader > div > h2 {
+.postHeaderH2 {
   font-size: medium;
+}
+
+.postHeaderDate,
+.postHeaderH2 {
+  margin: 0;
 }
 
 .postHeader > h3 {
@@ -684,13 +695,22 @@
   width: min-content;
 }
 
-.postContent {
+.postTitleContainer {
+  display: flex;
+  width: 100%;
+}
+.postTitle {
+  margin: 0.5em 0;
+}
+
+.postContentContainer {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
   justify-content: flex-start;
-  gap: 0.1rem;
+  gap: 2vw;
   width: 100%;
+  margin-bottom: 1rem;
 }
 
 .postLikes {
@@ -706,21 +726,26 @@
   margin: 0;
 }
 
-.postImagePreviewContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.1rem;
+.postCreateImagePreview,
+.postImageContainer {
+  position: relative;
 }
 
-.postImagePreviewContainer,
-.postImagePreviewContainer img,
-.postImageContainer,
+.postCreateImagePreview img,
 .postImageContainer img {
+  width: 100%;
+  height: 100%;
   max-width: 80vw;
-  max-height: 50vh;
+  object-fit: contain;
+  padding-bottom: 1vw;
 }
 
+@media (max-width: 640px) {
+  .postCreateImagePreview img,
+  .postImageContainer img {
+    max-width: 80vw;
+  }
+}
 /* Tag Components
 ------------------------------------------ */
 .tagContainer {
@@ -775,13 +800,17 @@
 }
 
 .commentContainer {
-  background: #fafafa;
-  padding: 10px 14px;
-  border: 2px solid var(--accent-color);
-  border-radius: 12px;
   display: flex;
+  align-items: flex-start;
   flex-direction: row;
-  justify-content: space-between;
+  width: 100%;
+  background: white;
+  border-radius: 16px;
+  padding: 0.51rem 0.75rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  margin-bottom: 0.5rem;
+  gap: 1rem;
+  border: 2px solid var(--accent-color);
 }
 
 .commentTitle {
@@ -901,6 +930,14 @@
   max-height: fit-content;
 }
 
+.postCreateForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
 .postCreateTitleContainer {
   width: 100%;
 }
@@ -924,10 +961,24 @@
   width: 100%;
 }
 
-.postImagePreviewCancelButton {
+.postCreateImagePreviewContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  gap: 0.1rem;
+}
+
+.postCreateImagePreviewCancelButton {
   display: flex;
   width: fit-content;
   padding: 0;
+}
+
+.postCreateImagePreview {
+  display: flex;
+  width: 100%;
+  max-height: 70vh;
 }
 
 .taskCreateContainer {
@@ -978,6 +1029,17 @@
   }
 }
 
+.taskCreateIconInput {
+  text-align: center;
+  font-size: 1.5rem;
+  width: 12.25vw;
+  height: 12.25vw;
+}
+
+.taskCreateIconInput.inputError {
+  border: 1px solid red;
+}
+
 .taskCreateInterestContainer {
   display: flex;
   flex-direction: row;
@@ -988,6 +1050,10 @@
 }
 
 .taskCreateSelectorText * {
+  margin: 0;
+}
+
+.taskCreateSelectOption {
   margin: 0;
 }
 
@@ -1004,8 +1070,6 @@
   text-align: center;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   margin-bottom: 1rem;
-  max-height: 70vh;
-  overflow-y: scroll;
 }
 
 .taskList::-webkit-scrollbar {
@@ -1106,17 +1170,7 @@
 
 .taskIconContainer {
   width: 20%;
-}
-
-.taskIconInput {
-  text-align: center;
-  font-size: 1.5rem;
-  width: 12.25vw;
-  height: 12.25vw;
-}
-
-.taskIconInput.inputError {
-  border: 1px solid red;
+  font-size: x-large;
 }
 
 .taskContentContainer {
@@ -1140,29 +1194,17 @@
   margin: 0;
 }
 
-.taskInterestSelector {
-  display: flex;
-  flex-direction: row;
-  font-size: 1rem;
-  line-height: 1.75rem;
-  font-weight: lighter;
-  margin: 0;
-}
-
-.taskInterestSelector p {
-  margin-bottom: 0;
-}
-
-.taskChoosenInterest {
+.glowingNugget {
   position: relative;
   background: white;
   color: black;
   border: var(--accent-color) 1px solid;
   border-radius: 1rem;
   padding: 0.25rem 0.5rem;
+  margin: 0.1rem 0.1rem;
 }
 
-.taskChoosenInterestText {
+.glowingNuggetText {
   position: relative;
   border-radius: 1rem;
   z-index: 1;
@@ -1172,7 +1214,7 @@
   width: 100%;
 }
 
-.taskChoosenInterest::before {
+.glowingNugget::before {
   content: "";
   position: absolute;
   top: 0;
@@ -1180,13 +1222,13 @@
   bottom: 0;
   left: 0;
   background: var(--text-glow);
-  transform: translate3d(0px, 5px, 0) scale(0.7);
-  filter: blur(20px);
-  opacity: 0.7;
+  transform: translate3d(5px, 1px, 0) scale(0.7);
+  filter: blur(15px);
+  opacity: 0.8;
   transition: opacity 0.3s;
 }
 
-.taskChoosenInterest::after {
+.glowingNugget::after {
   content: "";
   position: absolute;
   z-index: 0;
@@ -1208,17 +1250,6 @@
   width: 100%;
   box-sizing: border-box;
   font-size: 1rem;
-}
-
-.taskSelect {
-  padding-top: 0.1rem;
-}
-
-.taskInterestSelector * {
-  width: fit-content;
-  height: fit-content;
-  text-wrap-mode: nowrap;
-  text-align: left;
 }
 
 .taskInterestList {
