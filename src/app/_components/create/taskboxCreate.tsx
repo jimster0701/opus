@@ -10,19 +10,17 @@ import { defaultInterests } from "~/const/defaultVar";
 
 interface TaskboxCreateProps {
   task: Task;
-  user?: User;
+  user: User;
   onTaskChange?: (updatedTask: Task) => void;
 }
 
 export default function TaskboxCreate(props: TaskboxCreateProps) {
   const router = useRouter();
 
-  const [selectedInterests, setSelectedInterests] = useState<number[]>(
-    props.task.interests.map((interest) => interest.id)
-  );
+  const [selectedInterests, setSelectedInterests] = useState<number[]>([]);
   const [availableInterests, setAvailableInterests] = useState<Interest[]>([
     ...defaultInterests,
-    ...props.user!.createdInterests,
+    ...props.user.createdInterests,
   ]);
   const [removedInterests, setRemovedInterests] = useState<Interest[]>([]);
   const [iconError, setIconError] = useState([false, ""]);

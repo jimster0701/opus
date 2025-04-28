@@ -46,20 +46,6 @@ export const postRouter = createTRPCRouter({
       });
     }),
 
-  updateTags: protectedProcedure
-    .input(z.object({ id: z.number().min(1), tags: z.array(z.number()) }))
-    .mutation(async ({ ctx, input }) => {
-      return ctx.db.post.update({
-        where: { id: input.id },
-        data: {
-          tags: {
-            set: [],
-            connect: input.tags.map((tagId) => ({ id: tagId })),
-          },
-        },
-      });
-    }),
-
   getLatest: protectedProcedure.query(async ({ ctx }) => {
     const post = await ctx.db.post.findFirst({
       orderBy: { createdAt: "desc" },
@@ -106,11 +92,11 @@ export const postRouter = createTRPCRouter({
     }),
 
   getAllInterest: protectedProcedure
-    .input(z.object({ interests: z.array(z.string().min(1)) }))
+    .input(z.object({ interestIds: z.array(z.number().min(1)) }))
     .query(async ({ ctx, input }) => {
       const post = await ctx.db.post.findMany({
         orderBy: { createdAt: "desc" },
-        where: { task: { interests: { hasSome: input.interests } } },
+        where: { task: { interestIds: { hasSome: input.interestIds } } },
         include: {
           createdBy: true,
           comments: {

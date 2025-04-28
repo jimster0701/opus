@@ -17,6 +17,10 @@ export function Postbox(props: postProps) {
   const likePost = trpc.post.likePost.useMutation();
   const unlikePost = trpc.post.unlikePost.useMutation();
 
+  const interests = trpc.interest.getInterests.useQuery({
+    interestIds: props.post.task.interestIds,
+  });
+
   const cloudinaryPrefix = `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/`;
 
   const handleLike = () => {
@@ -66,19 +70,22 @@ export function Postbox(props: postProps) {
           />
         </div>
       )}
-      {props.post.task.interests && (
-        <div className={styles.tagContainer}>
-          {props.post.task.interests.map((interest) => (
+
+      <div className={styles.tagContainer}>
+        {!interests.isLoading ? (
+          interests.data?.map((interest) => (
             <p
-              key={interest[1]}
-              style={{ borderColor: interest[3] }}
+              key={interest.id}
+              style={{ borderColor: interest.colour }}
               className={styles.tag}
             >
-              {interest[0]}
+              {interest.name}
             </p>
-          ))}
-        </div>
-      )}
+          ))
+        ) : (
+          <p>Loading...</p>
+        )}
+      </div>
       <CommentSection post={props.post} />
     </div>
   );

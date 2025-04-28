@@ -27,7 +27,7 @@ export const defaultTask = {
   friends: [],
   createdAt: new Date(),
   updatedAt: new Date(),
-  interests: [defaultInterest],
+  interestIds: [],
   description: "",
 };
 

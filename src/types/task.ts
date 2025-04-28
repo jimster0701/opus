@@ -1,5 +1,3 @@
-import { type Interest } from "./interest";
-
 export enum TaskType {
   generated = "generated",
   generatedFriend = "generatedFriend",
@@ -17,5 +15,5 @@ export interface Task {
   createdAt: Date;
   updatedAt: Date;
   description: string;
-  interests: Interest[];
+  interestIds: number[];
 }

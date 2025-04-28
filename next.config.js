@@ -3,10 +3,17 @@
  * for Docker builds.
  */
 import "./src/env.js";
-import withPWA from "next-pwa";
+import nextPWA from "next-pwa";
+
+const withPWA = nextPWA({
+  dest: "public",
+  disable: process.env.NODE_ENV === "development",
+  register: true,
+  skipWaiting: true,
+});
 
 /** @type {import('next').NextConfig} */
-const config = {
+const nextConfig = {
   images: {
     remotePatterns: [
       {
@@ -22,17 +29,6 @@ const config = {
     ],
   },
 };
-const finalConfig =
-  process.env.NODE_ENV === "development"
-    ? config
-    : withPWA(
-        {
-          dest: "public",
-          register: true,
-          skipWaiting: true,
-        },
-        config
-      );
 
 // Export safely
-export default finalConfig;
+export default withPWA(nextConfig);

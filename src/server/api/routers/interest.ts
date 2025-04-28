@@ -24,13 +24,13 @@ export const interestRouter = createTRPCRouter({
   getInterests: protectedProcedure
     .input(
       z.object({
-        ids: z.array(z.number().min(1)),
+        interestIds: z.array(z.number().min(1)),
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .query(async ({ ctx, input }) => {
       return ctx.db.interest.findMany({
         where: {
-          id: { in: input.ids },
+          id: { in: input.interestIds },
         },
         include: {
           createdBy: {

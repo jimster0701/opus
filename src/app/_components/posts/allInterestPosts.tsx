@@ -4,6 +4,7 @@ import { api } from "~/trpc/react";
 import styles from "../../index.module.css";
 import { Postbox } from "./postbox";
 import { type Post } from "~/types/post";
+import { type Interest } from "~/types/interest";
 
 interface AllInterestPostsProps {
   userId: string;
@@ -12,7 +13,7 @@ interface AllInterestPostsProps {
 
 export function AllInterestPosts(props: AllInterestPostsProps) {
   const [posts] = api.post.getAllInterest.useSuspenseQuery({
-    interests: props.session.user.interests,
+    interestIds: props.session.user.interestIds,
   });
   return (
     <>
