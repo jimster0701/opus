@@ -59,7 +59,11 @@ export const postRouter = createTRPCRouter({
     const post = await ctx.db.post.findMany({
       orderBy: { createdAt: "desc" },
       where: { createdBy: { id: { in: ctx.session.user.following } } },
-      include: { createdBy: true, comments: true },
+      include: {
+        createdBy: true,
+        comments: true,
+        task: true,
+      },
     });
 
     return post;

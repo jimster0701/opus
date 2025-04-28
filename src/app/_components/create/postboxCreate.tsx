@@ -29,6 +29,7 @@ export function PostboxCreate(props: postboxCreateProps) {
   const [preview, setPreview] = useState<string>("");
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
+  const [postCompleted, setPostCompleted] = useState(false);
   const utils = trpc.useUtils();
 
   const createPost = trpc.post.create.useMutation();
@@ -41,6 +42,18 @@ export function PostboxCreate(props: postboxCreateProps) {
   useEffect(() => {
     setNewPostTime(new Date().toLocaleString());
   }, []);
+
+  useEffect(() => {
+    async function redirectToProfile() {
+      try {
+        await router.push("/profile");
+        console.log("Redirected to profile");
+      } catch (err) {
+        console.error("Error redirecting to profile:", err);
+      }
+    }
+    if (postCompleted) redirectToProfile();
+  }, [postCompleted]);
 
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -134,15 +147,9 @@ export function PostboxCreate(props: postboxCreateProps) {
       setImage(null);
       setPreview("");
       setError("");
+
       // Redirect to profile
-      await router
-        .push("/profile")
-        .catch((err) => {
-          console.error("Error redirecting to profile:", err);
-        })
-        .then(() => {
-          console.log("Redirected to profile");
-        });
+      setPostCompleted(true);
     } catch (error) {
       console.error("Error creating post:", error);
       setError("Failed to create post. Please try again.");
@@ -158,7 +165,7 @@ export function PostboxCreate(props: postboxCreateProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form className={styles.postCreateForm} onSubmit={handleSubmit}>
       <div className={styles.postContainer}>
         <div className={styles.postHeader}>
           <div
@@ -180,77 +187,72 @@ export function PostboxCreate(props: postboxCreateProps) {
         </div>
 
         <div className={styles.postCreateContent}>
-          <div className={styles.flexRow}>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleInputChange}
-              placeholder="Write your post content here..."
-              className={styles.postText}
-              rows={4}
-              required
-            />
-
+          <textarea
+            name="description"
+            value={formData.description}
+            onChange={handleInputChange}
+            placeholder="Write your post content here..."
+            className={styles.postText}
+            rows={4}
+            required
+          />
+          {!preview && (
             <div className={styles.imageUploadContainer}>
-              {!preview && (
-                <label className={styles.postText}>
-                  Add Image (Optional)
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    style={{ display: "none" }}
-                  />
-                </label>
-              )}
+              <label className={styles.postText}>
+                Add Image (Optional)
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  style={{ display: "none" }}
+                />
+              </label>
             </div>
-          </div>
-          {uploading && <p className={styles.uploading}>Uploading...</p>}
-          {error && <p className={styles.error}>{error}</p>}
+          )}
           <div className={styles.flexRow}>
             <p>Based on:</p>
             <select
               name="taskId"
               value={formData.taskId}
-              className={styles.taskSelect}
+              className={styles.opusSelector}
               onChange={handleInputChange}
               required
             >
               <option value={""}>Choose a task</option>
               {props.availableTasks.map((task) => (
-                <option
-                  key={task.id}
-                  value={task.id}
-                  className={styles.taskSelectOption}
-                >
+                <option key={task.id} value={task.id}>
                   {task.icon}
                   {task.name}
                 </option>
               ))}
             </select>
           </div>
-        </div>
-        {preview && (
-          <div className={styles.flexColumn}>
-            <div className={styles.postImagePreviewContainer}>
+          {preview && (
+            <div className={styles.postCreateImagePreviewContainer}>
               <div className={styles.flexRow}>
                 <p>Delete image: </p>
                 <button
                   type="button"
-                  className={`${styles.opusButton} ${styles.postImagePreviewCancelButton}`}
+                  className={`${styles.opusButton} ${styles.postCreateImagePreviewCancelButton}`}
                   onClick={cancelImageUpload}
                 >
                   <X />
                 </button>
               </div>
-              <Image
-                src={preview}
-                alt="Preview"
-                className={styles.imagePreview}
-              />
+              <div className={styles.postCreateImagePreview}>
+                <Image
+                  src={preview}
+                  className={styles.imagePreview}
+                  alt={""}
+                  width={100}
+                  height={100}
+                />
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
+        {uploading && <p className={styles.uploading}>Uploading...</p>}
+        {error && <p className={styles.error}>{error}</p>}
       </div>
 
       <div className={styles.postSubmitContainer}>
