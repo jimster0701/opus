@@ -39,7 +39,7 @@ export default function TaskboxCreate(props: TaskboxCreateProps) {
 
   const createTask = api.task.createCustomTask.useMutation();
   return (
-    <div>
+    <>
       <div key={props.task.id} className={styles.taskCreateContainer}>
         <div className={styles.taskCreateHeader}>
           <div className={styles.taskCreateIconContainer}>
@@ -106,8 +106,12 @@ export default function TaskboxCreate(props: TaskboxCreateProps) {
             </div>
             <select
               multiple
-              className={styles.opusSelector}
+              className={`${styles.opusSelector} ${styles.opusSelectorMultiple}`}
               onChange={(e) => {
+                if (selectedInterests.length >= 5) {
+                  setFormError("You can only select 5 interests.");
+                  return;
+                }
                 const value = e.target.value;
                 if (value) {
                   const interest = availableInterests.find(
@@ -138,37 +142,38 @@ export default function TaskboxCreate(props: TaskboxCreateProps) {
               ))}
             </select>
           </div>
-        </div>
-        <div className={styles.taskInterestList}>
-          {selectedInterests.map((interest, index) => (
-            <div
-              className={styles.glowingNugget}
-              style={{
-                border: `${interest.colour} 1px solid`,
-                ["--text-glow" as any]: `linear-gradient(to bottom right,rgb(0, 0, 0) , ${interest.colour})`,
-              }}
-              key={index}
-            >
-              <p
-                className={styles.glowingNuggetText}
-                onClick={() => {
-                  const newArray = selectedInterests.filter(
-                    (i) => i != interest
-                  );
-                  setSelectedInterests(newArray);
-                  setRemovedInterests(
-                    removedInterests.filter((i) => i.id != interest.id)
-                  );
-                  setAvailableInterests([
-                    ...availableInterests,
-                    ...removedInterests.filter((i) => i.id == interest.id),
-                  ]);
+          <div className={styles.taskInterestList}>
+            {selectedInterests.map((interest, index) => (
+              <div
+                className={styles.glowingNugget}
+                style={{
+                  border: `${interest.colour} 1px solid`,
+                  ["--text-glow" as any]: `linear-gradient(to bottom right,rgb(0, 0, 0) , ${interest.colour})`,
                 }}
+                key={index}
               >
-                {interest.name} X
-              </p>
-            </div>
-          ))}
+                <p
+                  className={styles.glowingNuggetText}
+                  onClick={() => {
+                    const newArray = selectedInterests.filter(
+                      (i) => i != interest
+                    );
+                    setSelectedInterests(newArray);
+                    setRemovedInterests(
+                      removedInterests.filter((i) => i.id != interest.id)
+                    );
+                    setAvailableInterests([
+                      ...availableInterests,
+                      ...removedInterests.filter((i) => i.id == interest.id),
+                    ]);
+                  }}
+                >
+                  {interest.icon}
+                  {interest.name} X
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
       <div className={styles.taskSubmitContainer}>
@@ -188,11 +193,11 @@ export default function TaskboxCreate(props: TaskboxCreateProps) {
               return;
             }
             if (!props.task.icon.trim()) {
-              setFormError("Task icon cannot be empty.");
+              setFormError("An icon is required.");
               return;
             }
             if (selectedInterests.length == 0) {
-              setFormError("Selected interests cannot be empty.");
+              setFormError("Choose an interest to relate this to.");
               return;
             }
 
@@ -220,6 +225,6 @@ export default function TaskboxCreate(props: TaskboxCreateProps) {
         </button>
         {formError && <div className={styles.formError}>{formError}</div>}
       </div>
-    </div>
+    </>
   );
 }

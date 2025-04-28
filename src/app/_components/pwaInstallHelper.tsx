@@ -20,14 +20,15 @@ export function PWAInstallHelper() {
       const isMobileDevice = /iPhone|iPad|iPod|Android/i.test(
         navigator.userAgent
       );
-      setUserAgent(
-        navigator.userAgent.match(/iPhone|iPad|iPod|Android/)?.[0] ?? String()
-      );
       setIsMobile(isMobileDevice);
     };
 
     checkStandalone();
     checkMobile();
+
+    if (navigator.userAgent.includes("Android")) {
+      setUserAgent("Android");
+    }
   }, []);
 
   const isChrome = () => {

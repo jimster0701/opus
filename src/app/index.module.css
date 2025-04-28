@@ -15,7 +15,14 @@
 .opusSelectorContainer {
   display: flex;
   width: 100%;
-  justify-content: space-between;
+  justify-content: flex-start;
+  gap: 1rem;
+}
+
+@media (max-width: 640px) {
+  .opusSelectorContainer {
+    justify-content: space-between;
+  }
 }
 
 .opusSelector {
@@ -29,6 +36,10 @@
   font-size: 1rem;
   max-width: 30vw;
   text-overflow: ellipsis;
+}
+
+.opusSelectorMultiple {
+  max-width: 65%;
 }
 
 /* Flexbox utilities */
@@ -1008,6 +1019,7 @@
   display: flex;
   align-items: flex-start;
   flex-direction: row;
+  width: 100%;
   gap: 1rem;
 }
 
@@ -1028,7 +1040,7 @@
   font-size: x-large;
 }
 
-@media (max-width: 400px) {
+@media (max-width: 375px) {
   .taskCreateIconContainer input {
     font-size: large;
   }
@@ -1052,6 +1064,12 @@
   justify-content: center;
   gap: 0.5rem;
   width: 100%;
+}
+
+@media (max-width: 640px) {
+  .taskCreateInterestContainer {
+    flex-direction: column;
+  }
 }
 
 .taskCreateSelectorText * {
@@ -1178,6 +1196,12 @@
   font-size: x-large;
 }
 
+@media (min-width: 600px) {
+  .taskIconContainer {
+    font-size: xx-large;
+  }
+}
+
 .taskContentContainer {
   width: 100%;
   display: flex;
@@ -1260,6 +1284,13 @@
 .taskInterestList {
   display: flex;
   flex-wrap: wrap;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  .taskInterestList {
+  }
 }
 
 .taskSubmitContainer,
