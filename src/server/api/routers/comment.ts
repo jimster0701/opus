@@ -21,6 +21,7 @@ export const commentRouter = createTRPCRouter({
           createdBy: {
             select: { id: true, displayName: true, name: true, image: true },
           },
+          replies: { include: { createdBy: true } },
         },
       });
     }),

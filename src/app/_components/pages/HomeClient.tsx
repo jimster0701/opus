@@ -34,7 +34,7 @@ export default function HomeClient(props: HomeClientProps) {
     if (dailyTasks.data?.length === 0) {
       // call gpt
     }
-  }, [dailyTasks.isLoading]);
+  }, [dailyTasks.isLoading, dailyTasks.data?.length]);
 
   const availableTasks: Task[] = [
     ...(dailyTasks.data ?? []),

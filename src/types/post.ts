@@ -1,14 +1,6 @@
 import { type Task } from "./task";
 import { type SimpleUser } from "./user";
-
-export interface PostComment {
-  id: number;
-  message: string;
-  createdAt: Date;
-  updatedAt: Date;
-  createdById: string;
-  createdBy: SimpleUser;
-}
+import { type Comment } from "./comment";
 
 export interface Tag {
   id: number;
@@ -33,5 +25,5 @@ export interface Post {
   likedBy: string[];
   tags: Tag[];
   imageUrl: string | null;
-  comments: PostComment[];
+  comments: Comment[];
 }

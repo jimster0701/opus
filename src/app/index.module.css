@@ -774,7 +774,6 @@
   width: 100%;
   border-radius: 12px;
   background-color: rgba(255, 255, 255, 0.08);
-  padding: 12px;
 }
 
 .commentSectionInputContainer {
@@ -800,30 +799,36 @@
 }
 
 .commentContainer {
+  position: relative;
   display: flex;
   align-items: flex-start;
-  flex-direction: row;
+  flex-direction: column;
   width: 100%;
   background: white;
+  border: 2px solid var(--accent-color);
   border-radius: 16px;
-  padding: 0.51rem 0.75rem;
+  padding: 0.5rem 0.75rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
   margin-bottom: 0.5rem;
-  gap: 1rem;
-  border: 2px solid var(--accent-color);
 }
 
 .commentTitle {
   font-weight: 600;
   color: #222;
+  margin: 0;
 }
 
 .commentContent {
-  color: #333;
+  display: flex;
+  width: 100%;
+  color: #222;
+  margin: 0.5rem 0;
+  padding-left: 0.25rem;
 }
 
 .commentTimestamp {
   color: #444;
+  margin: 0;
 }
 
 .commentSubmitButton {

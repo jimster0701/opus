@@ -1,5 +1,6 @@
 "use client";
-import { type Post, type PostComment } from "~/types/post";
+import { type Comment } from "~/types/comment";
+import { type Post } from "~/types/post";
 import styles from "../../index.module.css";
 import { useState } from "react";
 import { trpc } from "~/utils/trpc";
@@ -38,7 +39,7 @@ export function CommentSection(props: commentSectionProps) {
                 postId: props.post.id,
               });
               setComment("");
-              setComments([...comments, newComment as PostComment]);
+              setComments([...comments, newComment as Comment]);
             }
           }}
         >

@@ -23,6 +23,7 @@ export default function Taskbox(props: TaskboxProps) {
   const interestResult = trpc.interest.getInterestsById.useQuery({
     interestIds: props.task.interestIds,
   });
+
   useEffect(() => {
     if (interestResult.isLoading) {
       return;
@@ -33,6 +34,7 @@ export default function Taskbox(props: TaskboxProps) {
       );
     }
   }, [interestResult.isLoading, interestResult.data]);
+
   return (
     <div key={props.task.id} className={styles.taskContainer}>
       <div className={styles.taskIconContainer}>

@@ -52,7 +52,15 @@ export function PostboxCreate(props: postboxCreateProps) {
         console.error("Error redirecting to profile:", err);
       }
     }
-    if (postCompleted) redirectToProfile();
+    if (postCompleted) {
+      redirectToProfile()
+        .then(() => {
+          console.log("Redirected to profile");
+        })
+        .catch((err) => {
+          console.error("Error redirecting to profile:", err);
+        });
+    }
   }, [postCompleted]);
 
   const handleInputChange = (

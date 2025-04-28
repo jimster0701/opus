@@ -32,6 +32,19 @@ model Comment {
   postId      Int
   createdBy   User     @relation("UserComments", fields: [createdById], references: [id])
   post        Post     @relation("PostComments", fields: [postId], references: [id])
+  replies     Reply[]  @relation("CommentReplys")
+}
+
+model Reply {
+  id          Int      @id @default(autoincrement())
+  message     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  likedBy     String[]
+  createdById String
+  commentId   Int
+  createdBy   User     @relation("UserReplys", fields: [createdById], references: [id])
+  comment     Comment  @relation("CommentReplys", fields: [commentId], references: [id])
 }
 
 model Account {
@@ -79,6 +92,7 @@ model User {
   assignedtasks    Task[]     @relation("TaskAssigned")
   ownTasks         Task[]     @relation("TaskOwn")
   createdInterests Interest[] @relation("userCreatedInterests")
+  replies          Reply[]    @relation("UserReplys")
 }
 
 model Follow {

@@ -1,11 +1,14 @@
 "use client";
-import { type Post } from "~/types/post";
 import styles from "../../index.module.css";
-import { useState } from "react";
+import { type Post } from "~/types/post";
+import { type Interest } from "~/types/interest";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { trpc } from "~/utils/trpc";
 import { CommentSection } from "./commentSection";
 import { ProfilePicturePreviewWrapper } from "../images/cldImageWrapper";
+import { shuffle } from "../util";
+import { defaultInterests } from "~/const/defaultVar";
 
 interface postProps {
   post: Post;
@@ -15,12 +18,29 @@ interface postProps {
 export function Postbox(props: postProps) {
   const [liked, setLiked] = useState(props.post.likedBy.includes(props.userId));
   const [tempLike, setTempLike] = useState(0);
+  const [interests, setInterests] = useState<Interest[]>(
+    shuffle(
+      defaultInterests.filter((i) => props.post.task.interestIds.includes(i.id))
+    )
+  );
+
   const likePost = trpc.post.likePost.useMutation();
   const unlikePost = trpc.post.unlikePost.useMutation();
 
-  const interests = trpc.interest.getInterestsById.useQuery({
+  const interestResult = trpc.interest.getInterestsById.useQuery({
     interestIds: props.post.task.interestIds,
   });
+
+  useEffect(() => {
+    if (interestResult.isLoading) {
+      return;
+    }
+    if (interestResult.data?.length != 0) {
+      setInterests((prev) =>
+        shuffle([...prev, ...(interestResult.data as Interest[])])
+      );
+    }
+  }, [interestResult.isLoading, interestResult.data]);
 
   const cloudinaryPrefix = `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/`;
 
@@ -86,19 +106,21 @@ export function Postbox(props: postProps) {
       )}
 
       <div className={styles.tagContainer}>
-        {!interests.isLoading ? (
-          interests.data?.map((interest) => (
-            <p
-              key={interest.id}
-              style={{ borderColor: interest.colour }}
-              className={styles.tag}
-            >
+        {interests.map((interest) => (
+          <div
+            key={interest.id}
+            style={{
+              border: `${interest.colour} 1px solid`,
+              ["--text-glow" as any]: `linear-gradient(to top left,rgb(70, 70, 70), ${interest.colour})`,
+            }}
+            className={styles.glowingNugget}
+          >
+            <p className={styles.glowingNuggetText}>
+              {interest.icon}
               {interest.name}
             </p>
-          ))
-        ) : (
-          <p>Loading...</p>
-        )}
+          </div>
+        ))}
       </div>
       <CommentSection post={props.post} />
     </div>

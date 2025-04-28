@@ -61,8 +61,26 @@ export const postRouter = createTRPCRouter({
       where: { createdBy: { id: { in: ctx.session.user.following } } },
       include: {
         createdBy: true,
-        comments: true,
         task: true,
+        comments: {
+          include: {
+            createdBy: {
+              select: { id: true, name: true, displayName: true, image: true },
+            },
+            replies: {
+              include: {
+                createdBy: {
+                  select: {
+                    id: true,
+                    name: true,
+                    displayName: true,
+                    image: true,
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     });
 
@@ -77,14 +95,27 @@ export const postRouter = createTRPCRouter({
         where: { createdBy: { id: input.userId } },
         include: {
           createdBy: true,
+          task: true,
           comments: {
             include: {
               createdBy: {
                 select: {
                   id: true,
-                  displayName: true,
                   name: true,
+                  displayName: true,
                   image: true,
+                },
+              },
+              replies: {
+                include: {
+                  createdBy: {
+                    select: {
+                      id: true,
+                      name: true,
+                      displayName: true,
+                      image: true,
+                    },
+                  },
                 },
               },
             },
@@ -103,14 +134,27 @@ export const postRouter = createTRPCRouter({
         where: { task: { interestIds: { hasSome: input.interestIds } } },
         include: {
           createdBy: true,
+          task: true,
           comments: {
             include: {
               createdBy: {
                 select: {
                   id: true,
-                  displayName: true,
                   name: true,
+                  displayName: true,
                   image: true,
+                },
+              },
+              replies: {
+                include: {
+                  createdBy: {
+                    select: {
+                      id: true,
+                      name: true,
+                      displayName: true,
+                      image: true,
+                    },
+                  },
                 },
               },
             },
