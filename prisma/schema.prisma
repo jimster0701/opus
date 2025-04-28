@@ -62,22 +62,23 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  displayName   String?
-  interests     String[]
-  themePreset   String?   @default("unset")
-  followers     Follow[]  @relation("Followers")
-  following     Follow[]  @relation("Following")
-  accounts      Account[]
-  posts         Post[]
-  sessions      Session[]
-  comments      Comment[] @relation("UserComments")
-  assignedtasks Task[]    @relation("TaskAssigned")
-  ownTasks      Task[]    @relation("TaskOwn")
+  id               String     @id @default(cuid())
+  name             String?
+  email            String?    @unique
+  emailVerified    DateTime?
+  image            String?
+  displayName      String?
+  interestIds      Int[]
+  themePreset      String?    @default("unset")
+  followers        Follow[]   @relation("Followers")
+  following        Follow[]   @relation("Following")
+  accounts         Account[]
+  posts            Post[]
+  sessions         Session[]
+  comments         Comment[]  @relation("UserComments")
+  assignedtasks    Task[]     @relation("TaskAssigned")
+  ownTasks         Task[]     @relation("TaskOwn")
+  createdInterests Interest[] @relation("userCreatedInterests")
 }
 
 model Follow {
@@ -90,19 +91,28 @@ model Follow {
   @@unique([followerId, followingId], name: "follower_following_unique")
 }
 
-model Task {
-  id          Int      @id @default(autoincrement())
-  type        String
+model Interest {
+  id          Int    @id @default(autoincrement())
   name        String
   icon        String
-  interests   String[]
+  colour      String
+  createdById String
+  task        Task[] @relation("TaskInterests")
+  createdBy   User   @relation("userCreatedInterests", fields: [createdById], references: [id])
+}
+
+model Task {
+  id          Int        @id @default(autoincrement())
+  type        String
+  icon        String
   description String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
   userId      String
-  user        User     @relation("TaskOwn", fields: [userId], references: [id], onDelete: Cascade)
-  friends     User[]   @relation("TaskAssigned")
-  posts       Post[]   @relation("TaskPost")
+  interests   Interest[] @relation("TaskInterests")
+  user        User       @relation("TaskOwn", fields: [userId], references: [id], onDelete: Cascade)
+  friends     User[]     @relation("TaskAssigned")
+  posts       Post[]     @relation("TaskPost")
 }
 
 model VerificationToken {

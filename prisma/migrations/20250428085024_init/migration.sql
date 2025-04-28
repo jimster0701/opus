@@ -63,7 +63,7 @@ CREATE TABLE "User" (
     "emailVerified" TIMESTAMP(3),
     "image" TEXT,
     "displayName" TEXT,
-    "interests" TEXT[],
+    "interestIds" INTEGER[],
     "themePreset" TEXT DEFAULT 'unset',
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
@@ -79,31 +79,27 @@ CREATE TABLE "Follow" (
 );
 
 -- CreateTable
+CREATE TABLE "Interest" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "icon" TEXT NOT NULL,
+    "colour" TEXT NOT NULL,
+    "createdById" TEXT NOT NULL,
+
+    CONSTRAINT "Interest_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "Task" (
     "id" SERIAL NOT NULL,
     "type" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
     "icon" TEXT NOT NULL,
-    "interests" TEXT[],
     "description" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "userId" TEXT NOT NULL,
 
     CONSTRAINT "Task_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "Tag" (
-    "id" SERIAL NOT NULL,
-    "name" TEXT NOT NULL,
-    "icon" TEXT NOT NULL,
-    "colour" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-    "userId" TEXT NOT NULL,
-
-    CONSTRAINT "Tag_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -114,7 +110,7 @@ CREATE TABLE "VerificationToken" (
 );
 
 -- CreateTable
-CREATE TABLE "_PostTags" (
+CREATE TABLE "_TaskInterests" (
     "A" INTEGER NOT NULL,
     "B" INTEGER NOT NULL
 );
@@ -144,10 +140,10 @@ CREATE UNIQUE INDEX "VerificationToken_token_key" ON "VerificationToken"("token"
 CREATE UNIQUE INDEX "VerificationToken_identifier_token_key" ON "VerificationToken"("identifier", "token");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "_PostTags_AB_unique" ON "_PostTags"("A", "B");
+CREATE UNIQUE INDEX "_TaskInterests_AB_unique" ON "_TaskInterests"("A", "B");
 
 -- CreateIndex
-CREATE INDEX "_PostTags_B_index" ON "_PostTags"("B");
+CREATE INDEX "_TaskInterests_B_index" ON "_TaskInterests"("B");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_TaskAssigned_AB_unique" ON "_TaskAssigned"("A", "B");
@@ -180,16 +176,16 @@ ALTER TABLE "Follow" ADD CONSTRAINT "Follow_followerId_fkey" FOREIGN KEY ("follo
 ALTER TABLE "Follow" ADD CONSTRAINT "Follow_followingId_fkey" FOREIGN KEY ("followingId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "Interest" ADD CONSTRAINT "Interest_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "Task" ADD CONSTRAINT "Task_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Tag" ADD CONSTRAINT "Tag_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "_TaskInterests" ADD CONSTRAINT "_TaskInterests_A_fkey" FOREIGN KEY ("A") REFERENCES "Interest"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_PostTags" ADD CONSTRAINT "_PostTags_A_fkey" FOREIGN KEY ("A") REFERENCES "Post"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_PostTags" ADD CONSTRAINT "_PostTags_B_fkey" FOREIGN KEY ("B") REFERENCES "Tag"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "_TaskInterests" ADD CONSTRAINT "_TaskInterests_B_fkey" FOREIGN KEY ("B") REFERENCES "Task"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_TaskAssigned" ADD CONSTRAINT "_TaskAssigned_A_fkey" FOREIGN KEY ("A") REFERENCES "Task"("id") ON DELETE CASCADE ON UPDATE CASCADE;
