@@ -1,5 +1,5 @@
 "use client";
-import { ArrowUp, EllipsisVertical } from "lucide-react";
+import { ArrowUp, EllipsisVertical, Smartphone } from "lucide-react";
 import styles from "../index.module.css";
 import { useEffect, useState } from "react";
 export function PWAInstallHelper() {
@@ -25,9 +25,22 @@ export function PWAInstallHelper() {
     checkMobile();
   }, []);
 
-  console.log("isStandalone", isStandalone);
-  console.log("isMobile", isMobile);
-  if (isMobile && !isStandalone)
+  const isChrome = () => {
+    if (typeof navigator !== "undefined") {
+      const userAgent = navigator.userAgent;
+      const vendor = navigator.vendor;
+
+      const isChromium = (window as any).chrome !== undefined;
+      const isGoogle = vendor === "Google Inc.";
+      const isOpera = userAgent.includes("OPR");
+      const isEdge = userAgent.includes("Edg");
+
+      return isChromium && isGoogle && !isOpera && !isEdge;
+    }
+    return false;
+  };
+
+  if (isChrome() && isMobile && !isStandalone) {
     return (
       <div className={styles.modalContainer}>
         <div className={styles.modalBackground}></div>
@@ -37,7 +50,10 @@ export function PWAInstallHelper() {
               Go into the page settings <EllipsisVertical />
             </p>
             <p>Scroll until you find:</p>
-            <p>{"Add to home screen"}</p>
+            <p>
+              <Smartphone />
+              {"Add to home screen"}
+            </p>
           </div>
           <ArrowUp
             className={styles.pwaHelperArrow}
@@ -47,4 +63,18 @@ export function PWAInstallHelper() {
         </div>
       </div>
     );
+  } else if (isMobile && !isChrome()) {
+    return (
+      <div className={styles.modalContainer}>
+        <div className={styles.modalBackground}></div>
+        <div className={styles.pwaHelperContainer}>
+          <div className={styles.pwaHelperTextContainer}>
+            <h2>Welcome to Opus</h2>
+            <p>To use this app please use</p>
+            <p>chrome browser instead.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 }

@@ -1,4 +1,4 @@
-import { Interest } from "./interest";
+import { type Interest } from "./interest";
 
 export enum TaskType {
   generated = "generated",

@@ -2,7 +2,6 @@ import { type Task, TaskType } from "~/types/task";
 import styles from "../../index.module.css";
 import Taskbox from "./taskbox";
 import { useState } from "react";
-import { custom } from "zod";
 
 interface TaskListProps {
   preselectedTab: string | null;

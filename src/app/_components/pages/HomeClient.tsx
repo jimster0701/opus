@@ -34,6 +34,7 @@ export default function HomeClient(props: HomeClientProps) {
     ...(dailyTasks.data ?? []),
     ...(customTasks.data ?? []),
   ];
+  console.log(customTasks.data);
   return (
     <main
       className={

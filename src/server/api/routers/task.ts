@@ -8,7 +8,7 @@ export const taskRouter = createTRPCRouter({
       orderBy: { name: "desc" },
       where: {
         userId: ctx.session.user.id,
-        createdAt: new Date(),
+        createdAt: new Date(), // Get tasks made today's
         type: {
           in: [TaskType.generated, TaskType.generatedFriend],
         },
@@ -35,7 +35,7 @@ export const taskRouter = createTRPCRouter({
       z.object({
         name: z.string().min(1),
         icon: z.string().min(1),
-        interests: z.array(z.string().min(1)),
+        interestIds: z.array(z.number().min(1)),
         description: z.string().min(1),
       })
     )
@@ -45,7 +45,7 @@ export const taskRouter = createTRPCRouter({
           type: TaskType.custom,
           name: input.name,
           icon: input.icon,
-          interests: input.interests,
+          interestIds: input.interestIds,
           description: input.description,
           userId: ctx.session.user.id,
         },
@@ -58,7 +58,7 @@ export const taskRouter = createTRPCRouter({
         name: z.string().min(1),
         icon: z.string().min(1),
         friends: z.array(z.string().min(1)),
-        interests: z.array(z.string().min(1)),
+        interestIds: z.array(z.number().min(1)),
         description: z.string().min(1),
       })
     )
@@ -68,7 +68,7 @@ export const taskRouter = createTRPCRouter({
           type: TaskType.customFriend,
           name: input.name,
           icon: input.icon,
-          interests: input.interests,
+          interestIds: input.interestIds,
           userId: ctx.session.user.id,
           description: input.description,
           friends: {

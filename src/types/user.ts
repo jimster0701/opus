@@ -1,5 +1,5 @@
 import { type Account } from "./account";
-import { Interest } from "./interest";
+import { type Interest } from "./interest";
 import { type Post, type Tag } from "./post";
 import { type Session } from "./session";
 import { type Task } from "./task";
@@ -19,7 +19,7 @@ export interface User {
   displayName: string;
   image: string;
   themePreset: string;
-  interestIds: Number[];
+  interestIds: number[];
   followers: string[];
   following: string[];
   accounts: Account[];

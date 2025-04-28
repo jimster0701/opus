@@ -15,7 +15,7 @@ interface CreateTaskProps {
 }
 
 export default function CreateSelector(props: CreateTaskProps) {
-  const [selectedTab, setSelectedTab] = useState("post");
+  const [selectedTab, setSelectedTab] = useState("task");
   const [createdTask, setCreatedTask] = useState<Task>(defaultTask);
   const [createdPost, setCreatedPost] = useState<Post>({
     ...defaultPost,
@@ -26,7 +26,7 @@ export default function CreateSelector(props: CreateTaskProps) {
     <div className={styles.createContainer}>
       <div className={styles.taskTabContainer}>
         <button
-          autoFocus={selectedTab === "task" || selectedTab == ""}
+          autoFocus={selectedTab === "task"}
           onClick={() => {
             setSelectedTab("task");
             props.setSelectedTab("task");

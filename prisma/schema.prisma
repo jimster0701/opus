@@ -97,22 +97,22 @@ model Interest {
   icon        String
   colour      String
   createdById String
-  task        Task[] @relation("TaskInterests")
   createdBy   User   @relation("userCreatedInterests", fields: [createdById], references: [id])
 }
 
 model Task {
-  id          Int        @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
+  name        String
   type        String
   icon        String
   description String
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   userId      String
-  interests   Interest[] @relation("TaskInterests")
-  user        User       @relation("TaskOwn", fields: [userId], references: [id], onDelete: Cascade)
-  friends     User[]     @relation("TaskAssigned")
-  posts       Post[]     @relation("TaskPost")
+  interestIds Int[]
+  user        User     @relation("TaskOwn", fields: [userId], references: [id], onDelete: Cascade)
+  friends     User[]   @relation("TaskAssigned")
+  posts       Post[]   @relation("TaskPost")
 }
 
 model VerificationToken {

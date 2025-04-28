@@ -8,6 +8,8 @@ import { SignOutButton } from "./settings/signOutButton";
 import { X } from "lucide-react";
 import { type User } from "~/types/user";
 import { ProfilePicturePreviewWrapper } from "./images/cldImageWrapper";
+import { defaultInterests } from "~/const/defaultVar";
+import { type Interest } from "~/types/interest";
 
 interface modalProps {
   onComplete: () => void;
@@ -150,43 +152,17 @@ export function SettingsModal(props: modalProps) {
 
 export function NewUserModal(props: modalProps) {
   const [displayName, setDisplayName] = useState("");
-  const [selected, setSelected] = useState<string[]>([]);
-  const [choices, setChoices] = useState<string[]>([]);
+  const [selected, setSelected] = useState<number[]>([]);
+  const [choices, setChoices] = useState<Interest[]>([]);
   const [submitError, setSubmitError] = useState([false, ""]);
   const [choiceError, setChoiceError] = useState([false, ""]);
   const { theme } = useThemeStore();
 
   useMemo(() => {
-    const interests = [
-      "Music",
-      "Art",
-      "Design",
-      "Sports",
-      "Fitness",
-      "Technology",
-      "Coding",
-      "Travel",
-      "Exploration",
-      "Food",
-      "Cooking",
-      "Fashion",
-      "Style",
-      "Gaming",
-      "Streaming",
-      "Photography",
-      "Reading",
-      "Writing",
-      "Crafting",
-      "DIY",
-      "Outdoor Activities",
-      "Volunteering",
-      "Community",
-      "Entrepreneurship",
-      "Business",
-      "Content Creation",
-    ];
-    setChoices(shuffle(interests));
-  }, []);
+    console.log(defaultInterests.length);
+    setChoices(shuffle(defaultInterests));
+    console.log(choices.length);
+  }, [choices.length]);
 
   const updateInterests = trpc.user.updateInterests.useMutation({});
   const updateDisplayName = trpc.user.updateDisplayName.useMutation({
@@ -197,16 +173,20 @@ export function NewUserModal(props: modalProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    updateInterests.mutate({ interests: selected });
+    updateInterests.mutate({ interestIds: selected });
     updateDisplayName.mutate({ newDisplayName: displayName });
   };
 
-  const toggleSelected = (interest: string) => {
-    setSelected((prev) =>
-      prev.includes(interest)
-        ? prev.filter((i) => i !== interest)
-        : [...prev, interest]
-    );
+  const removeSelected = (interest: Interest) => {
+    if (selected.includes(interest.id)) {
+      setSelected((prev) => prev.filter((i) => i !== interest.id));
+    }
+  };
+
+  const addSelected = (interest: Interest) => {
+    if (!selected.includes(interest.id)) {
+      setSelected((prev) => [...prev, interest.id]);
+    }
   };
 
   return (
@@ -270,15 +250,15 @@ export function NewUserModal(props: modalProps) {
             {choices.map((interest) => (
               <button
                 type="button"
-                key={interest}
+                key={interest.id}
                 className={`${styles.choiceButton} ${
-                  selected.includes(interest)
+                  selected.includes(interest.id)
                     ? `${styles.selectedChoiceButton}`
                     : ""
                 }`}
                 onClick={() => {
-                  if (selected.includes(interest)) {
-                    toggleSelected(interest);
+                  if (selected.includes(interest.id)) {
+                    removeSelected(interest);
                     setChoiceError([false, ""]);
                   }
 
@@ -287,10 +267,11 @@ export function NewUserModal(props: modalProps) {
                       true,
                       "You can only select up to 15 interests",
                     ]);
-                  } else toggleSelected(interest);
+                  } else addSelected(interest);
                 }}
               >
-                {interest}
+                {interest.icon}
+                {interest.name}
               </button>
             ))}
           </div>

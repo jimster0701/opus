@@ -92,12 +92,14 @@ CREATE TABLE "Interest" (
 -- CreateTable
 CREATE TABLE "Task" (
     "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
     "type" TEXT NOT NULL,
     "icon" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "userId" TEXT NOT NULL,
+    "interestIds" INTEGER[],
 
     CONSTRAINT "Task_pkey" PRIMARY KEY ("id")
 );
@@ -107,12 +109,6 @@ CREATE TABLE "VerificationToken" (
     "identifier" TEXT NOT NULL,
     "token" TEXT NOT NULL,
     "expires" TIMESTAMP(3) NOT NULL
-);
-
--- CreateTable
-CREATE TABLE "_TaskInterests" (
-    "A" INTEGER NOT NULL,
-    "B" INTEGER NOT NULL
 );
 
 -- CreateTable
@@ -138,12 +134,6 @@ CREATE UNIQUE INDEX "VerificationToken_token_key" ON "VerificationToken"("token"
 
 -- CreateIndex
 CREATE UNIQUE INDEX "VerificationToken_identifier_token_key" ON "VerificationToken"("identifier", "token");
-
--- CreateIndex
-CREATE UNIQUE INDEX "_TaskInterests_AB_unique" ON "_TaskInterests"("A", "B");
-
--- CreateIndex
-CREATE INDEX "_TaskInterests_B_index" ON "_TaskInterests"("B");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_TaskAssigned_AB_unique" ON "_TaskAssigned"("A", "B");
@@ -180,12 +170,6 @@ ALTER TABLE "Interest" ADD CONSTRAINT "Interest_createdById_fkey" FOREIGN KEY ("
 
 -- AddForeignKey
 ALTER TABLE "Task" ADD CONSTRAINT "Task_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_TaskInterests" ADD CONSTRAINT "_TaskInterests_A_fkey" FOREIGN KEY ("A") REFERENCES "Interest"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_TaskInterests" ADD CONSTRAINT "_TaskInterests_B_fkey" FOREIGN KEY ("B") REFERENCES "Task"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_TaskAssigned" ADD CONSTRAINT "_TaskAssigned_A_fkey" FOREIGN KEY ("A") REFERENCES "Task"("id") ON DELETE CASCADE ON UPDATE CASCADE;

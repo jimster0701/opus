@@ -179,6 +179,9 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  flex-direction: column;
+  align-content: center;
+  align-items: center;
   width: 100%;
   color: white;
   font-size: medium;
@@ -191,7 +194,8 @@
 .pwaHelperTextContainer p {
   display: flex;
   flex-wrap: wrap;
-  margin: 0;
+  margin: 0.1rem 0;
+  font-size: normal;
   align-items: center;
 }
 

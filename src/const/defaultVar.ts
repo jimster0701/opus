@@ -1,5 +1,22 @@
+import { type Interest } from "~/types/interest";
+import { type SimpleUser } from "~/types/user";
 import { TaskType } from "~/types/task";
-import { SimpleUser } from "~/types/user";
+
+export const defaultUser: SimpleUser = {
+  id: "system",
+  name: "System",
+  displayName: "System",
+  image: "v1745329655/profile-pictures/default",
+};
+
+export const defaultInterest: Interest = {
+  id: -1,
+  name: "Choose an interest",
+  icon: "",
+  colour: "",
+  createdById: defaultUser.id,
+  createdBy: defaultUser,
+};
 
 export const defaultTask = {
   id: -1,
@@ -10,7 +27,7 @@ export const defaultTask = {
   friends: [],
   createdAt: new Date(),
   updatedAt: new Date(),
-  interests: [],
+  interests: [defaultInterest],
   description: "",
 };
 
@@ -25,13 +42,6 @@ export const defaultPost = {
   tags: [],
   imageUrl: "",
   comments: [],
-};
-
-export const defaultUser: SimpleUser = {
-  id: "system",
-  name: "System",
-  displayName: "System",
-  image: "v1745329655/profile-pictures/default",
 };
 
 export const defaultInterests = [

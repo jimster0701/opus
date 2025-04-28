@@ -43,9 +43,7 @@ export default function FriendsClient(props: FriendsClientProps) {
           <ul>
             {friends.map((friend) => (
               <li key={friend.id}>
-                <p className={styles.opusText}>
-                  {friend.displayName || friend.name}
-                </p>
+                <p className={styles.opusText}>{friend.displayName}</p>
               </li>
             ))}
           </ul>
