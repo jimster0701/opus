@@ -1,4 +1,3 @@
-import { Comment } from "./comment";
 import { type SimpleUser } from "./user";
 
 export interface Reply {

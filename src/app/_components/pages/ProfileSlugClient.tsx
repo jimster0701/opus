@@ -8,6 +8,6 @@ interface ProfileSlugClientProps {
 }
 
 export default async function ProfileSlugClient(props: ProfileSlugClientProps) {
-  const session = props.session;
+  console.log("session", props.session);
   return <div></div>;
 }
