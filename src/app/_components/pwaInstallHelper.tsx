@@ -26,20 +26,25 @@ export function PWAInstallHelper() {
   }, []);
 
   const isChrome = () => {
-    if (typeof navigator !== "undefined") {
-      const userAgent = navigator.userAgent;
-      const vendor = navigator.vendor;
-
-      const isChromium = (window as any).chrome !== undefined;
-      const isGoogle = vendor === "Google Inc.";
-      const isOpera = userAgent.includes("OPR");
-      const isEdge = userAgent.includes("Edg");
-
-      return isChromium && isGoogle && !isOpera && !isEdge;
+    if (typeof window !== "undefined" && typeof navigator !== "undefined") {
+      const uaData = (navigator as any).userAgentData;
+      if (uaData && uaData.brands) {
+        console.log(uaData.brands);
+        const isChrome = uaData.brands.some((brand: any) =>
+          brand.brand.includes("Google Chrome")
+        );
+        return isChrome;
+      } else {
+        // Fallback for older browsers
+        const userAgent = navigator.userAgent;
+        const isChromium = (window as any).chrome !== undefined;
+        const isOpera = userAgent.includes("OPR");
+        const isEdge = userAgent.includes("Edg");
+        return isChromium && !isOpera && !isEdge;
+      }
     }
     return false;
   };
-
   if (isChrome() && isMobile && !isStandalone) {
     return (
       <div className={styles.modalContainer}>

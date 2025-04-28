@@ -233,8 +233,11 @@ export function NewUserModal(props: modalProps) {
           )}
           <h3 className={styles.modalText}>
             Below is a list of affiliations, <br />
-            Choose at least 3, These choices will influence the tasks you
-            receive and social circles you discover.
+            Choose at least 3,
+            <br />
+            <br />
+            These choices will influence the tasks you receive and social
+            circles you discover.
             <br />
           </h3>
           <h4>

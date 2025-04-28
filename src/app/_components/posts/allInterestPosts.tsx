@@ -4,7 +4,6 @@ import { api } from "~/trpc/react";
 import styles from "../../index.module.css";
 import { Postbox } from "./postbox";
 import { type Post } from "~/types/post";
-import { type Interest } from "~/types/interest";
 
 interface AllInterestPostsProps {
   userId: string;
