@@ -6,9 +6,10 @@ import { trpc } from "~/utils/trpc";
 import { type Task } from "~/types/task";
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
+import { type Session } from "~/types/session";
 
 interface HomeClientProps {
-  session?: any;
+  session: Session;
   theme: string;
 }
 
@@ -17,18 +18,23 @@ export default function HomeClient(props: HomeClientProps) {
   const searchParams = useSearchParams();
   const preselectedTab = searchParams.get("selectedTab");
 
+  const dailyTasks = trpc.task.getDailyTasks.useQuery();
+  const customTasks = trpc.task.getCustomTasks.useQuery();
+
   useEffect(() => {
     if (theme === "unset") {
       setTheme(props.theme);
     }
   }, [theme, props.theme, setTheme]);
 
-  const dailyTasks = trpc.task.getDailyTasks.useQuery();
-  const customTasks = trpc.task.getCustomTasks.useQuery();
-
-  if (!dailyTasks.isLoading && dailyTasks.data?.length == 0) {
-    // generate tasks using chat...
-  }
+  useEffect(() => {
+    if (dailyTasks.isLoading) {
+      return;
+    }
+    if (dailyTasks.data?.length === 0) {
+      // call gpt
+    }
+  }, [dailyTasks.isLoading]);
 
   const availableTasks: Task[] = [
     ...(dailyTasks.data ?? []),
@@ -49,9 +55,7 @@ export default function HomeClient(props: HomeClientProps) {
           <br />
           to Opus,
           <br />
-          {props.session.user.name ? (
-            <span>{props.session.user.name}</span>
-          ) : (
+          {props.session.user.displayName && (
             <span>{props.session.user.displayName}</span>
           )}
         </h1>
