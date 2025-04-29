@@ -43,7 +43,7 @@ export default function ProfileHeader(props: ProfileHeaderProps) {
   };
 
   return (
-    <div className={`${styles.container} ${styles.profileHeaderContainer}`}>
+    <div className={styles.profileHeaderContainer}>
       <div className={styles.profileHeader}>
         <ProfilePictureWrapper
           id={props.session.user.id}

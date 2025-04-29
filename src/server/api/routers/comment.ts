@@ -25,4 +25,40 @@ export const commentRouter = createTRPCRouter({
         },
       });
     }),
+
+  likeComment: protectedProcedure
+    .input(z.object({ commentId: z.number(), userId: z.string().min(1) }))
+    .mutation(async ({ ctx, input }) => {
+      const comment = await ctx.db.comment.findUnique({
+        where: { id: input.commentId },
+        select: { likedBy: true },
+      });
+      if (comment?.likedBy.includes(input.userId))
+        throw new Error("Comment already liked");
+      return ctx.db.comment.update({
+        where: { id: input.commentId },
+        data: {
+          likedBy: { push: input.userId },
+        },
+      });
+    }),
+
+  unlikeComment: protectedProcedure
+    .input(z.object({ commentId: z.number(), userId: z.string().min(1) }))
+    .mutation(async ({ ctx, input }) => {
+      const comment = await ctx.db.comment.findUnique({
+        where: { id: input.commentId },
+        select: { likedBy: true },
+      });
+      if (!comment) throw new Error("Comment not found");
+
+      const updatedLikedBy = comment.likedBy.filter(
+        (id) => id !== input.userId
+      );
+
+      return ctx.db.comment.update({
+        where: { id: input.commentId },
+        data: { likedBy: updatedLikedBy },
+      });
+    }),
 });

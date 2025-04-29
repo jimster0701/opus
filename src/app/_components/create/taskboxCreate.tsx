@@ -21,7 +21,6 @@ export default function TaskboxCreate(props: TaskboxCreateProps) {
   const createdInterests = trpc.user.getCreatedInterests.useQuery();
 
   const [selectedInterests, setSelectedInterests] = useState<Interest[]>([]);
-
   const [availableInterests, setAvailableInterests] =
     useState<Interest[]>(defaultInterests);
   useEffect(() => {

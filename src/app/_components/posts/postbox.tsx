@@ -81,11 +81,11 @@ export function Postbox(props: postProps) {
             <Image
               src="/images/heart-full.png"
               alt={""}
-              width={10}
-              height={10}
+              width={15}
+              height={15}
             />
           ) : (
-            <Image src="/images/heart.png" alt={""} width={10} height={10} />
+            <Image src="/images/heart.png" alt={""} width={15} height={15} />
           )}
           <p className={styles.postText}>
             {props.post.likedBy.length + tempLike}
@@ -105,7 +105,9 @@ export function Postbox(props: postProps) {
         </div>
       )}
 
-      <div className={styles.tagContainer}>
+      <div className={styles.postInterestContainer}>
+        <p>Based on:</p>
+        <br />
         {interests.map((interest) => (
           <div
             key={interest.id}
@@ -122,7 +124,7 @@ export function Postbox(props: postProps) {
           </div>
         ))}
       </div>
-      <CommentSection post={props.post} />
+      <CommentSection userId={props.userId} post={props.post} />
     </div>
   );
 }

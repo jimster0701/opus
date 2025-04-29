@@ -556,11 +556,9 @@
 ------------------------------------------ */
 /* Profile header */
 .profileHeaderContainer {
+  overflow: visible;
   padding-bottom: 0;
-}
-
-.profileUserPostContainer {
-  padding-top: 0;
+  width: 100%;
 }
 
 .profileHeader {
@@ -667,6 +665,12 @@
   padding: 0;
 }
 
+/* Profile content */
+.profilePostContainer {
+  overflow: visible;
+  padding-top: 0;
+}
+
 /* Post Components
 ------------------------------------------ */
 .postContainer {
@@ -757,26 +761,21 @@
     max-width: 80vw;
   }
 }
-/* Tag Components
------------------------------------------- */
-.tagContainer {
+
+.postInterestContainer {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: flex-start;
+  align-items: center;
   width: 100%;
   margin-top: 0.1rem;
   margin-bottom: 1em;
   gap: 0.2rem;
 }
-.tag {
-  display: flex;
-  border: grey solid 2px;
-  color: black;
-  border-radius: 1rem;
-  width: fit-content;
-  padding: 0.2rem;
-  margin: 0.1rem 0;
+
+.postInterestContainer > p {
+  margin: 0;
 }
 
 /* Comment Components
@@ -791,6 +790,7 @@
   display: flex;
   margin-bottom: 16px;
   position: relative;
+  width: 100%;
 }
 
 .commentSectionInputContainer input {
@@ -823,10 +823,28 @@
   margin-bottom: 0.5rem;
 }
 
+.commentHeader {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+}
+
 .commentTitle {
   font-weight: 600;
   color: #222;
   margin: 0;
+}
+
+.commentContentContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  gap: 0.5rem;
 }
 
 .commentContent {
@@ -835,6 +853,15 @@
   color: #222;
   margin: 0.5rem 0;
   padding-left: 0.25rem;
+}
+
+.commentLikes {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  justify-content: center;
+  gap: 0.1rem;
+  height: min-content;
 }
 
 .commentTimestamp {
@@ -1286,11 +1313,6 @@
   flex-wrap: wrap;
   justify-content: flex-start;
   width: 100%;
-}
-
-@media (max-width: 640px) {
-  .taskInterestList {
-  }
 }
 
 .taskSubmitContainer,

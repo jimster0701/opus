@@ -4,9 +4,10 @@ import { type Post } from "~/types/post";
 import styles from "../../index.module.css";
 import { useState } from "react";
 import { trpc } from "~/utils/trpc";
-import { ProfilePicturePreviewWrapper } from "../images/cldImageWrapper";
+import { CommentComponent } from "./commentComponent";
 
 interface commentSectionProps {
+  userId: string;
   post: Post;
 }
 
@@ -51,28 +52,13 @@ export function CommentSection(props: commentSectionProps) {
 
       <div className={styles.commentSectionList}>
         {comments && comments.length > 0 ? (
-          comments.map((comment, index) => {
-            if (comment.createdBy)
-              return (
-                <div key={index} className={styles.commentContainer}>
-                  <div className={styles.flexRow}>
-                    <ProfilePicturePreviewWrapper
-                      id={comment.createdBy.id}
-                      imageUrl={comment.createdBy.image}
-                      width={0}
-                      height={0}
-                    />
-                    <p className={styles.commentTitle}>
-                      {comment.createdBy.displayName}
-                    </p>
-                  </div>
-                  <p className={styles.commentContent}>{comment.message}</p>
-                  <p className={styles.commentTimestamp}>
-                    {comment.createdAt.toDateString()}
-                  </p>
-                </div>
-              );
-          })
+          comments.map((comment, index) => (
+            <CommentComponent
+              key={index}
+              comment={comment}
+              userId={props.userId}
+            />
+          ))
         ) : (
           <div className={styles.noComments}>
             No comments yet. Be the first!

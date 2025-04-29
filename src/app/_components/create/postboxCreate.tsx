@@ -7,7 +7,7 @@ import { X } from "lucide-react";
 import { type User } from "~/types/user";
 import { defaultTask } from "~/const/defaultVar";
 import { type Task } from "~/types/task";
-import router from "next/router";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 interface postboxCreateProps {
@@ -18,6 +18,8 @@ interface postboxCreateProps {
 }
 
 export function PostboxCreate(props: postboxCreateProps) {
+  const router = useRouter();
+
   const [formData, setFormData] = useState({
     name: props.post.name ?? "",
     taskId: props.post.task.id ?? defaultTask.id,
@@ -29,7 +31,6 @@ export function PostboxCreate(props: postboxCreateProps) {
   const [preview, setPreview] = useState<string>("");
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
-  const [postCompleted, setPostCompleted] = useState(false);
   const utils = trpc.useUtils();
 
   const createPost = trpc.post.create.useMutation();
@@ -42,26 +43,6 @@ export function PostboxCreate(props: postboxCreateProps) {
   useEffect(() => {
     setNewPostTime(new Date().toLocaleString());
   }, []);
-
-  useEffect(() => {
-    async function redirectToProfile() {
-      try {
-        await router.push("/profile");
-        console.log("Redirected to profile");
-      } catch (err) {
-        console.error("Error redirecting to profile:", err);
-      }
-    }
-    if (postCompleted) {
-      redirectToProfile()
-        .then(() => {
-          console.log("Redirected to profile");
-        })
-        .catch((err) => {
-          console.error("Error redirecting to profile:", err);
-        });
-    }
-  }, [postCompleted]);
 
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -157,7 +138,7 @@ export function PostboxCreate(props: postboxCreateProps) {
       setError("");
 
       // Redirect to profile
-      setPostCompleted(true);
+      router.push("/profile");
     } catch (error) {
       console.error("Error creating post:", error);
       setError("Failed to create post. Please try again.");

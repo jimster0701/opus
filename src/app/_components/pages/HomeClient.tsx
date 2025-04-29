@@ -28,6 +28,13 @@ export default function HomeClient(props: HomeClientProps) {
   }, [theme, props.theme, setTheme]);
 
   useEffect(() => {
+    if (preselectedTab) {
+      dailyTasks.refetch();
+      customTasks.refetch();
+    }
+  }, [preselectedTab]);
+
+  useEffect(() => {
     if (dailyTasks.isLoading) {
       return;
     }

@@ -8,5 +8,4 @@ export interface Reply {
   likedBy: string[];
   createdById: string;
   createdBy: SimpleUser;
-  commentId: number;
 }

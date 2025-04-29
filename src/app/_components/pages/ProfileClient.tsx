@@ -28,16 +28,12 @@ export default function ProfileClient(props: ProfileClientProps) {
           : `${styles.main} ${styles[`theme-${theme}`]}`
       }
     >
-      {props.session.user && (
-        <>
-          <ProfileHeader session={props.session} />
-          <div
-            className={`${styles.container} ${styles.profileUserPostContainer}`}
-          >
-            <AllUserPosts userId={props.session.user.id} />
-          </div>
-        </>
-      )}
+      <div className={styles.container}>
+        <ProfileHeader session={props.session} />
+        <div className={styles.profilePostContainer}>
+          <AllUserPosts userId={props.session.user.id} />
+        </div>
+      </div>
     </main>
   );
 }
