@@ -223,10 +223,10 @@ export function NewUserModal(props: modalProps) {
               <>Please choose at least {3 - selected.length} more</>
             )}
             {selected.length >= 3 && (
-              <>You have {15 - selected.length} choices left:</>
+              <>You have {10 - selected.length} choices left:</>
             )}
           </h4>
-          <h5>You can have up to 15 interests.</h5>
+          <h5>You can have up to 10 interests.</h5>
           <div className={styles.choiceList}>
             {choices.map((interest) => (
               <button
@@ -243,10 +243,10 @@ export function NewUserModal(props: modalProps) {
                     setChoiceError([false, ""]);
                   }
 
-                  if (selected.length == 15) {
+                  if (selected.length == 10) {
                     setChoiceError([
                       true,
-                      "You can only select up to 15 interests",
+                      "You can only select up to 10 interests",
                     ]);
                   } else addSelected(interest);
                 }}
@@ -260,7 +260,7 @@ export function NewUserModal(props: modalProps) {
             type="submit"
             disabled={
               selected.length < 3 ||
-              selected.length > 15 ||
+              selected.length > 10 ||
               submitError[0] == true ||
               choiceError[0] == true
             }
