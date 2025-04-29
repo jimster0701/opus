@@ -1,4 +1,5 @@
-import { type Task, TaskType } from "~/types/task";
+import { type Task } from "~/types/task";
+import { TaskType } from "@prisma/client";
 import styles from "../../index.module.css";
 import Taskbox from "./taskbox";
 import { useState } from "react";

@@ -1,9 +1,4 @@
-export enum TaskType {
-  GENERATED,
-  CUSTOM,
-  GENERATED_FRIEND,
-  CUSTOM_FRIEND,
-}
+import { type TaskType } from "@prisma/client";
 
 export interface Task {
   id: number;

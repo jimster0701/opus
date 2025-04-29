@@ -83,7 +83,7 @@ export const userRouter = createTRPCRouter({
       return await ctx.db.follow.findMany({
         where: { followingId: input.userId },
         select: {
-          follower: { select: { name: true, displayName: true, image: true } },
+          follower: { select: { id: true, displayName: true, image: true } },
         },
       });
     }),
@@ -94,7 +94,7 @@ export const userRouter = createTRPCRouter({
       return await ctx.db.follow.findMany({
         where: { followerId: input.userId },
         select: {
-          following: { select: { name: true, displayName: true, image: true } },
+          following: { select: { id: true, displayName: true, image: true } },
         },
       });
     }),

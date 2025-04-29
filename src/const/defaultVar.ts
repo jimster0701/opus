@@ -1,11 +1,11 @@
 import { type Interest } from "~/types/interest";
 import { type SimpleUser } from "~/types/user";
-import { TaskType, type Task } from "~/types/task";
+import { type Task } from "~/types/task";
 import { type Post } from "~/types/post";
+import { TaskType } from "@prisma/client";
 
 export const defaultUser: SimpleUser = {
   id: "system",
-  name: "System",
   displayName: "System",
   image: "v1745329655/profile-pictures/default",
 };

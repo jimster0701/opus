@@ -75,26 +75,13 @@ export const taskRouter = createTRPCRouter({
           userId: ctx.session.user.id,
           description: input.description,
           friends: {
-            connect: input.friends.map((friendId) => ({ id: friendId })),
+            create: input.friends.map((friendId: string) => ({
+              user: {
+                connect: { id: friendId },
+              },
+            })),
           },
         },
-      });
-    }),
-
-  addFriends: protectedProcedure
-    .input(
-      z.object({
-        id: z.number().min(1),
-        name: z.string().min(1),
-        icon: z.string().min(1),
-        interestIds: z.array(z.number().min(1)),
-        description: z.string().min(1),
-      })
-    )
-    .mutation(async ({ ctx, input }) => {
-      return ctx.db.task.update({
-        where: { id: input.id },
-        data: {},
       });
     }),
 
@@ -106,25 +93,52 @@ export const taskRouter = createTRPCRouter({
         icon: z.string().min(1),
         interestIds: z.array(z.number().min(1)),
         description: z.string().min(1),
+        friends: z.array(z.string().cuid()).optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      return ctx.db.task.update({
-        where: { id: input.id },
-        data: {
-          name: input.name,
-          icon: input.icon,
-          interestIds: input.interestIds,
-          description: input.description,
-        },
+      return ctx.db.$transaction(async (prisma) => {
+        const updatedTask = await prisma.task.update({
+          where: { id: input.id },
+          data: {
+            name: input.name,
+            icon: input.icon,
+            interestIds: input.interestIds,
+            description: input.description,
+          },
+        });
+
+        if (input.friends) {
+          await prisma.userTask.deleteMany({
+            where: { taskId: input.id },
+          });
+          await prisma.userTask.createMany({
+            data: input.friends.map((friendId) => ({
+              userId: friendId,
+              taskId: input.id,
+            })),
+          });
+        }
+
+        return updatedTask;
       });
     }),
 
   deleteTask: protectedProcedure
     .input(z.object({ id: z.number().min(1) }))
     .mutation(async ({ ctx, input }) => {
-      return ctx.db.task.delete({
-        where: { id: input.id },
+      return ctx.db.$transaction(async (prisma) => {
+        await prisma.userTask.deleteMany({
+          where: { taskId: input.id },
+        });
+
+        await prisma.post.deleteMany({
+          where: { taskId: input.id },
+        });
+
+        return prisma.task.delete({
+          where: { id: input.id },
+        });
       });
     }),
 });

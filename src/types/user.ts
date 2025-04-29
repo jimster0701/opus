@@ -7,7 +7,6 @@ import { type Task } from "./task";
 
 export interface SimpleUser {
   id: string;
-  name: string;
   displayName: string;
   image: string;
 }
@@ -38,7 +37,8 @@ export interface User {
   name?: string;
   email?: string;
   emailVerified?: Date;
-  displayName?: string;
+  displayName: string;
+  image: string;
   themePreset: string;
   interestIds: number[];
   followers: Follow[];

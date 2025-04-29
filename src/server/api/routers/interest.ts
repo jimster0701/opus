@@ -62,7 +62,7 @@ export const interestRouter = createTRPCRouter({
         },
         include: {
           createdBy: {
-            select: { id: true, displayName: true, name: true, image: true }, // Simple user
+            select: { id: true, displayName: true, image: true }, // Simple user
           },
         },
       });
@@ -81,7 +81,7 @@ export const interestRouter = createTRPCRouter({
         },
         include: {
           createdBy: {
-            select: { id: true, displayName: true, name: true, image: true }, // Simple user
+            select: { id: true, displayName: true, image: true }, // Simple user
           },
         },
       });

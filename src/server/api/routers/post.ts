@@ -103,14 +103,13 @@ export const postRouter = createTRPCRouter({
         comments: {
           include: {
             createdBy: {
-              select: { id: true, name: true, displayName: true, image: true },
+              select: { id: true, displayName: true, image: true },
             },
             replies: {
               include: {
                 createdBy: {
                   select: {
                     id: true,
-                    name: true,
                     displayName: true,
                     image: true,
                   },
@@ -139,7 +138,6 @@ export const postRouter = createTRPCRouter({
               createdBy: {
                 select: {
                   id: true,
-                  name: true,
                   displayName: true,
                   image: true,
                 },
@@ -149,7 +147,6 @@ export const postRouter = createTRPCRouter({
                   createdBy: {
                     select: {
                       id: true,
-                      name: true,
                       displayName: true,
                       image: true,
                     },
@@ -178,7 +175,6 @@ export const postRouter = createTRPCRouter({
               createdBy: {
                 select: {
                   id: true,
-                  name: true,
                   displayName: true,
                   image: true,
                 },
@@ -188,7 +184,6 @@ export const postRouter = createTRPCRouter({
                   createdBy: {
                     select: {
                       id: true,
-                      name: true,
                       displayName: true,
                       image: true,
                     },
