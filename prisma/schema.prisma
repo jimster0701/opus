@@ -2,16 +2,6 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model UserTask {
-  id     Int    @id @default(autoincrement())
-  userId String
-  taskId Int
-  user   User   @relation("TaskAssigned", fields: [userId], references: [id], onDelete: Cascade)
-  task   Task   @relation("TaskAssigned", fields: [taskId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, taskId])
-}
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -116,12 +106,13 @@ model Follow {
 }
 
 model Interest {
-  id          Int    @id @default(autoincrement())
+  id          Int            @id @default(autoincrement())
   name        String
   icon        String
   colour      String
   createdById String
-  createdBy   User   @relation("userCreatedInterests", fields: [createdById], references: [id])
+  createdBy   User           @relation("userCreatedInterests", fields: [createdById], references: [id])
+  tasks       TaskInterest[] @relation("TaskInterest")
 }
 
 enum TaskType {
@@ -132,21 +123,42 @@ enum TaskType {
 }
 
 model Task {
-  id              Int        @id @default(autoincrement())
+  id              Int            @id @default(autoincrement())
   icon            String
   name            String
-  completed       Boolean    @default(false)
+  completed       Boolean        @default(false)
   description     String
-  createdAt       DateTime   @default(now())
-  updatedAt       DateTime   @updatedAt
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
   userId          String
   interestIds     Int[]
   friendIds       String[]
-  createdBySystem Boolean    @default(false)
+  createdBySystem Boolean        @default(false)
   type            TaskType
-  friends         UserTask[] @relation("TaskAssigned")
-  user            User       @relation("TaskOwn", fields: [userId], references: [id], onDelete: Cascade)
-  posts           Post[]     @relation("TaskPost")
+  friends         UserTask[]     @relation("TaskAssigned")
+  user            User           @relation("TaskOwn", fields: [userId], references: [id], onDelete: Cascade)
+  posts           Post[]         @relation("TaskPost")
+  interests       TaskInterest[] @relation("TaskInterest")
+}
+
+model UserTask {
+  id     Int    @id @default(autoincrement())
+  userId String
+  taskId Int
+  user   User   @relation("TaskAssigned", fields: [userId], references: [id], onDelete: Cascade)
+  task   Task   @relation("TaskAssigned", fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, taskId])
+}
+
+model TaskInterest {
+  id         String   @id @default(uuid())
+  taskId     Int
+  interestId Int
+  task       Task     @relation("TaskInterest", fields: [taskId], references: [id])
+  interest   Interest @relation("TaskInterest", fields: [interestId], references: [id])
+
+  @@unique([taskId, interestId])
 }
 
 model VerificationToken {
