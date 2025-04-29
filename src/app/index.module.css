@@ -7,7 +7,7 @@
   border: 0.1rem solid grey;
   border-radius: 20px;
   padding: 0.5rem 1.2rem;
-  font-size: 0.9rem;
+  font-size: 1rem;
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -840,20 +840,26 @@
 }
 
 .commentContentContainer {
-  width: 100%;
   display: flex;
   flex-direction: row;
-  align-items: center;
-  justify-content: space-around;
-  gap: 0.5rem;
+  width: 100%;
 }
 
 .commentContent {
-  display: flex;
-  width: 100%;
+  text-align: left;
+  max-width: 90%;
+  width: inherit;
   color: #222;
   margin: 0.5rem 0;
   padding-left: 0.25rem;
+  padding-right: 0.5rem;
+}
+
+.commentContent p {
+  width: inherit;
+  margin: 0;
+  white-space: normal;
+  overflow-wrap: break-word;
 }
 
 .commentLikes {
@@ -861,7 +867,7 @@
   flex-direction: row-reverse;
   align-items: center;
   justify-content: center;
-  gap: 0.1rem;
+  gap: 0.25rem;
   height: min-content;
 }
 
@@ -977,7 +983,6 @@
 .postCreateForm {
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
   width: 100%;
 }
@@ -1670,8 +1675,8 @@
   --background-gradient: linear-gradient(to bottom, #0f2a2e, #145c72, #1ca8c7);
   --header-gradient: linear-gradient(90deg, #0f2a2e, #145c72);
   --text-glow: linear-gradient(to top left, #145c72, #1ca8c7);
-  --text-primary: #e0f7fa;
-  --text-secondary: #80deea;
+  --text-primary: #99f3ff;
+  --text-secondary: #000000;
   --accent-color: #1ca8c7;
   --modal-background: radial-gradient(
     circle at center,

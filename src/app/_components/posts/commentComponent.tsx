@@ -73,7 +73,9 @@ export function CommentComponent(props: commentProps) {
           </p>
         </div>
         <div className={styles.commentContentContainer}>
-          <p className={styles.commentContent}>{props.comment.message}</p>
+          <div className={styles.commentContent}>
+            <p>{props.comment.message}</p>
+          </div>
           <div className={styles.postLikes} onClick={() => handleLike()}>
             {liked ? (
               <Image
