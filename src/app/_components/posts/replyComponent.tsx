@@ -1,10 +1,10 @@
 "use client";
 import styles from "../../index.module.css";
+import { type Reply } from "~/types/reply";
 import { useState } from "react";
 import { trpc } from "~/utils/trpc";
 import { ProfilePicturePreviewWrapper } from "../images/cldImageWrapper";
 import Image from "next/image";
-import { Reply } from "~/types/reply";
 
 interface replyProps {
   userId: string;

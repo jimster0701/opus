@@ -52,9 +52,9 @@ export function CommentSection(props: commentSectionProps) {
 
       <div className={styles.commentSectionList}>
         {comments && comments.length > 0 ? (
-          comments.map((comment, index) => (
+          comments.map((comment) => (
             <CommentComponent
-              key={index}
+              key={comment.id}
               comment={comment}
               userId={props.userId}
             />

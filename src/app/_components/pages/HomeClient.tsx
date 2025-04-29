@@ -29,10 +29,14 @@ export default function HomeClient(props: HomeClientProps) {
 
   useEffect(() => {
     if (preselectedTab) {
-      dailyTasks.refetch();
-      customTasks.refetch();
+      dailyTasks.refetch().catch(() => {
+        console.error("Error refetching daily tasks");
+      });
+      customTasks.refetch().catch(() => {
+        console.error("Error refetching custom tasks");
+      });
     }
-  }, [preselectedTab]);
+  }, [preselectedTab, dailyTasks, customTasks]);
 
   useEffect(() => {
     if (dailyTasks.isLoading) {

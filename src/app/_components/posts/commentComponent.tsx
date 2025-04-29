@@ -110,8 +110,12 @@ export function CommentComponent(props: commentProps) {
         </div>
         {props.comment.replies &&
           replies.length > 0 &&
-          props.comment.replies.map((r) => (
-            <ReplyComponent reply={r} userId={props.userId} />
+          props.comment.replies.map((reply) => (
+            <ReplyComponent
+              key={reply.id}
+              reply={reply}
+              userId={props.userId}
+            />
           ))}
       </div>
     );
