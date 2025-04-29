@@ -1,11 +1,14 @@
 "use client";
 
 import styles from "../../index.module.css";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useThemeStore } from "~/store/themeStore";
 import { type Session } from "~/types/session";
 import ProfileHeader from "../profile/profileHeader";
 import { AllUserPosts } from "../posts/allUserPosts";
+import { type User } from "~/types/user";
+import { Interest } from "~/types/interest";
+import { defaultInterests } from "~/const/defaultVar";
 
 interface ProfileClientProps {
   session: Session;
@@ -14,12 +17,17 @@ interface ProfileClientProps {
 
 export default function ProfileClient(props: ProfileClientProps) {
   const { theme, setTheme } = useThemeStore();
-
+  const [userInterests, setUserInterests] = useState<Interest[]>(
+    defaultInterests.filter((i) =>
+      props.session.user.interestIds.includes(i.id)
+    )
+  );
   useEffect(() => {
     if (theme === "unset") {
       setTheme(props.theme);
     }
   }, [theme, props.theme, setTheme]);
+
   return (
     <main
       className={
@@ -29,7 +37,11 @@ export default function ProfileClient(props: ProfileClientProps) {
       }
     >
       <div className={styles.container}>
-        <ProfileHeader session={props.session} />
+        <ProfileHeader
+          session={props.session}
+          userInterests={userInterests}
+          setUserInterests={setUserInterests}
+        />
         <div className={styles.profilePostContainer}>
           <AllUserPosts
             userId={props.session.user.id}

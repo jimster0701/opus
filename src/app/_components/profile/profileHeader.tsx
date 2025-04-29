@@ -9,8 +9,11 @@ import { Check, X } from "lucide-react";
 import { FollowerOrFollowingModal } from "../modals";
 import { type Session } from "~/types/session";
 import { type SimpleUser } from "~/types/user";
+import { type Interest } from "~/types/interest";
 
 interface ProfileHeaderProps {
+  userInterests: Interest[];
+  setUserInterests: (interests: Interest[]) => void;
   session: Session;
 }
 
@@ -47,7 +50,7 @@ export default function ProfileHeader(props: ProfileHeaderProps) {
 
   return (
     <div className={styles.profileHeaderContainer}>
-      <div className={styles.profileHeader}>
+      <div className={styles.profileHeaderMain}>
         <ProfilePictureWrapper
           id={props.session.user.id}
           imageUrl={props.session.user.image}
@@ -160,6 +163,23 @@ export default function ProfileHeader(props: ProfileHeaderProps) {
             </p>
           </div>
         </div>
+      </div>
+      <div className={styles.profileHeaderInterestsContainer}>
+        {props.userInterests.map((interest) => (
+          <div
+            key={interest.id}
+            style={{
+              border: `${interest.colour} 1px solid`,
+              ["--text-glow" as any]: `linear-gradient(to top left,rgb(70, 70, 70), ${interest.colour})`,
+            }}
+            className={styles.glowingNugget}
+          >
+            <p className={styles.glowingNuggetText}>
+              {interest.icon}
+              {interest.name}
+            </p>
+          </div>
+        ))}
       </div>
       {showFollowModal[0] && followers && following && (
         <FollowerOrFollowingModal
