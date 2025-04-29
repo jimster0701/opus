@@ -8,7 +8,7 @@ import { Navbar } from "~/app/_components/navbar";
 export default async function ProfileSlug() {
   const session = await auth();
 
-  if (session && session.user)
+  if (session?.user)
     return (
       <HydrateClient>
         <Header userId={session.user.id} theme={session.user.themePreset} />
