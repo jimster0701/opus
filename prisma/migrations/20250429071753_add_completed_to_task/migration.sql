@@ -1,3 +1,15 @@
+-- CreateEnum
+CREATE TYPE "TaskType" AS ENUM ('GENERATED', 'CUSTOM', 'GENERATED_FRIEND', 'CUSTOM_FRIEND');
+
+-- CreateTable
+CREATE TABLE "UserTask" (
+    "id" SERIAL NOT NULL,
+    "userId" TEXT NOT NULL,
+    "taskId" INTEGER NOT NULL,
+
+    CONSTRAINT "UserTask_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateTable
 CREATE TABLE "Post" (
     "id" SERIAL NOT NULL,
@@ -24,6 +36,19 @@ CREATE TABLE "Comment" (
     "postId" INTEGER NOT NULL,
 
     CONSTRAINT "Comment_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Reply" (
+    "id" SERIAL NOT NULL,
+    "message" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "likedBy" TEXT[],
+    "createdById" TEXT NOT NULL,
+    "commentId" INTEGER NOT NULL,
+
+    CONSTRAINT "Reply_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -61,8 +86,6 @@ CREATE TABLE "User" (
     "name" TEXT,
     "email" TEXT,
     "emailVerified" TIMESTAMP(3),
-    "image" TEXT,
-    "displayName" TEXT,
     "interestIds" INTEGER[],
     "themePreset" TEXT DEFAULT 'unset',
 
@@ -92,14 +115,16 @@ CREATE TABLE "Interest" (
 -- CreateTable
 CREATE TABLE "Task" (
     "id" SERIAL NOT NULL,
+    "type" "TaskType" NOT NULL,
     "name" TEXT NOT NULL,
-    "type" TEXT NOT NULL,
-    "icon" TEXT NOT NULL,
+    "completed" BOOLEAN NOT NULL DEFAULT false,
     "description" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "userId" TEXT NOT NULL,
     "interestIds" INTEGER[],
+    "friendIds" TEXT[],
+    "createdBySystem" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "Task_pkey" PRIMARY KEY ("id")
 );
@@ -111,11 +136,8 @@ CREATE TABLE "VerificationToken" (
     "expires" TIMESTAMP(3) NOT NULL
 );
 
--- CreateTable
-CREATE TABLE "_TaskAssigned" (
-    "A" INTEGER NOT NULL,
-    "B" TEXT NOT NULL
-);
+-- CreateIndex
+CREATE UNIQUE INDEX "UserTask_userId_taskId_key" ON "UserTask"("userId", "taskId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Account_provider_providerAccountId_key" ON "Account"("provider", "providerAccountId");
@@ -135,11 +157,11 @@ CREATE UNIQUE INDEX "VerificationToken_token_key" ON "VerificationToken"("token"
 -- CreateIndex
 CREATE UNIQUE INDEX "VerificationToken_identifier_token_key" ON "VerificationToken"("identifier", "token");
 
--- CreateIndex
-CREATE UNIQUE INDEX "_TaskAssigned_AB_unique" ON "_TaskAssigned"("A", "B");
+-- AddForeignKey
+ALTER TABLE "UserTask" ADD CONSTRAINT "UserTask_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
--- CreateIndex
-CREATE INDEX "_TaskAssigned_B_index" ON "_TaskAssigned"("B");
+-- AddForeignKey
+ALTER TABLE "UserTask" ADD CONSTRAINT "UserTask_taskId_fkey" FOREIGN KEY ("taskId") REFERENCES "Task"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Post" ADD CONSTRAINT "Post_taskId_fkey" FOREIGN KEY ("taskId") REFERENCES "Task"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -152,6 +174,12 @@ ALTER TABLE "Comment" ADD CONSTRAINT "Comment_createdById_fkey" FOREIGN KEY ("cr
 
 -- AddForeignKey
 ALTER TABLE "Comment" ADD CONSTRAINT "Comment_postId_fkey" FOREIGN KEY ("postId") REFERENCES "Post"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Reply" ADD CONSTRAINT "Reply_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Reply" ADD CONSTRAINT "Reply_commentId_fkey" FOREIGN KEY ("commentId") REFERENCES "Comment"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Account" ADD CONSTRAINT "Account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -170,9 +198,3 @@ ALTER TABLE "Interest" ADD CONSTRAINT "Interest_createdById_fkey" FOREIGN KEY ("
 
 -- AddForeignKey
 ALTER TABLE "Task" ADD CONSTRAINT "Task_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_TaskAssigned" ADD CONSTRAINT "_TaskAssigned_A_fkey" FOREIGN KEY ("A") REFERENCES "Task"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_TaskAssigned" ADD CONSTRAINT "_TaskAssigned_B_fkey" FOREIGN KEY ("B") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

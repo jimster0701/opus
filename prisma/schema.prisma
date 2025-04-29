@@ -2,6 +2,16 @@ generator client {
   provider = "prisma-client-js"
 }
 
+model UserTask {
+  id     Int    @id @default(autoincrement())
+  userId String
+  taskId Int
+  user   User   @relation("TaskAssigned", fields: [userId], references: [id], onDelete: Cascade)
+  task   Task   @relation("TaskAssigned", fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, taskId])
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -79,20 +89,19 @@ model User {
   name             String?
   email            String?    @unique
   emailVerified    DateTime?
-  image            String?
   displayName      String?
   interestIds      Int[]
-  themePreset      String?    @default("unset")
+  themePreset      String     @default("unset")
   followers        Follow[]   @relation("Followers")
   following        Follow[]   @relation("Following")
+  comments         Comment[]  @relation("UserComments")
+  replies          Reply[]    @relation("UserReplys")
+  assignedtasks    UserTask[] @relation("TaskAssigned")
+  ownTasks         Task[]     @relation("TaskOwn")
+  createdInterests Interest[] @relation("userCreatedInterests")
   accounts         Account[]
   posts            Post[]
   sessions         Session[]
-  comments         Comment[]  @relation("UserComments")
-  assignedtasks    Task[]     @relation("TaskAssigned")
-  ownTasks         Task[]     @relation("TaskOwn")
-  createdInterests Interest[] @relation("userCreatedInterests")
-  replies          Reply[]    @relation("UserReplys")
 }
 
 model Follow {
@@ -114,20 +123,29 @@ model Interest {
   createdBy   User   @relation("userCreatedInterests", fields: [createdById], references: [id])
 }
 
+enum TaskType {
+  GENERATED
+  CUSTOM
+  GENERATED_FRIEND
+  CUSTOM_FRIEND
+}
+
 model Task {
-  id          Int      @id @default(autoincrement())
-  name        String
-  type        String
-  icon        String
-  completed   Boolean  @default(false)
-  description String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  userId      String
-  interestIds Int[]
-  user        User     @relation("TaskOwn", fields: [userId], references: [id], onDelete: Cascade)
-  friends     User[]   @relation("TaskAssigned")
-  posts       Post[]   @relation("TaskPost")
+  id              Int        @id @default(autoincrement())
+  icon            String
+  name            String
+  completed       Boolean    @default(false)
+  description     String
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  userId          String
+  interestIds     Int[]
+  friendIds       String[]
+  createdBySystem Boolean    @default(false)
+  type            TaskType
+  friends         UserTask[] @relation("TaskAssigned")
+  user            User       @relation("TaskOwn", fields: [userId], references: [id], onDelete: Cascade)
+  posts           Post[]     @relation("TaskPost")
 }
 
 model VerificationToken {
