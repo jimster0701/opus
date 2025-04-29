@@ -5,11 +5,11 @@ import styles from "../../index.module.css";
 import { Postbox } from "./postbox";
 import { type Post } from "~/types/post";
 
-interface AllFriendsPostsProps {
+interface allFriendsPostsProps {
   userId: string;
 }
 
-export function AllFriendsPosts(props: AllFriendsPostsProps) {
+export function AllFriendsPosts(props: allFriendsPostsProps) {
   const posts = api.post.getAllFriends.useSuspenseQuery();
   if (posts[0].length > 0) {
     return posts[0].map((post) => (

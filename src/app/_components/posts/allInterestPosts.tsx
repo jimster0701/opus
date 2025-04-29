@@ -5,12 +5,12 @@ import styles from "../../index.module.css";
 import { Postbox } from "./postbox";
 import { type Post } from "~/types/post";
 
-interface AllInterestPostsProps {
+interface allInterestPostsProps {
   userId: string;
   session: any;
 }
 
-export function AllInterestPosts(props: AllInterestPostsProps) {
+export function AllInterestPosts(props: allInterestPostsProps) {
   const posts = api.post.getAllInterest.useSuspenseQuery({
     interestIds: props.session.user.interestIds,
   });
