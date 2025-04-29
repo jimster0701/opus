@@ -6,8 +6,9 @@ import Image from "next/image";
 import { useState } from "react";
 import { trpc } from "~/utils/trpc";
 import { Check, X } from "lucide-react";
-import { FollowerModal, FollowingModal } from "../modals";
+import { FollowerOrFollowingModal } from "../modals";
 import { type Session } from "~/types/session";
+import { type SimpleUser } from "~/types/user";
 
 interface ProfileHeaderProps {
   session: Session;
@@ -15,16 +16,18 @@ interface ProfileHeaderProps {
 
 export default function ProfileHeader(props: ProfileHeaderProps) {
   const [changeDisplay, setChangeDisplay] = useState(false);
-  const [showFollowingModal, setShowFollowingModal] = useState(false);
-  const [showFollowerModal, setShowFollowerModal] = useState(false);
   const [displayName, setDisplayName] = useState("");
   const [displayNameError, setDisplayNameError] = useState("");
+  const [showFollowModal, setShowFollowModal] = useState<[boolean, string]>([
+    false,
+    "",
+  ]);
 
   const { data: following } = trpc.user.getFollowing.useQuery({
     userId: props.session.user.id,
   });
 
-  const { data: followers } = trpc.user.getFollowing.useQuery({
+  const { data: followers } = trpc.user.getFollowers.useQuery({
     userId: props.session.user.id,
   });
 
@@ -141,7 +144,7 @@ export default function ProfileHeader(props: ProfileHeaderProps) {
               className={`${styles.profileHeaderText} ${styles.profileHeaderFollowText}`}
               onClick={async () => {
                 await handleFollowingPrefetch();
-                setShowFollowingModal(true);
+                setShowFollowModal([true, "Following"]);
               }}
             >
               Following:{following?.length}
@@ -150,7 +153,7 @@ export default function ProfileHeader(props: ProfileHeaderProps) {
               className={`${styles.profileHeaderText} ${styles.profileHeaderFollowText}`}
               onClick={async () => {
                 await handleFollowersPrefetch();
-                setShowFollowerModal(true);
+                setShowFollowModal([true, "Followers"]);
               }}
             >
               Followers:{followers?.length}
@@ -158,18 +161,17 @@ export default function ProfileHeader(props: ProfileHeaderProps) {
           </div>
         </div>
       </div>
-      {showFollowingModal && (
-        <FollowingModal
+      {showFollowModal[0] && followers && following && (
+        <FollowerOrFollowingModal
           theme={props.session.user.themePreset}
-          onComplete={() => setShowFollowingModal(false)}
+          onComplete={() => setShowFollowModal([false, ""])}
+          data={
+            showFollowModal[1]
+              ? (followers.map((f) => f.follower) as SimpleUser[])
+              : (following.map((f) => f.following) as SimpleUser[])
+          }
           user={props.session.user}
-        />
-      )}
-      {showFollowerModal && (
-        <FollowerModal
-          theme={props.session.user.themePreset}
-          onComplete={() => setShowFollowerModal(false)}
-          user={props.session.user}
+          type={showFollowModal[1]}
         />
       )}
     </div>

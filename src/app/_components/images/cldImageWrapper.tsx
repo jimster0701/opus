@@ -5,6 +5,7 @@ import styles from "../../index.module.css";
 import { useEffect, useState } from "react";
 import { trpc } from "~/utils/trpc";
 import Image from "next/image";
+import { type SlugUser } from "~/types/user";
 
 interface ProfilePictureWrapperProps extends ProfilePicturePreviewWrapperProps {
   session: any;
@@ -142,6 +143,47 @@ export function ProfilePictureWrapper(props: ProfilePictureWrapperProps) {
           </button>
         </div>
       )}
+    </div>
+  );
+}
+
+interface ProfileSlugPictureWrapperProps {
+  user: SlugUser;
+  width: number;
+  height: number;
+}
+
+export function ProfileSlugPictureWrapper(
+  props: ProfileSlugPictureWrapperProps
+) {
+  const [uploadedUrl, setUploadedUrl] = useState(
+    `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/v1745329655/profile-pictures/default`
+  );
+
+  useEffect(() => {
+    if (props.user.image) {
+      if (props.user.image.includes("google")) setUploadedUrl(props.user.image);
+      else
+        setUploadedUrl(
+          `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/${props.user.image}`
+        );
+    }
+  }, [props.user.image]);
+
+  return (
+    <div className={styles.flexColumn}>
+      <div className={styles.profileAvatarWrapper}>
+        <Image
+          src={uploadedUrl}
+          width={props.width}
+          height={props.height}
+          className={styles.profileAvatar}
+          onErrorCapture={(e) => {
+            e.currentTarget.src = `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/v1745329655/profile-pictures/default`;
+          }}
+          alt={""}
+        />
+      </div>
     </div>
   );
 }

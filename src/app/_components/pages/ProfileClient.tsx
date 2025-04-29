@@ -31,7 +31,10 @@ export default function ProfileClient(props: ProfileClientProps) {
       <div className={styles.container}>
         <ProfileHeader session={props.session} />
         <div className={styles.profilePostContainer}>
-          <AllUserPosts userId={props.session.user.id} />
+          <AllUserPosts
+            userId={props.session.user.id}
+            sessionUserId={props.session.user.id}
+          />
         </div>
       </div>
     </main>

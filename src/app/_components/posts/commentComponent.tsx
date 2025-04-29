@@ -7,6 +7,7 @@ import { trpc } from "~/utils/trpc";
 import { ProfilePicturePreviewWrapper } from "../images/cldImageWrapper";
 import Image from "next/image";
 import { ReplyComponent } from "./replyComponent";
+import { useRouter } from "next/navigation";
 
 interface commentProps {
   userId: string;
@@ -14,6 +15,7 @@ interface commentProps {
 }
 
 export function CommentComponent(props: commentProps) {
+  const router = useRouter();
   const [liked, setLiked] = useState(
     props.comment.likedBy.includes(props.userId)
   );
@@ -50,7 +52,12 @@ export function CommentComponent(props: commentProps) {
     return (
       <div className={styles.commentContainer}>
         <div className={styles.commentHeader}>
-          <div className={styles.flexRow}>
+          <div
+            className={styles.flexRow}
+            onClick={() => {
+              router.push(`/profile/${props.comment.createdBy.id}`);
+            }}
+          >
             <ProfilePicturePreviewWrapper
               id={props.comment.createdBy.id}
               imageUrl={props.comment.createdBy.image}

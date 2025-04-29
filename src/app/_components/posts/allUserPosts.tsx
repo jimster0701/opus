@@ -7,6 +7,7 @@ import { type Post } from "~/types/post";
 
 interface AllUserPostsProps {
   userId: string;
+  sessionUserId: string;
 }
 
 export function AllUserPosts(props: AllUserPostsProps) {
@@ -20,8 +21,8 @@ export function AllUserPosts(props: AllUserPostsProps) {
         posts.map((post) => (
           <Postbox
             key={post.id}
-            userId={props.userId}
-            post={post as unknown as Post}
+            userId={props.sessionUserId}
+            post={post as Post}
           />
         ))
       ) : (

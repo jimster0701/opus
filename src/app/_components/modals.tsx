@@ -6,14 +6,13 @@ import { shuffle } from "./util";
 import { useThemeStore } from "~/store/themeStore";
 import { SignOutButton } from "./settings/signOutButton";
 import { X } from "lucide-react";
-import { type User } from "~/types/user";
+import { type SimpleUser, type SlugUser, type User } from "~/types/user";
 import { ProfilePicturePreviewWrapper } from "./images/cldImageWrapper";
 import { defaultInterests } from "~/const/defaultVar";
 import { type Interest } from "~/types/interest";
 
 interface modalProps {
   onComplete: () => void;
-  theme?: string;
 }
 
 export function Modal() {
@@ -28,13 +27,16 @@ export function Modal() {
 }
 
 interface followerOrFollowingProps extends modalProps {
-  user: User;
-  following?: any[];
-  followers?: any[];
+  data: SimpleUser[];
+  user: User | SlugUser;
+  type: string;
 }
 
-export function FollowingModal(props: followerOrFollowingProps) {
+export function FollowerOrFollowingModal(props: followerOrFollowingProps) {
   const { theme } = useThemeStore();
+  const [list] = useState<SimpleUser[]>(props.data);
+  console.log("list", list);
+
   return (
     <div className={styles.modalContainer}>
       <div className={styles.modalBackground} onClick={props.onComplete} />
@@ -48,39 +50,19 @@ export function FollowingModal(props: followerOrFollowingProps) {
         <p className={styles.closeModalButton} onClick={props.onComplete}>
           <X width={45} height={45} />
         </p>
-        <h1>Following</h1>
-        {props.following?.map((user) => (
+        <h1>{props.type}:</h1>
+        {list.map((user) => (
           <div key={user.id} className={styles.cardContainer}>
             <ProfilePicturePreviewWrapper
               id={user.id}
-              imageUrl={user.following.image}
+              imageUrl={user.image}
               width={10}
               height={10}
             />
             <p className={styles.cardTitle}></p>
-            {user.following.displayName}
+            {user.displayName}
           </div>
         ))}
-      </div>
-    </div>
-  );
-}
-export function FollowerModal(props: followerOrFollowingProps) {
-  const { theme } = useThemeStore();
-  return (
-    <div className={styles.modalContainer}>
-      <div className={styles.modalBackground} onClick={props.onComplete} />
-      <div
-        className={
-          theme == "default"
-            ? `${styles.modal}`
-            : `${styles.modal} ${styles[`theme-${theme}`]}`
-        }
-      >
-        <p className={styles.closeModalButton} onClick={props.onComplete}>
-          <X width={45} height={45} />
-        </p>
-        <h1>Followers</h1>
       </div>
     </div>
   );

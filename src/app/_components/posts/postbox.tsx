@@ -9,6 +9,8 @@ import { CommentSection } from "./commentSection";
 import { ProfilePicturePreviewWrapper } from "../images/cldImageWrapper";
 import { shuffle } from "../util";
 import { defaultInterests } from "~/const/defaultVar";
+import { useRouter } from "next/navigation";
+import { type Session } from "~/types/session";
 
 interface postProps {
   post: Post;
@@ -16,6 +18,7 @@ interface postProps {
 }
 
 export function Postbox(props: postProps) {
+  const router = useRouter();
   const [liked, setLiked] = useState(props.post.likedBy.includes(props.userId));
   const [tempLike, setTempLike] = useState(0);
   const [interests, setInterests] = useState<Interest[]>(
@@ -57,7 +60,12 @@ export function Postbox(props: postProps) {
   return (
     <div className={styles.postContainer} key={props.post.id}>
       <div className={styles.postHeader}>
-        <div className={styles.flexRow}>
+        <div
+          className={styles.flexRow}
+          onClick={() => {
+            router.push(`/profile/${props.post.createdBy.id}`);
+          }}
+        >
           <ProfilePicturePreviewWrapper
             id={props.post.createdBy.id}
             imageUrl={props.post.createdBy.image}

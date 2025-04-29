@@ -1,13 +1,61 @@
-//import styles from "../../index.module.css";
-
-import { type Session } from "~/types/session";
+"use client";
+import styles from "../../index.module.css";
+import { type SlugUser } from "~/types/user";
+import { trpc } from "~/utils/trpc";
+import { AllUserPosts } from "../posts/allUserPosts";
+import { useEffect, useState } from "react";
+import { defaultUser } from "~/const/defaultVar";
+import ProfileSlugHeader from "../profile/profileSlugHeader";
+import { useParams } from "next/navigation";
 
 interface ProfileSlugClientProps {
-  session: Session;
-  theme: string;
+  sessionUserId: string;
 }
 
-export default async function ProfileSlugClient(props: ProfileSlugClientProps) {
-  console.log("session", props.session);
-  return <div></div>;
+export default function ProfileSlugClient(props: ProfileSlugClientProps) {
+  const params = useParams();
+  const slugData = params.slug;
+  const [theme, setTheme] = useState("default");
+  const [user, setUser] = useState<SlugUser>(defaultUser as SlugUser);
+
+  const getUser = trpc.user.getUserById.useQuery({
+    id: typeof slugData === "string" ? slugData : "",
+  });
+
+  useEffect(() => {
+    if (getUser.isLoading) return;
+    if (getUser.data) {
+      setUser(getUser.data as SlugUser);
+      if (getUser.data.themePreset) {
+        setTheme(getUser.data.themePreset);
+      }
+    }
+  }, [getUser.isLoading, getUser.data]);
+  if (getUser.isLoading) {
+    return (
+      <main className={styles.main}>
+        <div className={styles.container}>
+          <div className={styles.profilePostContainer}>
+            <h1 className={styles.opusText}>Loading...</h1>
+          </div>
+        </div>
+      </main>
+    );
+  }
+  return (
+    <main
+      className={
+        theme == "default"
+          ? `${styles.main}`
+          : `${styles.main} ${styles[`theme-${theme}`]}`
+      }
+    >
+      <div className={styles.container}>
+        <ProfileSlugHeader user={user} />
+        <div className={styles.profilePostContainer}>
+          <AllUserPosts userId={user.id} sessionUserId={props.sessionUserId} />
+        </div>
+      </div>
+    </main>
+  );
 }

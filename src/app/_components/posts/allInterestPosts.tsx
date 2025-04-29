@@ -18,11 +18,7 @@ export function AllInterestPosts(props: AllInterestPostsProps) {
     <>
       {posts ? (
         posts.map((post) => (
-          <Postbox
-            key={post.id}
-            userId={props.userId}
-            post={post as unknown as Post}
-          />
+          <Postbox key={post.id} userId={props.userId} post={post as Post} />
         ))
       ) : (
         <p className={styles.showcaseText}>No posts yet.</p>

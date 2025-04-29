@@ -7,7 +7,9 @@ export const userRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const user = await ctx.db.user.findUnique({
         where: { id: input.id },
-        include: { followers: true, following: true, createdInterests: true },
+        include: {
+          createdInterests: true,
+        },
       });
 
       return user ?? null;
@@ -80,8 +82,8 @@ export const userRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       return await ctx.db.follow.findMany({
         where: { followingId: input.userId },
-        include: {
-          follower: true, // include user details
+        select: {
+          follower: { select: { name: true, displayName: true, image: true } },
         },
       });
     }),
@@ -91,8 +93,8 @@ export const userRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       return await ctx.db.follow.findMany({
         where: { followerId: input.userId },
-        include: {
-          following: true,
+        select: {
+          following: { select: { name: true, displayName: true, image: true } },
         },
       });
     }),
