@@ -5,9 +5,10 @@ import { ProfileSlugPictureWrapper } from "../images/cldImageWrapper";
 import { useState } from "react";
 import { trpc } from "~/utils/trpc";
 import { FollowerOrFollowingModal } from "../modals";
-import { type SlugUser, type SimpleUser } from "~/types/user";
+import { type SlugUser, type SimpleUser, type User } from "~/types/user";
 
 interface ProfileSlugHeaderProps {
+  sessionUser: User;
   user: SlugUser;
 }
 
@@ -40,6 +41,9 @@ export default function ProfileSlugHeader(props: ProfileSlugHeaderProps) {
               </p>
             </div>
           </div>
+          <button className={styles.opusButton} disabled>
+            Follow
+          </button>
           <div className={styles.flexRow}>
             <p
               className={`${styles.profileHeaderText} ${styles.profileHeaderFollowText}`}
@@ -62,7 +66,6 @@ export default function ProfileSlugHeader(props: ProfileSlugHeaderProps) {
       </div>
       {showFollowModal[0] && followers && following && (
         <FollowerOrFollowingModal
-          theme={props.user.themePreset}
           onComplete={() => setShowFollowModal([false, ""])}
           data={
             showFollowModal[1]

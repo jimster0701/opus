@@ -33,18 +33,16 @@ interface followerOrFollowingProps extends modalProps {
 }
 
 export function FollowerOrFollowingModal(props: followerOrFollowingProps) {
-  const { theme } = useThemeStore();
   const [list] = useState<SimpleUser[]>(props.data);
-  console.log("list", list);
 
   return (
     <div className={styles.modalContainer}>
       <div className={styles.modalBackground} onClick={props.onComplete} />
       <div
         className={
-          theme == "default"
+          props.user.themePreset == "default"
             ? `${styles.modal}`
-            : `${styles.modal} ${styles[`theme-${theme}`]}`
+            : `${styles.modal} ${styles[`theme-${props.user.themePreset}`]}`
         }
       >
         <p className={styles.closeModalButton} onClick={props.onComplete}>

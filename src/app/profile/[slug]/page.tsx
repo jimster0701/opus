@@ -8,11 +8,11 @@ import { Navbar } from "~/app/_components/navbar";
 export default async function ProfileSlug() {
   const session = await auth();
 
-  if (session)
+  if (session && session.user)
     return (
       <HydrateClient>
         <Header userId={session.user.id} theme={session.user.themePreset} />
-        <ProfileSlugClient sessionUserId={session.user.id} />
+        <ProfileSlugClient sessionUser={session.user} />
         <Navbar />
       </HydrateClient>
     );

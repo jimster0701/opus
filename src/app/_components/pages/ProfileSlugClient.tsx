@@ -1,6 +1,6 @@
 "use client";
 import styles from "../../index.module.css";
-import { type SlugUser } from "~/types/user";
+import { type User, type SlugUser } from "~/types/user";
 import { trpc } from "~/utils/trpc";
 import { AllUserPosts } from "../posts/allUserPosts";
 import { useEffect, useState } from "react";
@@ -9,7 +9,7 @@ import ProfileSlugHeader from "../profile/profileSlugHeader";
 import { useParams } from "next/navigation";
 
 interface ProfileSlugClientProps {
-  sessionUserId: string;
+  sessionUser: User;
 }
 
 export default function ProfileSlugClient(props: ProfileSlugClientProps) {
@@ -51,9 +51,9 @@ export default function ProfileSlugClient(props: ProfileSlugClientProps) {
       }
     >
       <div className={styles.container}>
-        <ProfileSlugHeader user={user} />
+        <ProfileSlugHeader user={user} sessionUser={props.sessionUser} />
         <div className={styles.profilePostContainer}>
-          <AllUserPosts userId={user.id} sessionUserId={props.sessionUserId} />
+          <AllUserPosts userId={user.id} sessionUserId={props.sessionUser.id} />
         </div>
       </div>
     </main>

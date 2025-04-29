@@ -163,7 +163,6 @@ export default function ProfileHeader(props: ProfileHeaderProps) {
       </div>
       {showFollowModal[0] && followers && following && (
         <FollowerOrFollowingModal
-          theme={props.session.user.themePreset}
           onComplete={() => setShowFollowModal([false, ""])}
           data={
             showFollowModal[1]
