@@ -14,6 +14,7 @@ export interface Task {
   friends?: string[];
   createdAt: Date;
   updatedAt: Date;
+  completed: boolean;
   description: string;
   interestIds: number[];
 }
