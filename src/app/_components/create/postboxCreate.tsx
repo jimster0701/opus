@@ -33,7 +33,7 @@ export function PostboxCreate(props: postboxCreateProps) {
   const [error, setError] = useState("");
   const utils = trpc.useUtils();
 
-  const createPost = trpc.post.create.useMutation();
+  const createPost = trpc.post.createPost.useMutation();
   const updateImage = trpc.post.updateImage.useMutation({
     onSuccess: async () => {
       await utils.post.invalidate();

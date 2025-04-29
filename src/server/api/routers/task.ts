@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { TaskType } from "~/types/task";
+import { TaskType } from "@prisma/client";
 
 export const taskRouter = createTRPCRouter({
   getDailyTasks: protectedProcedure.query(async ({ ctx }) => {
@@ -10,7 +10,7 @@ export const taskRouter = createTRPCRouter({
         userId: ctx.session.user.id,
         createdAt: new Date(), // Get tasks made today's
         type: {
-          in: [TaskType.generated, TaskType.generatedFriend],
+          in: [TaskType.GENERATED, TaskType.GENERATED_FRIEND],
         },
       },
     });
@@ -26,7 +26,7 @@ export const taskRouter = createTRPCRouter({
         userId: ctx.session.user.id,
         createdAt: { gte: oneWeekAgo },
         type: {
-          in: [TaskType.custom, TaskType.customFriend],
+          in: [TaskType.CUSTOM, TaskType.CUSTOM_FRIEND],
         },
       },
     });
@@ -45,7 +45,7 @@ export const taskRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       return ctx.db.task.create({
         data: {
-          type: TaskType.custom,
+          type: TaskType.CUSTOM,
           name: input.name,
           icon: input.icon,
           interestIds: input.interestIds,
@@ -68,7 +68,7 @@ export const taskRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       return ctx.db.task.create({
         data: {
-          type: TaskType.customFriend,
+          type: TaskType.CUSTOM_FRIEND,
           name: input.name,
           icon: input.icon,
           interestIds: input.interestIds,
@@ -78,6 +78,53 @@ export const taskRouter = createTRPCRouter({
             connect: input.friends.map((friendId) => ({ id: friendId })),
           },
         },
+      });
+    }),
+
+  addFriends: protectedProcedure
+    .input(
+      z.object({
+        id: z.number().min(1),
+        name: z.string().min(1),
+        icon: z.string().min(1),
+        interestIds: z.array(z.number().min(1)),
+        description: z.string().min(1),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.task.update({
+        where: { id: input.id },
+        data: {},
+      });
+    }),
+
+  updateTask: protectedProcedure
+    .input(
+      z.object({
+        id: z.number().min(1),
+        name: z.string().min(1),
+        icon: z.string().min(1),
+        interestIds: z.array(z.number().min(1)),
+        description: z.string().min(1),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.task.update({
+        where: { id: input.id },
+        data: {
+          name: input.name,
+          icon: input.icon,
+          interestIds: input.interestIds,
+          description: input.description,
+        },
+      });
+    }),
+
+  deleteTask: protectedProcedure
+    .input(z.object({ id: z.number().min(1) }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.task.delete({
+        where: { id: input.id },
       });
     }),
 });

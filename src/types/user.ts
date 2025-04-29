@@ -20,24 +20,35 @@ export interface Follow {
   following: User;
 }
 
+export interface UserTask {
+  id: string;
+  userID: string;
+  taskId: string;
+  user: User;
+  task: Task;
+}
+
 export interface SlugUser extends SimpleUser {
   themePreset: string;
   interestIds: number[];
 }
 
-export interface User extends SimpleUser {
-  email: string;
-  emailVerified: Date;
+export interface User {
+  id: string;
+  name?: string;
+  email?: string;
+  emailVerified?: Date;
+  displayName?: string;
   themePreset: string;
   interestIds: number[];
   followers: Follow[];
   following: Follow[];
+  comments: Comment[];
+  replies: Reply[];
+  assignedtasks: UserTask[];
+  ownTasks: Task[];
+  createdInterests: Interest[];
   accounts: Account[];
   posts: Post[];
   sessions: Session[];
-  comments: Comment[];
-  replys: Reply[];
-  assignedtasks: Task[];
-  ownTasks: Task[];
-  createdInterests: Interest[];
 }

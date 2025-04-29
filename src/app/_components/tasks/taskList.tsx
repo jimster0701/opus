@@ -13,10 +13,10 @@ export default function TaskList(props: TaskListProps) {
   const [selectedTab, setSelectedTab] = useState<string>(props.selectedTab[0]);
 
   const dailyCount = props.availableTasks.filter(
-    (task) => task.type == TaskType.generated
+    (task) => task.type == TaskType.GENERATED
   ).length;
   const customCount = props.availableTasks.filter(
-    (task) => task.type == TaskType.custom
+    (task) => task.type == TaskType.CUSTOM
   ).length;
 
   return (
@@ -43,7 +43,7 @@ export default function TaskList(props: TaskListProps) {
       {selectedTab == "daily" && (
         <div className={styles.taskComponentContainer}>
           {props.availableTasks
-            .filter((task) => task.type == TaskType.generated)
+            .filter((task) => task.type == TaskType.GENERATED)
             .map((task) => (
               <Taskbox key={task.id} task={task} />
             ))}
@@ -55,7 +55,7 @@ export default function TaskList(props: TaskListProps) {
       {selectedTab == "custom" && (
         <div className={styles.taskComponentContainer}>
           {props.availableTasks
-            .filter((task) => task.type == TaskType.custom)
+            .filter((task) => task.type == TaskType.CUSTOM)
             .map((task) => (
               <Taskbox key={task.id} task={task} />
             ))}

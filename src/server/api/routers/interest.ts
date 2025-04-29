@@ -21,6 +21,34 @@ export const interestRouter = createTRPCRouter({
       });
     }),
 
+  updateInterest: protectedProcedure
+    .input(
+      z.object({
+        id: z.number().min(1),
+        name: z.string().min(1),
+        icon: z.string().min(1),
+        colour: z.string().min(1),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.interest.update({
+        where: { id: input.id },
+        data: {
+          name: input.name,
+          icon: input.icon,
+          colour: input.colour,
+        },
+      });
+    }),
+
+  deleteInterest: protectedProcedure
+    .input(z.object({ id: z.number().min(1) }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.interest.delete({
+        where: { id: input.id },
+      });
+    }),
+
   getInterestsById: protectedProcedure
     .input(
       z.object({

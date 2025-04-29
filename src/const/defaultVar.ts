@@ -1,6 +1,7 @@
 import { type Interest } from "~/types/interest";
 import { type SimpleUser } from "~/types/user";
-import { TaskType } from "~/types/task";
+import { TaskType, type Task } from "~/types/task";
+import { type Post } from "~/types/post";
 
 export const defaultUser: SimpleUser = {
   id: "system",
@@ -18,9 +19,9 @@ export const defaultInterest: Interest = {
   createdBy: defaultUser,
 };
 
-export const defaultTask = {
+export const defaultTask: Task = {
   id: -1,
-  type: TaskType.generated,
+  type: TaskType.GENERATED,
   name: "",
   icon: "🔮",
   userId: "",
@@ -29,9 +30,10 @@ export const defaultTask = {
   updatedAt: new Date(),
   interestIds: [],
   description: "",
+  completed: false,
 };
 
-export const defaultPost = {
+export const defaultPost: Post = {
   id: -1,
   name: "",
   task: defaultTask,
@@ -39,9 +41,10 @@ export const defaultPost = {
   createdAt: new Date(),
   updatedAt: new Date(),
   likedBy: [],
-  tags: [],
   imageUrl: "",
   comments: [],
+  createdById: "",
+  createdBy: defaultUser,
 };
 
 export const defaultInterests = [

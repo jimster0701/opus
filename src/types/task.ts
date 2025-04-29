@@ -1,13 +1,13 @@
 export enum TaskType {
-  generated = "generated",
-  generatedFriend = "generatedFriend",
-  custom = "custom",
-  customFriend = "customFriend",
+  GENERATED,
+  CUSTOM,
+  GENERATED_FRIEND,
+  CUSTOM_FRIEND,
 }
 
 export interface Task {
   id: number;
-  type: TaskType | string;
+  type: TaskType;
   name: string;
   icon: string;
   userId: string;

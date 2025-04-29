@@ -15,7 +15,7 @@ export const postRouter = createTRPCRouter({
       };
     }),
 
-  create: protectedProcedure
+  createPost: protectedProcedure
     .input(
       z.object({
         name: z.string().min(1),
@@ -34,6 +34,33 @@ export const postRouter = createTRPCRouter({
           likedBy: [],
           createdBy: { connect: { id: ctx.session.user.id } },
         },
+      });
+    }),
+  updatePost: protectedProcedure
+    .input(
+      z.object({
+        id: z.number().min(1),
+        name: z.string().min(1),
+        description: z.string().min(1),
+        imageUrl: z.string().min(1),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.post.update({
+        where: { id: input.id },
+        data: {
+          name: input.name,
+          description: input.description,
+          imageUrl: input.imageUrl,
+        },
+      });
+    }),
+
+  deletePost: protectedProcedure
+    .input(z.object({ id: z.number().min(1) }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.post.delete({
+        where: { id: input.id },
       });
     }),
 
