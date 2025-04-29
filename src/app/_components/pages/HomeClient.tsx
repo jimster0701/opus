@@ -75,18 +75,17 @@ export default function HomeClient(props: HomeClientProps) {
           )}
         </h1>
         <br />
-        {selectedTabCount[0] == "daily" && (
-          <h3 className={`${styles.homeDescription} ${styles.opusText}`}>
-            Here are your tasks for today:
-          </h3>
-        )}
         {selectedTabCount[0] == "custom" && selectedTabCount[1] > 0 ? (
           <h3 className={`${styles.homeDescription} ${styles.opusText}`}>
             These are your custom tasks from the past week:
           </h3>
+        ) : selectedTabCount[0] == "daily" ? (
+          <h3 className={`${styles.homeDescription} ${styles.opusText}`}>
+            Here are your tasks for today:
+          </h3>
         ) : (
           <h3 className={`${styles.homeDescription} ${styles.opusText}`}>
-            Create a new custom task in the create tab!
+            {"You can create a new task on the 'Create' page!"}
           </h3>
         )}
         <TaskList

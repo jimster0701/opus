@@ -61,9 +61,7 @@ export default function TaskList(props: TaskListProps) {
               <Taskbox key={task.id} task={task} />
             ))}
           {customCount == 0 && (
-            <p className={styles.noTaskText}>
-              Create a task using the create page.
-            </p>
+            <p className={styles.noTaskText}>No tasks yet :(</p>
           )}
         </div>
       )}
