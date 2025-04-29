@@ -11,26 +11,13 @@ interface AllUserPostsProps {
 }
 
 export function AllUserPosts(props: AllUserPostsProps) {
-  const [posts] = api.post.getAllUser.useSuspenseQuery({
+  const posts = api.post.getAllUser.useSuspenseQuery({
     userId: props.userId,
   });
 
-  return (
-    <>
-      {posts ? (
-        posts.map((post) => (
-          <Postbox
-            key={post.id}
-            userId={props.sessionUserId}
-            post={post as Post}
-          />
-        ))
-      ) : (
-        <p className={styles.showcaseText}>No posts yet.</p>
-      )}
-      {posts.length == 0 && (
-        <p className={styles.showcaseText}>No posts yet.</p>
-      )}
-    </>
-  );
+  if (posts[0].length > 0) {
+    return posts[0].map((post) => (
+      <Postbox key={post.id} userId={props.sessionUserId} post={post as Post} />
+    ));
+  } else return <p className={styles.showcaseText}>No posts yet.</p>;
 }

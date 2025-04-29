@@ -56,11 +56,18 @@ export const postRouter = createTRPCRouter({
   }),
 
   getAllFriends: protectedProcedure.query(async ({ ctx }) => {
+    const following = await ctx.db.follow.findMany({
+      where: { followerId: ctx.session.user.id },
+      select: { followingId: true },
+    });
+
+    const followingIds = following.map((f) => f.followingId);
+
     const post = await ctx.db.post.findMany({
       orderBy: { createdAt: "desc" },
       where: {
         createdBy: {
-          id: { in: ctx.session.user.following.map((f) => f.followingId) },
+          id: { in: followingIds },
         },
       },
       include: {
