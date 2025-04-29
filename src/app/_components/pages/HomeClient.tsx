@@ -4,7 +4,7 @@ import { useThemeStore } from "~/store/themeStore";
 import TaskList from "../tasks/taskList";
 import { trpc } from "~/utils/trpc";
 import { type Task } from "~/types/task";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { type Session } from "~/types/session";
 
@@ -15,8 +15,14 @@ interface HomeClientProps {
 
 export default function HomeClient(props: HomeClientProps) {
   const { theme, setTheme } = useThemeStore();
+
   const searchParams = useSearchParams();
-  const preselectedTab = searchParams.get("selectedTab");
+  const preselectedTab = searchParams.get("selectedTab"); // From taskbox
+
+  const [selectedTabCount, setSelectedTabCount] = useState<[string, number]>([
+    "daily",
+    0,
+  ]);
 
   const dailyTasks = trpc.task.getDailyTasks.useQuery();
   const customTasks = trpc.task.getCustomTasks.useQuery();
@@ -28,10 +34,8 @@ export default function HomeClient(props: HomeClientProps) {
   }, [theme, props.theme, setTheme]);
 
   useEffect(() => {
-    if (preselectedTab) {
-      dailyTasks.refetch().catch(() => {
-        console.error("Error refetching daily tasks");
-      });
+    if (preselectedTab == "custom") {
+      setSelectedTabCount((prev) => [preselectedTab, prev[1]]);
       customTasks.refetch().catch(() => {
         console.error("Error refetching custom tasks");
       });
@@ -71,12 +75,24 @@ export default function HomeClient(props: HomeClientProps) {
           )}
         </h1>
         <br />
-        <h3 className={`${styles.homeDescription} ${styles.opusText}`}>
-          Here are your tasks for today:
-        </h3>
+        {selectedTabCount[0] == "daily" && (
+          <h3 className={`${styles.homeDescription} ${styles.opusText}`}>
+            Here are your tasks for today:
+          </h3>
+        )}
+        {selectedTabCount[0] == "custom" && selectedTabCount[1] > 0 ? (
+          <h3 className={`${styles.homeDescription} ${styles.opusText}`}>
+            These are your custom tasks from the past week:
+          </h3>
+        ) : (
+          <h3 className={`${styles.homeDescription} ${styles.opusText}`}>
+            Create a new custom task in the create tab!
+          </h3>
+        )}
         <TaskList
-          preselectedTab={preselectedTab}
+          setSelectedTab={setSelectedTabCount}
           availableTasks={availableTasks}
+          selectedTab={selectedTabCount}
         />
       </div>
     </main>

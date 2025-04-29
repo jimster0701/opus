@@ -18,10 +18,13 @@ export const taskRouter = createTRPCRouter({
   }),
 
   getCustomTasks: protectedProcedure.query(async ({ ctx }) => {
+    const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+
     const post = await ctx.db.task.findMany({
       orderBy: { createdAt: "desc" },
       where: {
         userId: ctx.session.user.id,
+        createdAt: { gte: oneWeekAgo },
         type: {
           in: [TaskType.custom, TaskType.customFriend],
         },

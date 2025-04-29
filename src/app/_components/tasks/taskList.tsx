@@ -4,14 +4,13 @@ import Taskbox from "./taskbox";
 import { useState } from "react";
 
 interface TaskListProps {
-  preselectedTab: string | null;
+  setSelectedTab: (tab: [string, number]) => void;
+  selectedTab: [string, number];
   availableTasks: Task[];
 }
 
 export default function TaskList(props: TaskListProps) {
-  const [selectedTab, setSelectedTab] = useState(
-    props.preselectedTab ?? "daily"
-  );
+  const [selectedTab, setSelectedTab] = useState<string>(props.selectedTab[0]);
 
   const dailyCount = props.availableTasks.filter(
     (task) => task.type == TaskType.generated
@@ -25,11 +24,21 @@ export default function TaskList(props: TaskListProps) {
       <div className={styles.taskTabContainer}>
         <button
           autoFocus={selectedTab === "daily"}
-          onClick={() => setSelectedTab("daily")}
+          onClick={() => {
+            setSelectedTab("daily");
+            props.setSelectedTab(["daily", dailyCount]);
+          }}
         >
           Daily tasks
         </button>
-        <button onClick={() => setSelectedTab("custom")}>Your tasks</button>
+        <button
+          onClick={() => {
+            setSelectedTab("custom");
+            props.setSelectedTab(["custom", customCount]);
+          }}
+        >
+          Your tasks
+        </button>
       </div>
       {selectedTab == "daily" && (
         <div className={styles.taskComponentContainer}>
