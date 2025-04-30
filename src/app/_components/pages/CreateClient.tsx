@@ -14,15 +14,35 @@ interface CreateClientProps {
 export default function CreateClient(props: CreateClientProps) {
   const [selectedTab, setSelectedTab] = useState("");
   const [titleWord, setTitleWord] = useState("something");
+  const [availableTasks, setAvailableTasks] = useState<Task[]>([]);
+  const [customTasks, setCustomTasks] = useState<Task[]>([]);
   const { theme, setTheme } = useThemeStore();
 
-  const dailyTasks = trpc.task.getDailyTasks.useQuery();
-  const customTasks = trpc.task.getCustomTasks.useQuery();
+  const getCustomTasks = trpc.task.getCustomTasks.useQuery();
+  const getDailyTasks = trpc.task.getDailyTasks.useQuery();
 
-  const availableTasks: Task[] = [
-    ...(dailyTasks.data ?? []),
-    ...(customTasks.data ?? []),
-  ];
+  useEffect(() => {
+    if (getCustomTasks.isLoading) return;
+    if (getCustomTasks.data?.length != 0) {
+      setCustomTasks(getCustomTasks.data as Task[]);
+    }
+  }, [
+    getCustomTasks.isLoading,
+    getCustomTasks.data?.length,
+    getCustomTasks.data,
+  ]);
+
+  useEffect(() => {
+    if (getDailyTasks.isLoading) return;
+    if (getDailyTasks.data?.length != 0) {
+      setAvailableTasks([...(getDailyTasks.data as Task[]), ...customTasks]);
+    }
+  }, [
+    getDailyTasks.isLoading,
+    getDailyTasks.data?.length,
+    getDailyTasks.data,
+    customTasks,
+  ]);
 
   useEffect(() => {
     switch (selectedTab) {
