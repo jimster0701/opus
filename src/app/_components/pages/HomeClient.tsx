@@ -7,6 +7,7 @@ import { type Task } from "~/types/task";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { type Session } from "~/types/session";
+import Error from "next/error";
 
 interface HomeClientProps {
   session: Session;
@@ -17,15 +18,28 @@ export default function HomeClient(props: HomeClientProps) {
   const { theme, setTheme } = useThemeStore();
 
   const searchParams = useSearchParams();
-  const preselectedTab = searchParams.get("selectedTab"); // From taskbox
 
+  const [customTasks, setCustomTasks] = useState<Task[]>([]);
+  const [dailyTasks, setDailyTasks] = useState<Task[]>([]);
+
+  const [preselectedTab, setPreselectedTab] = useState(
+    searchParams.get("selectedTab") ?? ""
+  );
   const [selectedTabCount, setSelectedTabCount] = useState<[string, number]>([
-    "daily",
+    preselectedTab ?? "daily",
     0,
   ]);
 
-  const dailyTasks = trpc.task.getDailyTasks.useQuery();
-  const customTasks = trpc.task.getCustomTasks.useQuery();
+  const getDailyTasks = trpc.task.getDailyTasks.useQuery();
+  const getCustomTasks = trpc.task.getCustomTasks.useQuery();
+
+  const preselectedUpdate = async () => {
+    try {
+      await getCustomTasks.refetch();
+    } catch (error) {
+      console.error("Error refetching custom tasks", error);
+    }
+  };
 
   useEffect(() => {
     if (theme === "unset") {
@@ -35,26 +49,26 @@ export default function HomeClient(props: HomeClientProps) {
 
   useEffect(() => {
     if (preselectedTab == "custom") {
-      setSelectedTabCount((prev) => [preselectedTab, prev[1]]);
-      customTasks.refetch().catch(() => {
-        console.error("Error refetching custom tasks");
-      });
+      setSelectedTabCount((prev) => [selectedTabCount[0], prev[1]]);
+      preselectedUpdate();
+      setPreselectedTab("");
     }
-  }, [preselectedTab, dailyTasks, customTasks]);
+  }, [selectedTabCount[0], preselectedTab]);
 
   useEffect(() => {
-    if (dailyTasks.isLoading) {
-      return;
-    }
-    if (dailyTasks.data?.length === 0) {
+    if (getDailyTasks.isLoading) return;
+    if (getDailyTasks.data?.length != 0) {
       // call gpt
+      setDailyTasks([]);
     }
-  }, [dailyTasks.isLoading, dailyTasks.data?.length]);
+  }, [getDailyTasks.isLoading, getDailyTasks.data?.length]);
 
-  const availableTasks: Task[] = [
-    ...(dailyTasks.data ?? []),
-    ...(customTasks.data ?? []),
-  ];
+  useEffect(() => {
+    if (getCustomTasks.isLoading) return;
+    if (getCustomTasks.data?.length != 0) {
+      setCustomTasks(getCustomTasks.data as Task[]);
+    }
+  }, [getCustomTasks.isLoading, getCustomTasks.data?.length]);
 
   return (
     <main
@@ -90,7 +104,8 @@ export default function HomeClient(props: HomeClientProps) {
         )}
         <TaskList
           setSelectedTab={setSelectedTabCount}
-          availableTasks={availableTasks}
+          customTasks={customTasks}
+          dailyTasks={dailyTasks}
           selectedTab={selectedTabCount}
         />
       </div>

@@ -18,18 +18,21 @@ interface TaskboxCreateProps {
 export default function TaskboxCreate(props: TaskboxCreateProps) {
   const router = useRouter();
 
-  const createdInterests = trpc.user.getCreatedInterests.useQuery();
+  const userInterests = trpc.user.getUserInterests.useQuery({
+    userId: props.user.id,
+  });
 
   const [selectedInterests, setSelectedInterests] = useState<Interest[]>([]);
-  const [availableInterests, setAvailableInterests] =
-    useState<Interest[]>(defaultInterests);
+  const [availableInterests, setAvailableInterests] = useState<Interest[]>([]);
+
   useEffect(() => {
-    if (createdInterests.isLoading) return;
-    setAvailableInterests((prev) => [
-      ...prev,
-      ...(createdInterests.data?.createdInterests as Interest[]),
-    ]);
-  }, [createdInterests.data?.createdInterests, createdInterests.isLoading]);
+    if (userInterests.isLoading) return;
+    if (
+      userInterests.data &&
+      !availableInterests.some((prev) => userInterests.data.includes(prev))
+    )
+      setAvailableInterests(userInterests.data as Interest[]);
+  }, [userInterests.isLoading]);
 
   const [removedInterests, setRemovedInterests] = useState<Interest[]>([]);
   const [iconError, setIconError] = useState([false, ""]);

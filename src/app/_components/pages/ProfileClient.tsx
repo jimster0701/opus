@@ -6,8 +6,7 @@ import { useThemeStore } from "~/store/themeStore";
 import { type Session } from "~/types/session";
 import ProfileHeader from "../profile/profileHeader";
 import { AllUserPosts } from "../posts/allUserPosts";
-import { type User } from "~/types/user";
-import { Interest } from "~/types/interest";
+import { type Interest } from "~/types/interest";
 import { defaultInterests } from "~/const/defaultVar";
 
 interface ProfileClientProps {
