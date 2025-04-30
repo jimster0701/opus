@@ -7,10 +7,44 @@ export const taskRouter = createTRPCRouter({
     const post = await ctx.db.task.findMany({
       orderBy: { name: "desc" },
       where: {
-        userId: ctx.session.user.id,
+        createdById: ctx.session.user.id,
         createdAt: new Date(), // Get tasks made today's
         type: {
           in: [TaskType.GENERATED, TaskType.GENERATED_FRIEND],
+        },
+      },
+      include: {
+        friends: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                displayName: true,
+                image: true,
+              },
+            },
+          },
+        },
+        interests: {
+          include: {
+            interest: {
+              select: {
+                id: true,
+                name: true,
+                icon: true,
+                colour: true,
+                createdById: true,
+                createdBy: true,
+              },
+            },
+            task: {
+              select: {
+                id: true,
+                type: true,
+                name: true,
+              },
+            },
+          },
         },
       },
     });
@@ -23,10 +57,44 @@ export const taskRouter = createTRPCRouter({
     const post = await ctx.db.task.findMany({
       orderBy: { createdAt: "desc" },
       where: {
-        userId: ctx.session.user.id,
+        createdById: ctx.session.user.id,
         createdAt: { gte: oneWeekAgo },
         type: {
           in: [TaskType.CUSTOM, TaskType.CUSTOM_FRIEND],
+        },
+      },
+      include: {
+        friends: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                displayName: true,
+                image: true,
+              },
+            },
+          },
+        },
+        interests: {
+          include: {
+            interest: {
+              select: {
+                id: true,
+                name: true,
+                icon: true,
+                colour: true,
+                createdById: true,
+                createdBy: true,
+              },
+            },
+            task: {
+              select: {
+                id: true,
+                type: true,
+                name: true,
+              },
+            },
+          },
         },
       },
     });
@@ -48,9 +116,15 @@ export const taskRouter = createTRPCRouter({
           type: TaskType.CUSTOM,
           name: input.name,
           icon: input.icon,
-          interestIds: input.interestIds,
           description: input.description,
-          userId: ctx.session.user.id,
+          createdById: ctx.session.user.id,
+          interests: {
+            create: input.interestIds.map((interestId) => ({
+              interest: {
+                connect: { id: interestId },
+              },
+            })),
+          },
         },
       });
     }),
@@ -71,14 +145,16 @@ export const taskRouter = createTRPCRouter({
           type: TaskType.CUSTOM_FRIEND,
           name: input.name,
           icon: input.icon,
-          interestIds: input.interestIds,
-          userId: ctx.session.user.id,
+          createdById: ctx.session.user.id,
           description: input.description,
           friends: {
-            create: input.friends.map((friendId: string) => ({
-              user: {
-                connect: { id: friendId },
-              },
+            create: input.friends.map((friendId) => ({
+              user: { connect: { id: friendId } },
+            })),
+          },
+          interests: {
+            create: input.interestIds.map((id) => ({
+              interest: { connect: { id } },
             })),
           },
         },
@@ -103,15 +179,13 @@ export const taskRouter = createTRPCRouter({
           data: {
             name: input.name,
             icon: input.icon,
-            interestIds: input.interestIds,
             description: input.description,
           },
         });
 
+        // Update friends if provided
         if (input.friends) {
-          await prisma.userTask.deleteMany({
-            where: { taskId: input.id },
-          });
+          await prisma.userTask.deleteMany({ where: { taskId: input.id } });
           await prisma.userTask.createMany({
             data: input.friends.map((friendId) => ({
               userId: friendId,
@@ -119,6 +193,15 @@ export const taskRouter = createTRPCRouter({
             })),
           });
         }
+
+        // Update interests
+        await prisma.taskInterest.deleteMany({ where: { taskId: input.id } });
+        await prisma.taskInterest.createMany({
+          data: input.interestIds.map((interestId) => ({
+            taskId: input.id,
+            interestId,
+          })),
+        });
 
         return updatedTask;
       });
@@ -128,13 +211,9 @@ export const taskRouter = createTRPCRouter({
     .input(z.object({ id: z.number().min(1) }))
     .mutation(async ({ ctx, input }) => {
       return ctx.db.$transaction(async (prisma) => {
-        await prisma.userTask.deleteMany({
-          where: { taskId: input.id },
-        });
-
-        await prisma.post.deleteMany({
-          where: { taskId: input.id },
-        });
+        await prisma.userTask.deleteMany({ where: { taskId: input.id } });
+        await prisma.taskInterest.deleteMany({ where: { taskId: input.id } });
+        await prisma.post.deleteMany({ where: { taskId: input.id } });
 
         return prisma.task.delete({
           where: { id: input.id },

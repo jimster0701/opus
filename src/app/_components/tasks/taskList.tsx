@@ -7,18 +7,15 @@ import { useState } from "react";
 interface TaskListProps {
   setSelectedTab: (tab: [string, number]) => void;
   selectedTab: [string, number];
-  availableTasks: Task[];
+  dailyTasks: Task[];
+  customTasks: Task[];
 }
 
 export default function TaskList(props: TaskListProps) {
   const [selectedTab, setSelectedTab] = useState<string>(props.selectedTab[0]);
 
-  const dailyCount = props.availableTasks.filter(
-    (task) => task.type == TaskType.GENERATED
-  ).length;
-  const customCount = props.availableTasks.filter(
-    (task) => task.type == TaskType.CUSTOM
-  ).length;
+  const dailyCount = props.dailyTasks.length;
+  const customCount = props.customTasks.length;
 
   return (
     <div className={styles.taskList}>
@@ -30,7 +27,7 @@ export default function TaskList(props: TaskListProps) {
             props.setSelectedTab(["daily", dailyCount]);
           }}
         >
-          Daily tasks
+          Daily tasks {`(${dailyCount})`}
         </button>
         <button
           onClick={() => {
@@ -38,12 +35,12 @@ export default function TaskList(props: TaskListProps) {
             props.setSelectedTab(["custom", customCount]);
           }}
         >
-          Your tasks
+          Your tasks {`(${customCount})`}
         </button>
       </div>
       {selectedTab == "daily" && (
         <div className={styles.taskComponentContainer}>
-          {props.availableTasks
+          {props.dailyTasks
             .filter((task) => task.type == TaskType.GENERATED)
             .map((task) => (
               <Taskbox key={task.id} task={task} />
@@ -55,7 +52,7 @@ export default function TaskList(props: TaskListProps) {
       )}
       {selectedTab == "custom" && (
         <div className={styles.taskComponentContainer}>
-          {props.availableTasks
+          {props.customTasks
             .filter((task) => task.type == TaskType.CUSTOM)
             .map((task) => (
               <Taskbox key={task.id} task={task} />

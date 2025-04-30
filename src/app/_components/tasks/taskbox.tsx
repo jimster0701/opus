@@ -4,7 +4,6 @@ import { type Task } from "~/types/task";
 import { type Interest } from "~/types/interest";
 import { type User } from "~/types/user";
 import { trpc } from "~/utils/trpc";
-import { defaultInterests } from "~/const/defaultVar";
 import { useEffect, useState } from "react";
 import { shuffle } from "../util";
 
@@ -15,25 +14,19 @@ interface TaskboxProps {
 }
 
 export default function Taskbox(props: TaskboxProps) {
-  const [interests, setInterests] = useState<Interest[]>(
-    shuffle(
-      defaultInterests.filter((i) => props.task.interestIds.includes(i.id))
-    )
-  );
-  const interestResult = trpc.interest.getInterestsById.useQuery({
-    interestIds: props.task.interestIds,
+  const [interests, setInterests] = useState<Interest[]>([]);
+
+  const getInterests = trpc.interest.getInterestsById.useQuery({
+    interestIds: props.task.interests.map((i) => i.task.id),
   });
 
   useEffect(() => {
-    if (interestResult.isLoading) {
-      return;
+    if (getInterests.isLoading) return;
+
+    if (getInterests.data?.length != 0) {
+      setInterests(shuffle(getInterests.data as Interest[]));
     }
-    if (interestResult.data?.length != 0) {
-      setInterests((prev) =>
-        shuffle([...prev, ...(interestResult.data as Interest[])])
-      );
-    }
-  }, [interestResult.isLoading, interestResult.data]);
+  }, [getInterests.isLoading, getInterests.data]);
 
   return (
     <div key={props.task.id} className={styles.taskContainer}>

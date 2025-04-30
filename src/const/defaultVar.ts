@@ -24,11 +24,11 @@ export const defaultTask: Task = {
   type: TaskType.GENERATED,
   name: "",
   icon: "🔮",
-  userId: "",
+  createdById: "system",
   friends: [],
   createdAt: new Date(),
   updatedAt: new Date(),
-  interestIds: [],
+  interests: [],
   description: "",
   completed: false,
 };

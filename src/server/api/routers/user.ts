@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { type Interest } from "~/types/interest";
 
 export const userRouter = createTRPCRouter({
   getUserById: protectedProcedure
@@ -38,16 +39,31 @@ export const userRouter = createTRPCRouter({
     return friendList;
   }),
 
-  getCreatedInterests: protectedProcedure.query(async ({ ctx }) => {
-    const createdInterests = await ctx.db.user.findUnique({
-      where: {
-        id: ctx.session.user.id,
-      },
-      select: { createdInterests: true },
-    });
+  getUserInterests: protectedProcedure
+    .input(z.object({ userId: z.string().min(1) }))
+    .query(async ({ ctx, input }) => {
+      const user = await ctx.db.user.findUnique({
+        where: {
+          id: input.userId,
+        },
+        select: {
+          interestIds: true,
+          createdInterests: true,
+        },
+      });
 
-    return createdInterests;
-  }),
+      const defaultInterests = await ctx.db.interest.findMany({
+        where: {
+          createdById: "system",
+          id: { in: user?.interestIds ?? [] },
+        },
+        include: {
+          createdBy: { select: { id: true, displayName: true, image: true } },
+        },
+      });
+
+      return [...(user?.createdInterests ?? []), ...defaultInterests];
+    }),
 
   getImageUrl: protectedProcedure
     .input(z.object({ userId: z.string().min(1) }))
