@@ -6,7 +6,6 @@ import { type Interest } from "~/types/interest";
 import { useEffect, useState } from "react";
 import { api } from "~/trpc/react";
 import { useRouter } from "next/navigation";
-import { defaultInterests } from "~/const/defaultVar";
 import { trpc } from "~/utils/trpc";
 
 interface TaskboxCreateProps {
@@ -32,7 +31,7 @@ export default function TaskboxCreate(props: TaskboxCreateProps) {
       !availableInterests.some((prev) => userInterests.data.includes(prev))
     )
       setAvailableInterests(userInterests.data as Interest[]);
-  }, [userInterests.isLoading]);
+  }, [userInterests.isLoading, userInterests.data, availableInterests]);
 
   const [removedInterests, setRemovedInterests] = useState<Interest[]>([]);
   const [iconError, setIconError] = useState([false, ""]);

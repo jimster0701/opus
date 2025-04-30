@@ -5,12 +5,7 @@ import { ProfileSlugPictureWrapper } from "../images/cldImageWrapper";
 import { useEffect, useState } from "react";
 import { trpc } from "~/utils/trpc";
 import { FollowerOrFollowingModal } from "../modals";
-import {
-  type SlugUser,
-  type SimpleUser,
-  type User,
-  Follow,
-} from "~/types/user";
+import { type SlugUser, type SimpleUser, type User } from "~/types/user";
 
 interface ProfileSlugHeaderProps {
   sessionUser: User;

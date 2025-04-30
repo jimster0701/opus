@@ -8,7 +8,6 @@ import { trpc } from "~/utils/trpc";
 import { CommentSection } from "./commentSection";
 import { ProfilePicturePreviewWrapper } from "../images/cldImageWrapper";
 import { shuffle } from "../util";
-import { defaultInterests } from "~/const/defaultVar";
 import { useRouter } from "next/navigation";
 
 interface postProps {

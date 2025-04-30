@@ -15,10 +15,7 @@ export function AllUserPosts(props: allUserPostsProps) {
     userId: props.userId,
   });
 
-  if (posts[1].isLoading)
-    return posts[0].map((post) => (
-      <p className={styles.showcaseText}>Loading...</p>
-    ));
+  if (posts[1].isLoading) <p className={styles.showcaseText}>Loading...</p>;
   else if (posts[0].length > 0) {
     return posts[0].map((post) => (
       <Postbox key={post.id} userId={props.sessionUserId} post={post as Post} />

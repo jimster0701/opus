@@ -7,7 +7,6 @@ import { type Task } from "~/types/task";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { type Session } from "~/types/session";
-import Error from "next/error";
 
 interface HomeClientProps {
   session: Session;
@@ -33,14 +32,6 @@ export default function HomeClient(props: HomeClientProps) {
   const getDailyTasks = trpc.task.getDailyTasks.useQuery();
   const getCustomTasks = trpc.task.getCustomTasks.useQuery();
 
-  const preselectedUpdate = async () => {
-    try {
-      await getCustomTasks.refetch();
-    } catch (error) {
-      console.error("Error refetching custom tasks", error);
-    }
-  };
-
   useEffect(() => {
     if (theme === "unset") {
       setTheme(props.theme);
@@ -50,10 +41,12 @@ export default function HomeClient(props: HomeClientProps) {
   useEffect(() => {
     if (preselectedTab == "custom") {
       setSelectedTabCount((prev) => [selectedTabCount[0], prev[1]]);
-      preselectedUpdate();
+      getCustomTasks.refetch().catch((error) => {
+        console.error("Error refetching custom tasks", error);
+      });
       setPreselectedTab("");
     }
-  }, [selectedTabCount[0], preselectedTab]);
+  }, [preselectedTab, selectedTabCount, getCustomTasks]);
 
   useEffect(() => {
     if (getDailyTasks.isLoading) return;
@@ -68,7 +61,11 @@ export default function HomeClient(props: HomeClientProps) {
     if (getCustomTasks.data?.length != 0) {
       setCustomTasks(getCustomTasks.data as Task[]);
     }
-  }, [getCustomTasks.isLoading, getCustomTasks.data?.length]);
+  }, [
+    getCustomTasks.isLoading,
+    getCustomTasks.data?.length,
+    getCustomTasks.data,
+  ]);
 
   return (
     <main
