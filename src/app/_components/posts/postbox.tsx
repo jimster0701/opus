@@ -20,29 +20,22 @@ export function Postbox(props: postProps) {
   const router = useRouter();
   const [liked, setLiked] = useState(props.post.likedBy.includes(props.userId));
   const [tempLike, setTempLike] = useState(0);
-  const [interests, setInterests] = useState<Interest[]>(
-    shuffle(
-      defaultInterests.filter((i) => props.post.task.interestIds.includes(i.id))
-    )
-  );
+  const [interests, setInterests] = useState<Interest[]>([]);
 
   const likePost = trpc.post.likePost.useMutation();
   const unlikePost = trpc.post.unlikePost.useMutation();
 
-  const interestResult = trpc.interest.getInterestsById.useQuery({
-    interestIds: props.post.task.interestIds,
+  const getInterests = trpc.interest.getInterestsById.useQuery({
+    interestIds: props.post.task.interests.map((i) => i.task.id),
   });
 
   useEffect(() => {
-    if (interestResult.isLoading) {
-      return;
+    if (getInterests.isLoading) return;
+
+    if (getInterests.data?.length != 0) {
+      setInterests(shuffle(getInterests.data as Interest[]));
     }
-    if (interestResult.data?.length != 0) {
-      setInterests((prev) =>
-        shuffle([...prev, ...(interestResult.data as Interest[])])
-      );
-    }
-  }, [interestResult.isLoading, interestResult.data]);
+  }, [getInterests.isLoading, getInterests.data]);
 
   const cloudinaryPrefix = `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/`;
 
