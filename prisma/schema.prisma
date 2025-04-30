@@ -130,13 +130,11 @@ model Task {
   description     String
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
-  userId          String
-  interestIds     Int[]
-  friendIds       String[]
+  createdById     String
   createdBySystem Boolean        @default(false)
   type            TaskType
   friends         UserTask[]     @relation("TaskAssigned")
-  user            User           @relation("TaskOwn", fields: [userId], references: [id], onDelete: Cascade)
+  user            User           @relation("TaskOwn", fields: [createdById], references: [id], onDelete: Cascade)
   posts           Post[]         @relation("TaskPost")
   interests       TaskInterest[] @relation("TaskInterest")
 }
