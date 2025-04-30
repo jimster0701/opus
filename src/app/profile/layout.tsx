@@ -1,4 +1,4 @@
-export default function FriendsLayout({
+export default function ProfileLayout({
   children,
 }: {
   children: React.ReactNode;
