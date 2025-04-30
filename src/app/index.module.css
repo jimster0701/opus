@@ -605,6 +605,19 @@
   gap: 0.2rem;
 }
 
+/* Slug components */
+.profileSlugHeader {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.profileSlugHeaderMain {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
 /* Profile avatar */
 .profileAvatarWrapper {
   position: relative;

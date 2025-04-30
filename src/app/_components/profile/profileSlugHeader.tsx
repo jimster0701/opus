@@ -2,10 +2,15 @@
 
 import styles from "../../index.module.css";
 import { ProfileSlugPictureWrapper } from "../images/cldImageWrapper";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { trpc } from "~/utils/trpc";
 import { FollowerOrFollowingModal } from "../modals";
-import { type SlugUser, type SimpleUser, type User } from "~/types/user";
+import {
+  type SlugUser,
+  type SimpleUser,
+  type User,
+  Follow,
+} from "~/types/user";
 
 interface ProfileSlugHeaderProps {
   sessionUser: User;
@@ -13,6 +18,7 @@ interface ProfileSlugHeaderProps {
 }
 
 export default function ProfileSlugHeader(props: ProfileSlugHeaderProps) {
+  const [isFollowing, setIsFollowing] = useState(false);
   const [showFollowModal, setShowFollowModal] = useState<[boolean, string]>([
     false,
     "",
@@ -26,11 +32,33 @@ export default function ProfileSlugHeader(props: ProfileSlugHeaderProps) {
     userId: props.user.id,
   });
 
+  const getIsFollowing = trpc.user.IsFollowing.useQuery({
+    userId: props.user.id,
+  });
+
+  const addFollowing = trpc.user.addFollowing.useMutation();
+  const removeFollowing = trpc.user.removeFollowing.useMutation();
+
+  const utils = trpc.useUtils();
+  const handleFollowersPrefetch = async () => {
+    await utils.user.getFollowers.prefetch({ userId: props.user.id });
+  };
+  const handleFollowingPrefetch = async () => {
+    await utils.user.getFollowers.prefetch({ userId: props.user.id });
+  };
+
+  useEffect(() => {
+    if (getIsFollowing.isLoading) return;
+    if (getIsFollowing.data) {
+      setIsFollowing(getIsFollowing.data);
+    }
+  }, [getIsFollowing.isLoading, getIsFollowing.data]);
+
   return (
     <div className={styles.profileHeaderContainer}>
-      <div className={styles.profileHeader}>
+      <div className={styles.profileSlugHeader}>
         <ProfileSlugPictureWrapper user={props.user} width={500} height={500} />
-        <div className={styles.flexColumn}>
+        <div className={styles.profileSlugHeaderMain}>
           <div className={styles.flexRow}>
             <div className={styles.flexRow}>
               <p
@@ -41,13 +69,11 @@ export default function ProfileSlugHeader(props: ProfileSlugHeaderProps) {
               </p>
             </div>
           </div>
-          <button className={styles.opusButton} disabled>
-            Follow
-          </button>
           <div className={styles.flexRow}>
             <p
               className={`${styles.profileHeaderText} ${styles.profileHeaderFollowText}`}
-              onClick={() => {
+              onClick={async () => {
+                await handleFollowingPrefetch();
                 setShowFollowModal([true, "Following"]);
               }}
             >
@@ -55,7 +81,8 @@ export default function ProfileSlugHeader(props: ProfileSlugHeaderProps) {
             </p>
             <p
               className={`${styles.profileHeaderText} ${styles.profileHeaderFollowText}`}
-              onClick={() => {
+              onClick={async () => {
+                await handleFollowersPrefetch();
                 setShowFollowModal([true, "Followers"]);
               }}
             >
@@ -63,6 +90,27 @@ export default function ProfileSlugHeader(props: ProfileSlugHeaderProps) {
             </p>
           </div>
         </div>
+      </div>
+      <div>
+        {isFollowing ? (
+          <button
+            className={styles.opusButton}
+            onClick={async () => {
+              await removeFollowing.mutateAsync({ userId: props.user.id });
+            }}
+          >
+            Following
+          </button>
+        ) : (
+          <button
+            className={styles.opusButton}
+            onClick={async () => {
+              await addFollowing.mutateAsync({ userId: props.user.id });
+            }}
+          >
+            Follow
+          </button>
+        )}
       </div>
       {showFollowModal[0] && followers && following && (
         <FollowerOrFollowingModal

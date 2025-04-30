@@ -12,7 +12,10 @@ export default async function ProfileSlug() {
     return (
       <HydrateClient>
         <Header userId={session.user.id} theme={session.user.themePreset} />
-        <ProfileSlugClient sessionUser={session.user} />
+        <ProfileSlugClient
+          sessionUser={session.user}
+          theme={session.user.themePreset}
+        />
         <Navbar />
       </HydrateClient>
     );

@@ -10,13 +10,15 @@ import { useParams } from "next/navigation";
 
 interface ProfileSlugClientProps {
   sessionUser: User;
+  theme: string;
 }
 
 export default function ProfileSlugClient(props: ProfileSlugClientProps) {
   const params = useParams();
   const slugData = params.slug;
-  const [theme, setTheme] = useState("default");
+  const [theme, setTheme] = useState(props.theme);
   const [user, setUser] = useState<SlugUser>(defaultUser as SlugUser);
+  console.log(slugData);
 
   const getUser = trpc.user.getUserById.useQuery({
     id: typeof slugData === "string" ? slugData : "",
@@ -31,9 +33,16 @@ export default function ProfileSlugClient(props: ProfileSlugClientProps) {
       }
     }
   }, [getUser.isLoading, getUser.data]);
+
   if (getUser.isLoading) {
     return (
-      <main className={styles.main}>
+      <main
+        className={
+          theme == "default"
+            ? `${styles.main}`
+            : `${styles.main} ${styles[`theme-${theme}`]}`
+        }
+      >
         <div className={styles.container}>
           <div className={styles.profilePostContainer}>
             <h1 className={styles.opusText}>Loading...</h1>
@@ -52,6 +61,7 @@ export default function ProfileSlugClient(props: ProfileSlugClientProps) {
     >
       <div className={styles.container}>
         <ProfileSlugHeader user={user} sessionUser={props.sessionUser} />
+        <br />
         <div className={styles.profilePostContainer}>
           <AllUserPosts userId={user.id} sessionUserId={props.sessionUser.id} />
         </div>
