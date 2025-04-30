@@ -23,7 +23,7 @@ export default function HomeClient(props: HomeClientProps) {
   const [dailyTasks, setDailyTasks] = useState<Task[]>([]);
 
   const [preselectedTab, setPreselectedTab] = useState(
-    searchParams.get("selectedTab") ?? ""
+    searchParams.get("selectedTab")
   );
   const [selectedTabCount, setSelectedTabCount] = useState<[string, number]>([
     preselectedTab ?? "daily",

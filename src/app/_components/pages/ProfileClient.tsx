@@ -41,6 +41,7 @@ export default function ProfileClient(props: ProfileClientProps) {
           userInterests={userInterests}
           setUserInterests={setUserInterests}
         />
+        <br />
         <div className={styles.profilePostContainer}>
           <AllUserPosts
             userId={props.session.user.id}
