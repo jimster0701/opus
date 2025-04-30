@@ -605,6 +605,10 @@
   gap: 0.2rem;
 }
 
+.profileHeaderInterestsContainer > div {
+  margin: 0.1rem;
+}
+
 /* Slug components */
 .profileSlugHeader {
   display: flex;
@@ -1279,6 +1283,10 @@
   margin: 0;
 }
 
+.taskInterestText {
+  margin: 0;
+}
+
 .glowingNugget {
   position: relative;
   background: white;
@@ -1286,7 +1294,6 @@
   border: var(--accent-color) 1px solid;
   border-radius: 1rem;
   padding: 0.25rem 0.5rem;
-  margin: 0.1rem 0.1rem;
 }
 
 .glowingNuggetText {

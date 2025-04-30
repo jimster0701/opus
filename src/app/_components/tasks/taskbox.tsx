@@ -2,27 +2,23 @@
 import styles from "../../index.module.css";
 import { type Task } from "~/types/task";
 import { type Interest } from "~/types/interest";
-import { type User } from "~/types/user";
 import { trpc } from "~/utils/trpc";
 import { useEffect, useState } from "react";
 import { shuffle } from "../util";
 
 interface TaskboxProps {
   task: Task;
-  user?: User;
   onTaskChange?: (updatedTask: Task) => void;
 }
 
 export default function Taskbox(props: TaskboxProps) {
   const [interests, setInterests] = useState<Interest[]>([]);
-
   const getInterests = trpc.interest.getInterestsById.useQuery({
-    interestIds: props.task.interests.map((i) => i.task.id),
+    interestIds: props.task.interests.map((i) => i.interest.id),
   });
 
   useEffect(() => {
     if (getInterests.isLoading) return;
-
     if (getInterests.data?.length != 0) {
       setInterests(shuffle(getInterests.data as Interest[]));
     }
@@ -37,7 +33,7 @@ export default function Taskbox(props: TaskboxProps) {
         <p className={styles.taskTitle}>{props.task.name}</p>
         <p className={styles.taskText}>{props.task.description}</p>
         <div className={styles.flexRow}>
-          <p className={styles.taskInterests}>Based on: </p>
+          <p className={styles.taskInterestText}>Based on: </p>
           {interests.map((interest) => (
             <div
               key={interest.id}

@@ -16,8 +16,6 @@ export default function TaskList(props: TaskListProps) {
     props.selectedTab[0] ?? "daily"
   );
 
-  console.log(selectedTab);
-
   const dailyCount = props.dailyTasks.length;
   const customCount = props.customTasks.length;
 

@@ -17,13 +17,13 @@ export default function HomeClient(props: HomeClientProps) {
   const { theme, setTheme } = useThemeStore();
 
   const searchParams = useSearchParams();
+  const [preselectedTab, setPreselectedTab] = useState(
+    searchParams.get("selectedTab")
+  );
 
   const [customTasks, setCustomTasks] = useState<Task[]>([]);
   const [dailyTasks, setDailyTasks] = useState<Task[]>([]);
 
-  const [preselectedTab, setPreselectedTab] = useState(
-    searchParams.get("selectedTab")
-  );
   const [selectedTabCount, setSelectedTabCount] = useState<[string, number]>([
     preselectedTab ?? "daily",
     0,
