@@ -93,8 +93,22 @@ export const userRouter = createTRPCRouter({
       return users ?? null;
     }),
 
+  IsFollowing: protectedProcedure
+    .input(z.object({ userId: z.string().min(1) }))
+    .query(async ({ ctx, input }) => {
+      const relation = await ctx.db.follow.findUnique({
+        where: {
+          follower_following_unique: {
+            followerId: ctx.session.user.id,
+            followingId: input.userId,
+          },
+        },
+      });
+      return relation != null;
+    }),
+
   getFollowers: protectedProcedure
-    .input(z.object({ userId: z.string() }))
+    .input(z.object({ userId: z.string().min(1) }))
     .query(async ({ ctx, input }) => {
       return await ctx.db.follow.findMany({
         where: { followingId: input.userId },
@@ -105,7 +119,7 @@ export const userRouter = createTRPCRouter({
     }),
 
   getFollowing: protectedProcedure
-    .input(z.object({ userId: z.string() }))
+    .input(z.object({ userId: z.string().min(1) }))
     .query(async ({ ctx, input }) => {
       return await ctx.db.follow.findMany({
         where: { followerId: input.userId },

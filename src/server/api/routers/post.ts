@@ -99,7 +99,42 @@ export const postRouter = createTRPCRouter({
       },
       include: {
         createdBy: true,
-        task: true,
+        task: {
+          include: {
+            friends: {
+              include: {
+                user: {
+                  select: {
+                    id: true,
+                    displayName: true,
+                    image: true,
+                  },
+                },
+              },
+            },
+            interests: {
+              include: {
+                interest: {
+                  select: {
+                    id: true,
+                    name: true,
+                    icon: true,
+                    colour: true,
+                    createdById: true,
+                    createdBy: true,
+                  },
+                },
+                task: {
+                  select: {
+                    id: true,
+                    type: true,
+                    name: true,
+                  },
+                },
+              },
+            },
+          },
+        },
         comments: {
           include: {
             createdBy: {
@@ -132,7 +167,42 @@ export const postRouter = createTRPCRouter({
         where: { createdBy: { id: input.userId } },
         include: {
           createdBy: true,
-          task: true,
+          task: {
+            include: {
+              friends: {
+                include: {
+                  user: {
+                    select: {
+                      id: true,
+                      displayName: true,
+                      image: true,
+                    },
+                  },
+                },
+              },
+              interests: {
+                include: {
+                  interest: {
+                    select: {
+                      id: true,
+                      name: true,
+                      icon: true,
+                      colour: true,
+                      createdById: true,
+                      createdBy: true,
+                    },
+                  },
+                  task: {
+                    select: {
+                      id: true,
+                      type: true,
+                      name: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
           comments: {
             include: {
               createdBy: {
@@ -169,7 +239,42 @@ export const postRouter = createTRPCRouter({
         where: { task: { interests: {} } },
         include: {
           createdBy: true,
-          task: true,
+          task: {
+            include: {
+              friends: {
+                include: {
+                  user: {
+                    select: {
+                      id: true,
+                      displayName: true,
+                      image: true,
+                    },
+                  },
+                },
+              },
+              interests: {
+                include: {
+                  interest: {
+                    select: {
+                      id: true,
+                      name: true,
+                      icon: true,
+                      colour: true,
+                      createdById: true,
+                      createdBy: true,
+                    },
+                  },
+                  task: {
+                    select: {
+                      id: true,
+                      type: true,
+                      name: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
           comments: {
             include: {
               createdBy: {
