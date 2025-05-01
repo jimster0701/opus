@@ -9,6 +9,7 @@ export interface Post {
   description: string;
   createdAt: Date;
   updatedAt: Date;
+  private: boolean;
   createdById: string;
   createdBy: SimpleUser;
   likedBy: string[];
