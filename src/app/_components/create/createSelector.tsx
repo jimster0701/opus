@@ -7,14 +7,13 @@ import { type User } from "~/types/user";
 import { PostboxCreate } from "./postboxCreate";
 import { defaultPost, defaultTask } from "~/const/defaultVar";
 import TaskboxCreate from "./taskboxCreate";
-
-interface CreateTaskProps {
+interface CreateSelectorProps {
   user: User;
   availableTasks: Task[];
   setSelectedTab: Dispatch<SetStateAction<string>>;
 }
 
-export default function CreateSelector(props: CreateTaskProps) {
+export default function CreateSelector(props: CreateSelectorProps) {
   const [selectedTab, setSelectedTab] = useState("task");
   const [createdTask, setCreatedTask] = useState<Task>(defaultTask);
   const [createdPost, setCreatedPost] = useState<Post>({
@@ -22,6 +21,7 @@ export default function CreateSelector(props: CreateTaskProps) {
     createdById: props.user.id,
     createdBy: props.user,
   });
+
   return (
     <div className={styles.createContainer}>
       <div className={styles.taskTabContainer}>

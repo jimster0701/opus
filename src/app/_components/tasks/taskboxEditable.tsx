@@ -1,9 +1,9 @@
 "use client";
 import { type Task } from "~/types/task";
 import { useState } from "react";
-import TaskboxCreate from "../create/taskboxCreate";
 import Taskbox from "./taskbox";
 import { type Session } from "~/types/session";
+import TaskboxUpdate from "./taskboxUpdate";
 
 interface TaskboxEditableProps {
   task: Task;
@@ -12,15 +12,20 @@ interface TaskboxEditableProps {
 
 export default function TaskboxEditable(props: TaskboxEditableProps) {
   const [editMode, setEditMode] = useState<boolean>(false);
-  const [updatedTask, setUpdatedTask] = useState<Task>(props.task);
-  setEditMode(false);
-  if (editMode) return <Taskbox task={updatedTask} />;
+  const [task, setTask] = useState<Task>(props.task);
+
+  const finishUpdate = (task: Task) => {
+    setEditMode(false);
+    setTask(task);
+  };
+
+  if (!editMode) return <Taskbox task={task} setEditMode={setEditMode} />;
   else
     return (
-      <TaskboxCreate
-        task={updatedTask}
+      <TaskboxUpdate
+        task={props.task}
         user={props.session.user}
-        onTaskChange={setUpdatedTask}
+        onComplete={finishUpdate}
       />
     );
 }

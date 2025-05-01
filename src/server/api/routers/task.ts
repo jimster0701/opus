@@ -55,10 +55,10 @@ export const taskRouter = createTRPCRouter({
     const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
     const post = await ctx.db.task.findMany({
-      orderBy: { createdAt: "desc" },
+      orderBy: { updatedAt: "desc" },
       where: {
         createdById: ctx.session.user.id,
-        createdAt: { gte: oneWeekAgo },
+        updatedAt: { gte: oneWeekAgo },
         type: {
           in: [TaskType.CUSTOM, TaskType.CUSTOM_FRIEND],
         },
@@ -134,7 +134,7 @@ export const taskRouter = createTRPCRouter({
       z.object({
         name: z.string().min(1),
         icon: z.string().min(1),
-        friends: z.array(z.string().min(1)),
+        friends: z.array(z.string().cuid()),
         interestIds: z.array(z.number().min(1)),
         description: z.string().min(1),
       })

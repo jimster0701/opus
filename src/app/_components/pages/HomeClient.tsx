@@ -100,6 +100,7 @@ export default function HomeClient(props: HomeClientProps) {
           </h3>
         )}
         <TaskList
+          session={props.session}
           setSelectedTab={setSelectedTabCount}
           customTasks={customTasks}
           dailyTasks={dailyTasks}

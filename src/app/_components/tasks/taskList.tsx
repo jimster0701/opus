@@ -3,8 +3,11 @@ import { TaskType } from "@prisma/client";
 import styles from "../../index.module.css";
 import Taskbox from "./taskbox";
 import { useState } from "react";
+import TaskboxEditable from "./taskboxEditable";
+import { type Session } from "~/types/session";
 
 interface TaskListProps {
+  session: Session;
   setSelectedTab: (tab: [string, number]) => void;
   selectedTab: [string, number];
   dailyTasks: Task[];
@@ -57,7 +60,11 @@ export default function TaskList(props: TaskListProps) {
           {props.customTasks
             .filter((task) => task.type == TaskType.CUSTOM)
             .map((task) => (
-              <Taskbox key={task.id} task={task} />
+              <TaskboxEditable
+                key={task.id}
+                task={task}
+                session={props.session}
+              />
             ))}
           {customCount == 0 && (
             <p className={styles.noTaskText}>No tasks yet :(</p>

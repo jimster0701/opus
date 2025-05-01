@@ -102,6 +102,7 @@ export default function ProfileSlugHeader(props: ProfileSlugHeaderProps) {
             onClick={async () => {
               await addFollowing.mutateAsync({ userId: props.user.id });
             }}
+            disabled={props.user.id == props.sessionUser.id}
           >
             Follow
           </button>

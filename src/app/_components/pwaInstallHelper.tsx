@@ -1,5 +1,5 @@
 "use client";
-import { ArrowUp, EllipsisVertical, Smartphone } from "lucide-react";
+import { ArrowUp, EllipsisVertical, Share, Smartphone } from "lucide-react";
 import styles from "../index.module.css";
 import { useEffect, useState } from "react";
 export function PWAInstallHelper() {
@@ -28,6 +28,8 @@ export function PWAInstallHelper() {
 
     if (navigator.userAgent.includes("Android")) {
       setUserAgent("Android");
+    } else if (/iPhone|iPad|iPod|/i.test(navigator.userAgent)) {
+      setUserAgent("Iphone");
     }
   }, []);
 
@@ -52,12 +54,12 @@ export function PWAInstallHelper() {
   };
 
   useEffect(() => {
-    if (isMobile && !isStandalone) {
+    if (isMobile && !isStandalone && userAgent != "") {
       setShowModal(true);
     }
-  }, [isMobile, isStandalone]);
+  }, [isMobile, isStandalone, userAgent]);
 
-  if (showModal && userAgent == "Android" && isChrome()) {
+  if (showModal && userAgent == "Android") {
     return (
       <div className={styles.modalContainer}>
         <div
@@ -74,6 +76,10 @@ export function PWAInstallHelper() {
               <Smartphone />
               {"Add to home screen"}
             </p>
+            <br />
+            {isChrome() && (
+              <p>{"If the option isn't available then please use Chrome."}</p>
+            )}
           </div>
           <ArrowUp
             className={styles.pwaHelperArrow}
@@ -83,7 +89,7 @@ export function PWAInstallHelper() {
         </div>
       </div>
     );
-  } else if (showModal && !isChrome()) {
+  } else if (showModal && userAgent != "Android") {
     return (
       <div className={styles.modalContainer}>
         <div
@@ -93,8 +99,16 @@ export function PWAInstallHelper() {
         <div className={styles.pwaHelperContainer}>
           <div className={styles.pwaHelperTextContainer}>
             <h2>Welcome to Opus</h2>
-            <p>To use this app please use</p>
-            <p>chrome browser instead.</p>
+            <p></p>
+            <p>To use this website as an app, </p>
+            <p>
+              Please click the share button <Share />
+            </p>
+            <p>and scroll until you see</p>
+            <p>
+              <Smartphone />
+              {"Add to home screen"}
+            </p>
           </div>
         </div>
       </div>

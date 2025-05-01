@@ -5,43 +5,55 @@ import { type User } from "~/types/user";
 import { type Interest } from "~/types/interest";
 import { useEffect, useState } from "react";
 import { api } from "~/trpc/react";
-import { useRouter } from "next/navigation";
 import { trpc } from "~/utils/trpc";
+import { Check, X } from "lucide-react";
 
-interface TaskboxCreateProps {
+interface TaskboxUpdateProps {
   task: Task;
   user: User;
-  onTaskChange: (updatedTask: Task) => void;
+  onComplete: (finalTask: Task, updatedInterests: Interest[]) => void;
 }
 
-export default function TaskboxCreate(props: TaskboxCreateProps) {
-  const router = useRouter();
+export default function TaskboxUpdate(props: TaskboxUpdateProps) {
+  const [updatedTask, setUpdatedTask] = useState<Task>(props.task);
+  const [selectedInterests, setSelectedInterests] = useState<Interest[]>(
+    props.task.interests.map((i) => i.interest)
+  );
+  const [availableInterests, setAvailableInterests] = useState<Interest[]>([]);
+  const [removedInterests, setRemovedInterests] = useState<Interest[]>(
+    props.task.interests.map((i) => i.interest)
+  );
+  const [iconError, setIconError] = useState([false, ""]);
+  const [formError, setFormError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const userInterests = trpc.user.getUserInterests.useQuery({
     userId: props.user.id,
   });
-
-  const [selectedInterests, setSelectedInterests] = useState<Interest[]>([]);
-  const [availableInterests, setAvailableInterests] = useState<Interest[]>([]);
 
   useEffect(() => {
     if (userInterests.isLoading) return;
     if (
       userInterests.data &&
       !availableInterests.some((prev) => userInterests.data.includes(prev))
-    )
-      setAvailableInterests(userInterests.data as Interest[]);
-  }, [userInterests.isLoading, userInterests.data, availableInterests]);
+    ) {
+      const pulledInterests = userInterests.data as Interest[];
+      const selectedIds = selectedInterests.map((i) => i.id);
+      setAvailableInterests(
+        pulledInterests.filter((i) => !selectedIds.includes(i.id))
+      );
+    }
+  }, [
+    userInterests.isLoading,
+    userInterests.data,
+    availableInterests,
+    selectedInterests,
+  ]);
 
-  const [removedInterests, setRemovedInterests] = useState<Interest[]>([]);
-  const [iconError, setIconError] = useState([false, ""]);
-  const [formError, setFormError] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const createTask = api.task.createCustomTask.useMutation();
+  const createTask = api.task.updateTask.useMutation();
   return (
     <>
-      <div key={props.task.id} className={styles.taskCreateContainer}>
+      <div key={updatedTask.id} className={styles.taskCreateContainer}>
         <div className={styles.taskCreateHeader}>
           <div className={styles.taskCreateIconContainer}>
             <input
@@ -49,12 +61,12 @@ export default function TaskboxCreate(props: TaskboxCreateProps) {
               className={`${styles.taskCreateIconInput} ${
                 iconError[0] ? styles.inputError : ""
               }`}
-              value={props.task.icon}
+              value={updatedTask.icon}
               onChange={(e) => {
                 if (e.target.value.length <= 2) {
                   setIconError([false, ""]);
-                  props.onTaskChange?.({
-                    ...props.task,
+                  setUpdatedTask({
+                    ...updatedTask,
                     icon: e.target.value,
                   });
                 } else {
@@ -77,8 +89,9 @@ export default function TaskboxCreate(props: TaskboxCreateProps) {
             <input
               type="text"
               className={styles.taskTitle}
-              value={props.task.name}
+              value={updatedTask.name}
               placeholder="Task title"
+              onClick={() => setFormError("")}
               onChange={(e) => {
                 if (e.target.value.length >= 50) {
                   setFormError(
@@ -86,15 +99,16 @@ export default function TaskboxCreate(props: TaskboxCreateProps) {
                   );
                   return;
                 }
-                props.onTaskChange?.({
-                  ...props.task,
+                setUpdatedTask({
+                  ...updatedTask,
                   name: e.target.value,
                 });
               }}
             />
             <textarea
               className={styles.taskText}
-              value={props.task.description}
+              value={updatedTask.description}
+              onClick={() => setFormError("")}
               placeholder="Do this..."
               onChange={(e) => {
                 if (e.target.value.length >= 150) {
@@ -103,8 +117,9 @@ export default function TaskboxCreate(props: TaskboxCreateProps) {
                   );
                   return;
                 }
-                props.onTaskChange?.({
-                  ...props.task,
+
+                setUpdatedTask({
+                  ...updatedTask,
                   description: e.target.value,
                 });
               }}
@@ -118,7 +133,6 @@ export default function TaskboxCreate(props: TaskboxCreateProps) {
               <h6>(Your interests)</h6>
             </div>
             <select
-              multiple
               className={`${styles.opusSelector} ${styles.opusSelectorMultiple}`}
               onChange={(e) => {
                 if (selectedInterests.length >= 5) {
@@ -143,6 +157,7 @@ export default function TaskboxCreate(props: TaskboxCreateProps) {
                 }
               }}
             >
+              <option>Select an interest</option>
               {availableInterests.map((interest) => (
                 <option
                   className={styles.taskCreateSelectOption}
@@ -179,6 +194,7 @@ export default function TaskboxCreate(props: TaskboxCreateProps) {
                       ...availableInterests,
                       ...removedInterests.filter((i) => i.id == interest.id),
                     ]);
+                    setFormError("");
                   }}
                 >
                   {interest.icon}
@@ -191,29 +207,19 @@ export default function TaskboxCreate(props: TaskboxCreateProps) {
       </div>
       <div className={styles.taskSubmitContainer}>
         <button
-          className={styles.opusButton}
+          className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
           disabled={isSubmitting}
           onClick={async () => {
-            setFormError(""); // Clear previous errors
-
             // Basic validation
-            if (!props.task.name.trim()) {
+            if (!updatedTask.name.trim()) {
               setFormError("Task name cannot be empty.");
               return;
             }
-            if (props.task.name.length > 55) {
-              setFormError("Task name cannot be longer than 55 characters.");
-              return;
-            }
-            if (!props.task.description.trim()) {
+            if (!updatedTask.description.trim()) {
               setFormError("Task description cannot be empty.");
               return;
             }
-            if (props.task.name.length > 155) {
-              setFormError("Task name cannot be longer than 155 characters.");
-              return;
-            }
-            if (!props.task.icon.trim()) {
+            if (!updatedTask.icon.trim()) {
               setFormError("An icon is required.");
               return;
             }
@@ -225,27 +231,47 @@ export default function TaskboxCreate(props: TaskboxCreateProps) {
             try {
               setIsSubmitting(true);
               await createTask.mutateAsync({
-                name: props.task.name,
-                icon: props.task.icon,
+                id: updatedTask.id,
+                name: updatedTask.name,
+                icon: updatedTask.icon,
                 interestIds: selectedInterests.map((i) => i.id),
-                description: props.task.description,
+                description: updatedTask.description,
               });
-              // Success redirect and show new task
-              router.push("/?selectedTab=custom");
+              // Completion
+
+              props.onComplete(updatedTask, selectedInterests);
             } catch (error: any) {
               setFormError(
                 error?.message ??
-                  "Something went wrong while creating the task."
+                  "Something went wrong while updating the task."
               );
             } finally {
               setIsSubmitting(false);
             }
           }}
         >
-          {isSubmitting ? "Creating..." : "Create"}
+          {isSubmitting ? "Updating..." : <Check />}
         </button>
-        {formError && <div className={styles.formError}>{formError}</div>}
+        {!isSubmitting && (
+          <button
+            className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
+            onClick={() => {
+              props.onComplete(
+                props.task,
+                props.task.interests.map((i) => i.interest)
+              );
+            }}
+          >
+            <X />
+          </button>
+        )}
+        {formError && (
+          <div className={styles.formError} onClick={() => setFormError("")}>
+            {formError}
+          </div>
+        )}
       </div>
+      <br />
     </>
   );
 }

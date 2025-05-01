@@ -25,6 +25,7 @@ export default function CreateClient(props: CreateClientProps) {
     if (getCustomTasks.isLoading) return;
     if (getCustomTasks.data?.length != 0) {
       setCustomTasks(getCustomTasks.data as Task[]);
+      setAvailableTasks(getCustomTasks.data as Task[]);
     }
   }, [
     getCustomTasks.isLoading,
