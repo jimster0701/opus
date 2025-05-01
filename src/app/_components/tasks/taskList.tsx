@@ -46,7 +46,11 @@ export default function TaskList(props: TaskListProps) {
       {selectedTab == "daily" && (
         <div className={styles.taskComponentContainer}>
           {props.dailyTasks
-            .filter((task) => task.type == TaskType.GENERATED)
+            .filter(
+              (task) =>
+                task.type == TaskType.GENERATED ||
+                task.type == TaskType.GENERATED_FRIEND
+            )
             .map((task) => (
               <Taskbox key={task.id} task={task} />
             ))}
@@ -58,7 +62,11 @@ export default function TaskList(props: TaskListProps) {
       {selectedTab == "custom" && (
         <div className={styles.taskComponentContainer}>
           {props.customTasks
-            .filter((task) => task.type == TaskType.CUSTOM)
+            .filter(
+              (task) =>
+                task.type == TaskType.CUSTOM ||
+                task.type == TaskType.CUSTOM_FRIEND
+            )
             .map((task) => (
               <TaskboxEditable
                 key={task.id}
