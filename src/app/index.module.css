@@ -686,6 +686,7 @@
   display: flex;
   width: fit-content;
   padding: 0;
+  align-items: center;
 }
 
 /* Profile content */
@@ -1118,8 +1119,9 @@
 }
 
 .taskUpdateDelete {
+  display: flex;
+  gap: 0.5rem;
   padding: 0.5rem;
-  float: right;
 }
 
 .taskUpdateControls {
@@ -1198,7 +1200,6 @@
   padding: 0.51rem 0.75rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
   margin-bottom: 0.5rem;
-  gap: 1rem;
 }
 
 .taskContainer:hover {

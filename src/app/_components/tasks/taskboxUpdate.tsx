@@ -1,6 +1,6 @@
 "use client";
 import styles from "../../index.module.css";
-import { type Task } from "~/types/task";
+import { type TaskInterest, type Task } from "~/types/task";
 import { type User } from "~/types/user";
 import { type Interest } from "~/types/interest";
 import { useEffect, useState } from "react";
@@ -12,7 +12,7 @@ import { DeleteTaskModal } from "../modals";
 interface TaskboxUpdateProps {
   task: Task;
   user: User;
-  onComplete: (finalTask: Task, updatedInterests: Interest[]) => void;
+  onComplete: (finalTask: Task, updatedInterests: TaskInterest[]) => void;
 }
 
 export default function TaskboxUpdate(props: TaskboxUpdateProps) {
@@ -235,16 +235,19 @@ export default function TaskboxUpdate(props: TaskboxUpdateProps) {
 
                   try {
                     setIsSubmitting(true);
-                    await updateTask.mutateAsync({
-                      id: updatedTask.id,
-                      name: updatedTask.name,
-                      icon: updatedTask.icon,
-                      interestIds: selectedInterests.map((i) => i.id),
-                      description: updatedTask.description,
-                    });
-                    // Completion
-
-                    props.onComplete(updatedTask, selectedInterests);
+                    const updatedTaskWithInterests =
+                      await updateTask.mutateAsync({
+                        id: updatedTask.id,
+                        name: updatedTask.name,
+                        icon: updatedTask.icon,
+                        interestIds: selectedInterests.map((i) => i.id),
+                        description: updatedTask.description,
+                      });
+                    console.log(updatedTaskWithInterests?.interests);
+                    props.onComplete(
+                      updatedTask,
+                      updatedTaskWithInterests?.interests as TaskInterest[]
+                    );
                   } catch (error: any) {
                     setFormError(
                       error?.message ??
@@ -261,23 +264,24 @@ export default function TaskboxUpdate(props: TaskboxUpdateProps) {
               <button
                 className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
                 onClick={() => {
-                  props.onComplete(
-                    props.task,
-                    props.task.interests.map((i) => i.interest)
-                  );
+                  props.onComplete(props.task, props.task.interests);
                 }}
               >
                 Cancel
                 <X />
               </button>
             </div>
-            <div
-              className={styles.taskUpdateDelete}
-              onClick={() => {
-                setShowTaskDelete(true);
-              }}
-            >
-              <Trash2 />
+            <div className={styles.taskUpdateDelete}>
+              {/** <SquareCheckBig onClick={async () => {
+                  try{
+                    completeTask.mutate({id:props.task.id});
+                  } catch
+                }} />  */}
+              <Trash2
+                onClick={() => {
+                  setShowTaskDelete(true);
+                }}
+              />
             </div>
           </>
         )}
@@ -288,12 +292,12 @@ export default function TaskboxUpdate(props: TaskboxUpdateProps) {
             Updating...
           </button>
         )}
-        {formError && (
-          <div className={styles.formError} onClick={() => setFormError("")}>
-            {formError}
-          </div>
-        )}
       </div>
+      {formError && (
+        <div className={styles.formError} onClick={() => setFormError("")}>
+          {formError}
+        </div>
+      )}
       <br />
       {showTaskDelete && (
         <DeleteTaskModal

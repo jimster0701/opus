@@ -174,7 +174,7 @@ export const taskRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       return ctx.db.$transaction(async (prisma) => {
-        const updatedTask = await prisma.task.update({
+        await prisma.task.update({
           where: { id: input.id },
           data: {
             name: input.name,
@@ -201,6 +201,33 @@ export const taskRouter = createTRPCRouter({
             taskId: input.id,
             interestId,
           })),
+        });
+
+        const updatedTask = await prisma.task.findUnique({
+          where: { id: input.id },
+          include: {
+            interests: {
+              include: {
+                interest: {
+                  select: {
+                    id: true,
+                    name: true,
+                    icon: true,
+                    colour: true,
+                    createdById: true,
+                    createdBy: true,
+                  },
+                },
+                task: {
+                  select: {
+                    id: true,
+                    type: true,
+                    name: true,
+                  },
+                },
+              },
+            },
+          },
         });
 
         return updatedTask;
