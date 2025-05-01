@@ -180,7 +180,6 @@
   top: 0px;
   position: absolute;
   justify-content: flex-end;
-
   padding: 0.25rem 1rem;
 }
 
@@ -319,6 +318,8 @@
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  padding-top: 2rem;
+  align-items: baseline;
 }
 
 .modalBackground {
@@ -338,6 +339,7 @@
   flex-direction: column;
   align-items: center;
   width: 90%;
+  height: fit-content;
   max-width: 800px;
   max-height: 90vh;
   padding: 2.5rem 2rem;
@@ -348,12 +350,6 @@
   text-align: center;
   animation: fadeIn 0.3s ease-in-out;
   overflow: hidden scroll;
-}
-
-@media (max-width: 640px) {
-  .modal {
-    height: 90vh;
-  }
 }
 
 .closeModalButton {
@@ -1060,6 +1056,7 @@
 
 .taskCreateContainer {
   display: flex;
+  position: relative;
   align-items: flex-start;
   flex-direction: column;
   width: 100%;
@@ -1085,6 +1082,8 @@
 }
 
 .taskCreateIconContainer {
+  display: flex;
+  flex-direction: column;
   position: relative;
   width: 20%;
   min-width: min-content;
@@ -1116,6 +1115,16 @@
 
 .taskCreateIconInput.inputError {
   border: 1px solid red;
+}
+
+.taskUpdateDelete {
+  padding: 0.5rem;
+  float: right;
+}
+
+.taskUpdateControls {
+  display: flex;
+  gap: 0.75rem;
 }
 
 .taskCreateInterestContainer {
@@ -1375,6 +1384,8 @@
 .taskSubmitContainer,
 .postSubmitContainer {
   display: flex;
+  width: 100%;
+  justify-content: space-between;
   flex-direction: row;
   align-items: center;
   gap: 0.2rem;

@@ -6,7 +6,8 @@ import { type Interest } from "~/types/interest";
 import { useEffect, useState } from "react";
 import { api } from "~/trpc/react";
 import { trpc } from "~/utils/trpc";
-import { Check, X } from "lucide-react";
+import { Check, Trash2, X } from "lucide-react";
+import { DeleteTaskModal } from "../modals";
 
 interface TaskboxUpdateProps {
   task: Task;
@@ -26,6 +27,7 @@ export default function TaskboxUpdate(props: TaskboxUpdateProps) {
   const [iconError, setIconError] = useState([false, ""]);
   const [formError, setFormError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showTaskDelete, setShowTaskDelete] = useState(false);
 
   const userInterests = trpc.user.getUserInterests.useQuery({
     userId: props.user.id,
@@ -50,7 +52,7 @@ export default function TaskboxUpdate(props: TaskboxUpdateProps) {
     selectedInterests,
   ]);
 
-  const createTask = api.task.updateTask.useMutation();
+  const updateTask = api.task.updateTask.useMutation();
   return (
     <>
       <div key={updatedTask.id} className={styles.taskCreateContainer}>
@@ -206,63 +208,84 @@ export default function TaskboxUpdate(props: TaskboxUpdateProps) {
         </div>
       </div>
       <div className={styles.taskSubmitContainer}>
-        <button
-          className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
-          disabled={isSubmitting}
-          onClick={async () => {
-            // Basic validation
-            if (!updatedTask.name.trim()) {
-              setFormError("Task name cannot be empty.");
-              return;
-            }
-            if (!updatedTask.description.trim()) {
-              setFormError("Task description cannot be empty.");
-              return;
-            }
-            if (!updatedTask.icon.trim()) {
-              setFormError("An icon is required.");
-              return;
-            }
-            if (selectedInterests.length == 0) {
-              setFormError("Choose an interest to relate this to.");
-              return;
-            }
-
-            try {
-              setIsSubmitting(true);
-              await createTask.mutateAsync({
-                id: updatedTask.id,
-                name: updatedTask.name,
-                icon: updatedTask.icon,
-                interestIds: selectedInterests.map((i) => i.id),
-                description: updatedTask.description,
-              });
-              // Completion
-
-              props.onComplete(updatedTask, selectedInterests);
-            } catch (error: any) {
-              setFormError(
-                error?.message ??
-                  "Something went wrong while updating the task."
-              );
-            } finally {
-              setIsSubmitting(false);
-            }
-          }}
-        >
-          {isSubmitting ? "Updating..." : <Check />}
-        </button>
         {!isSubmitting && (
+          <>
+            <div className={styles.taskUpdateControls}>
+              <button
+                className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
+                disabled={isSubmitting}
+                onClick={async () => {
+                  // Basic validation
+                  if (!updatedTask.name.trim()) {
+                    setFormError("Task name cannot be empty.");
+                    return;
+                  }
+                  if (!updatedTask.description.trim()) {
+                    setFormError("Task description cannot be empty.");
+                    return;
+                  }
+                  if (!updatedTask.icon.trim()) {
+                    setFormError("An icon is required.");
+                    return;
+                  }
+                  if (selectedInterests.length == 0) {
+                    setFormError("Choose an interest to relate this to.");
+                    return;
+                  }
+
+                  try {
+                    setIsSubmitting(true);
+                    await updateTask.mutateAsync({
+                      id: updatedTask.id,
+                      name: updatedTask.name,
+                      icon: updatedTask.icon,
+                      interestIds: selectedInterests.map((i) => i.id),
+                      description: updatedTask.description,
+                    });
+                    // Completion
+
+                    props.onComplete(updatedTask, selectedInterests);
+                  } catch (error: any) {
+                    setFormError(
+                      error?.message ??
+                        "Something went wrong while updating the task."
+                    );
+                  } finally {
+                    setIsSubmitting(false);
+                  }
+                }}
+              >
+                Confirm
+                <Check />
+              </button>
+              <button
+                className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
+                onClick={() => {
+                  props.onComplete(
+                    props.task,
+                    props.task.interests.map((i) => i.interest)
+                  );
+                }}
+              >
+                Cancel
+                <X />
+              </button>
+            </div>
+            <div
+              className={styles.taskUpdateDelete}
+              onClick={() => {
+                setShowTaskDelete(true);
+              }}
+            >
+              <Trash2 />
+            </div>
+          </>
+        )}
+        {isSubmitting && (
           <button
             className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
-            onClick={() => {
-              props.onComplete(
-                props.task,
-                props.task.interests.map((i) => i.interest)
-              );
-            }}
           >
-            <X />
+            "Updating..."
           </button>
         )}
         {formError && (
@@ -272,6 +295,13 @@ export default function TaskboxUpdate(props: TaskboxUpdateProps) {
         )}
       </div>
       <br />
+      {showTaskDelete && (
+        <DeleteTaskModal
+          onComplete={() => setShowTaskDelete(false)}
+          id={props.task.id}
+          name={props.task.name}
+        />
+      )}
     </>
   );
 }

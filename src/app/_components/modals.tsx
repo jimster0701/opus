@@ -5,11 +5,12 @@ import "~/styles/themes.css";
 import { shuffle } from "./util";
 import { useThemeStore } from "~/store/themeStore";
 import { SignOutButton } from "./settings/signOutButton";
-import { X } from "lucide-react";
+import { Check, X } from "lucide-react";
 import { type SimpleUser, type SlugUser, type User } from "~/types/user";
 import { ProfilePicturePreviewWrapper } from "./images/cldImageWrapper";
 import { defaultInterests } from "~/const/defaultVar";
 import { type Interest } from "~/types/interest";
+import { api } from "~/trpc/react";
 
 interface modalProps {
   onComplete: () => void;
@@ -21,6 +22,45 @@ export function Modal() {
       <div className={styles.modalBackground} />
       <div className={styles.modal}>
         <h1>Hello, do this please :)</h1>
+      </div>
+    </div>
+  );
+}
+
+interface deleteModal extends modalProps {
+  id: number;
+  name: string;
+}
+
+export function DeleteTaskModal(props: deleteModal) {
+  const deleteTask = api.task.deleteTask.useMutation();
+  return (
+    <div className={styles.modalContainer}>
+      <div className={styles.modalBackground} onClick={props.onComplete} />
+      <div className={styles.modal}>
+        <h1>Are you sure you want to delete</h1>
+        <h2>{props.name}?</h2>
+        <br />
+        <div className={styles.taskUpdateControls}>
+          <button
+            className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
+            onClick={async () => {
+              try {
+                deleteTask.mutate({ id: props.id });
+              } catch (error) {
+                console.error(error);
+              }
+            }}
+          >
+            <Check />
+          </button>
+          <button
+            className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
+            onClick={props.onComplete}
+          >
+            <X />
+          </button>
+        </div>
       </div>
     </div>
   );
