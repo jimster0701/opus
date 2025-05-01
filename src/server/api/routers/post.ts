@@ -20,6 +20,7 @@ export const postRouter = createTRPCRouter({
       z.object({
         name: z.string().min(1),
         taskId: z.number(),
+        private: z.boolean(),
         description: z.string().min(1),
         imageUrl: z.string().min(1),
       })
@@ -32,6 +33,7 @@ export const postRouter = createTRPCRouter({
           description: input.description,
           imageUrl: input.imageUrl,
           likedBy: [],
+          private: input.private,
           createdBy: { connect: { id: ctx.session.user.id } },
         },
       });
@@ -41,8 +43,9 @@ export const postRouter = createTRPCRouter({
       z.object({
         id: z.number().min(1),
         name: z.string().min(1),
-        description: z.string().min(1),
+        private: z.boolean(),
         imageUrl: z.string().min(1),
+        description: z.string().min(1),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -52,6 +55,7 @@ export const postRouter = createTRPCRouter({
           name: input.name,
           description: input.description,
           imageUrl: input.imageUrl,
+          private: input.private,
         },
       });
     }),
@@ -120,6 +124,7 @@ export const postRouter = createTRPCRouter({
                     name: true,
                     icon: true,
                     colour: true,
+                    private: true,
                     createdById: true,
                     createdBy: true,
                   },
@@ -188,6 +193,7 @@ export const postRouter = createTRPCRouter({
                       name: true,
                       icon: true,
                       colour: true,
+                      private: true,
                       createdById: true,
                       createdBy: true,
                     },
@@ -270,6 +276,7 @@ export const postRouter = createTRPCRouter({
                       name: true,
                       icon: true,
                       colour: true,
+                      private: true,
                       createdById: true,
                       createdBy: true,
                     },

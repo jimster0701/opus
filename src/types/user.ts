@@ -39,6 +39,7 @@ export interface User {
   emailVerified?: Date;
   displayName: string;
   image: string;
+  private: boolean;
   themePreset: string;
   interestIds: number[];
   followers: Follow[];

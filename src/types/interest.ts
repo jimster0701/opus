@@ -5,6 +5,7 @@ export interface Interest {
   name: string;
   icon: string;
   colour: string;
+  private: boolean;
   createdById: string;
   createdBy: SimpleUser;
 }

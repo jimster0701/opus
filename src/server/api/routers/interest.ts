@@ -8,6 +8,7 @@ export const interestRouter = createTRPCRouter({
         name: z.string().min(1),
         icon: z.string().min(1),
         colour: z.string().min(1),
+        private: z.boolean(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -16,6 +17,7 @@ export const interestRouter = createTRPCRouter({
           name: input.name,
           icon: input.icon,
           colour: input.colour,
+          private: input.private,
           createdById: ctx.session.user.id,
         },
       });
@@ -28,6 +30,7 @@ export const interestRouter = createTRPCRouter({
         name: z.string().min(1),
         icon: z.string().min(1),
         colour: z.string().min(1),
+        private: z.boolean(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -37,6 +40,7 @@ export const interestRouter = createTRPCRouter({
           name: input.name,
           icon: input.icon,
           colour: input.colour,
+          private: input.private,
         },
       });
     }),
