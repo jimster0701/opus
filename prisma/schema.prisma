@@ -16,6 +16,7 @@ model Post {
   createdById String
   imageUrl    String?
   likedBy     String[]
+  private     Boolean   @default(false)
   taskId      Int
   task        Task      @relation("TaskPost", fields: [taskId], references: [id])
   createdBy   User      @relation(fields: [createdById], references: [id])
@@ -81,6 +82,7 @@ model User {
   emailVerified    DateTime?
   displayName      String?
   image            String?
+  private          Boolean    @default(false)
   interestIds      Int[]
   themePreset      String     @default("unset")
   followers        Follow[]   @relation("Followers")
@@ -110,6 +112,7 @@ model Interest {
   name        String
   icon        String
   colour      String
+  private     Boolean        @default(false)
   createdById String
   createdBy   User           @relation("userCreatedInterests", fields: [createdById], references: [id])
   tasks       TaskInterest[] @relation("TaskInterest")
@@ -157,6 +160,13 @@ model TaskInterest {
   interest   Interest @relation("TaskInterest", fields: [interestId], references: [id])
 
   @@unique([taskId, interestId])
+}
+
+model IssueReport {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  message   String
+  createdAt DateTime @default(now())
 }
 
 model VerificationToken {
