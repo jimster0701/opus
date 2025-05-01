@@ -1274,13 +1274,6 @@
   }
 }
 
-.taskEditContainer {
-  position: absolute;
-  right: 10;
-  top: 10;
-  z-index: 4;
-}
-
 .taskContentContainer {
   width: 100%;
   display: flex;
@@ -1292,6 +1285,11 @@
 .taskMain {
   width: 100%;
   display: flex;
+}
+
+.taskTitleContainer {
+  display: flex;
+  width: 100%;
 }
 
 .taskTitle {

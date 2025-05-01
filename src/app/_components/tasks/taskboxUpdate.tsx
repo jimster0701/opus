@@ -8,11 +8,16 @@ import { api } from "~/trpc/react";
 import { trpc } from "~/utils/trpc";
 import { Check, Trash2, X } from "lucide-react";
 import { DeleteTaskModal } from "../modals";
+import { boolean } from "zod";
 
 interface TaskboxUpdateProps {
   task: Task;
   user: User;
-  onComplete: (finalTask: Task, updatedInterests: TaskInterest[]) => void;
+  onComplete: (
+    finalTask: Task,
+    updatedInterests: TaskInterest[],
+    deleteTask: boolean
+  ) => void;
 }
 
 export default function TaskboxUpdate(props: TaskboxUpdateProps) {
@@ -246,7 +251,8 @@ export default function TaskboxUpdate(props: TaskboxUpdateProps) {
                     console.log(updatedTaskWithInterests?.interests);
                     props.onComplete(
                       updatedTask,
-                      updatedTaskWithInterests?.interests as TaskInterest[]
+                      updatedTaskWithInterests?.interests as TaskInterest[],
+                      false
                     );
                   } catch (error: any) {
                     setFormError(
@@ -264,7 +270,7 @@ export default function TaskboxUpdate(props: TaskboxUpdateProps) {
               <button
                 className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
                 onClick={() => {
-                  props.onComplete(props.task, props.task.interests);
+                  props.onComplete(props.task, props.task.interests, false);
                 }}
               >
                 Cancel
@@ -301,7 +307,10 @@ export default function TaskboxUpdate(props: TaskboxUpdateProps) {
       <br />
       {showTaskDelete && (
         <DeleteTaskModal
-          onComplete={() => setShowTaskDelete(false)}
+          onComplete={() => {
+            props.onComplete(props.task, props.task.interests, true);
+            setShowTaskDelete(false);
+          }}
           id={props.task.id}
           name={props.task.name}
         />

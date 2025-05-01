@@ -12,6 +12,7 @@ interface TaskListProps {
   selectedTab: [string, number];
   dailyTasks: Task[];
   customTasks: Task[];
+  setCustomTasks: (tasks: Task[]) => void;
 }
 
 export default function TaskList(props: TaskListProps) {
@@ -72,6 +73,11 @@ export default function TaskList(props: TaskListProps) {
                 key={task.id}
                 task={task}
                 session={props.session}
+                removeTask={(taskId: number) => {
+                  props.setCustomTasks(
+                    props.customTasks.filter((t) => t.id != taskId)
+                  );
+                }}
               />
             ))}
           {customCount == 0 && (

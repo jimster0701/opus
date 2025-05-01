@@ -26,22 +26,25 @@ export default function Taskbox(props: TaskboxProps) {
 
   return (
     <div key={props.task.id} className={styles.taskContainer}>
-      {props.setEditMode && (
-        <div
-          className={styles.taskEditContainer}
-          onClick={() => {
-            if (props.setEditMode) props.setEditMode(true);
-          }}
-        >
-          <SquarePen />
-        </div>
-      )}
       <div className={styles.taskMain}>
         <div className={styles.taskIconContainer}>
           <p>{props.task.icon}</p>
         </div>
         <div className={styles.taskContentContainer}>
-          <p className={styles.taskTitle}>{props.task.name}</p>
+          {" "}
+          <div className={styles.taskTitleContainer}>
+            <p className={styles.taskTitle}>{props.task.name}</p>
+            {props.setEditMode && (
+              <div
+                className={styles.taskEditContainer}
+                onClick={() => {
+                  if (props.setEditMode) props.setEditMode(true);
+                }}
+              >
+                <SquarePen />
+              </div>
+            )}
+          </div>
           <p className={styles.taskText}>{props.task.description}</p>
         </div>
       </div>

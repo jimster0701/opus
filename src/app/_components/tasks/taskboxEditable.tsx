@@ -8,15 +8,24 @@ import TaskboxUpdate from "./taskboxUpdate";
 interface TaskboxEditableProps {
   task: Task;
   session: Session;
+  removeTask: (taskId: number) => void;
 }
 
 export default function TaskboxEditable(props: TaskboxEditableProps) {
   const [editMode, setEditMode] = useState<boolean>(false);
   const [task, setTask] = useState<Task>(props.task);
 
-  const finishUpdate = (task: Task, updatedInterests: TaskInterest[]) => {
-    setEditMode(false);
-    setTask({ ...task, interests: updatedInterests });
+  const finishUpdate = (
+    task: Task,
+    updatedInterests: TaskInterest[],
+    deleteTask: boolean
+  ) => {
+    if (!deleteTask) {
+      setEditMode(false);
+      setTask({ ...task, interests: updatedInterests });
+    } else {
+      props.removeTask(task.id);
+    }
   };
 
   if (!editMode) return <Taskbox task={task} setEditMode={setEditMode} />;

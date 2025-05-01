@@ -47,6 +47,7 @@ export function DeleteTaskModal(props: deleteModal) {
             onClick={async () => {
               try {
                 deleteTask.mutate({ id: props.id });
+                props.onComplete();
               } catch (error) {
                 console.error(error);
               }

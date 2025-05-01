@@ -105,6 +105,7 @@ export default function HomeClient(props: HomeClientProps) {
           customTasks={customTasks}
           dailyTasks={dailyTasks}
           selectedTab={selectedTabCount}
+          setCustomTasks={setCustomTasks}
         />
       </div>
     </main>
