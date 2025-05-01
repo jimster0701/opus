@@ -285,7 +285,7 @@ export default function TaskboxUpdate(props: TaskboxUpdateProps) {
           <button
             className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
           >
-            "Updating..."
+            Updating...
           </button>
         )}
         {formError && (
