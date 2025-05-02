@@ -111,6 +111,7 @@ export function PostboxCreate(props: postboxCreateProps) {
         name: formData.name,
         taskId: Number(formData.taskId),
         description: formData.description,
+        private: false,
         imageUrl: "none",
       });
 

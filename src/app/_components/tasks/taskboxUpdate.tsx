@@ -8,7 +8,6 @@ import { api } from "~/trpc/react";
 import { trpc } from "~/utils/trpc";
 import { Check, Trash2, X } from "lucide-react";
 import { DeleteTaskModal } from "../modals";
-import { boolean } from "zod";
 
 interface TaskboxUpdateProps {
   task: Task;

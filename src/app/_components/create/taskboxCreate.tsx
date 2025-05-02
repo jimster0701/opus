@@ -121,28 +121,46 @@ export default function TaskboxCreate(props: TaskboxCreateProps) {
               multiple
               className={`${styles.opusSelector} ${styles.opusSelectorMultiple}`}
               onChange={(e) => {
-                if (selectedInterests.length >= 5) {
+                const selectedOptions = Array.from(
+                  e.target.selectedOptions
+                ).map((option) => Number(option.value));
+
+                if (selectedOptions.length + selectedInterests.length > 5) {
                   setFormError("You can only select 5 interests.");
                   return;
                 }
-                const value = e.target.value;
-                if (value) {
-                  const interest = availableInterests.find(
-                    (i) => i.id == Number(value)
-                  );
-                  setSelectedInterests([...selectedInterests, interest!]);
 
-                  setRemovedInterests([
-                    ...removedInterests,
-                    ...availableInterests.filter((i) => i.id == Number(value)),
-                  ]);
+                const newInterests = selectedOptions
+                  .map((id) => availableInterests.find((i) => i.id === id))
+                  .filter((i): i is (typeof availableInterests)[number] => !!i);
 
-                  setAvailableInterests(
-                    availableInterests.filter((i) => i.id != Number(value))
-                  );
-                }
+                const newInterestIds = newInterests.map((i) => i.id);
+
+                // Avoid duplicates
+                const updatedSelected = [
+                  ...selectedInterests,
+                  ...newInterests.filter(
+                    (i) => !selectedInterests.some((sel) => sel.id === i.id)
+                  ),
+                ];
+
+                const updatedAvailable = availableInterests.filter(
+                  (i) => !newInterestIds.includes(i.id)
+                );
+
+                const updatedRemoved = [
+                  ...removedInterests,
+                  ...newInterests.filter(
+                    (i) => !removedInterests.some((r) => r.id === i.id)
+                  ),
+                ];
+
+                setSelectedInterests(updatedSelected);
+                setAvailableInterests(updatedAvailable);
+                setRemovedInterests(updatedRemoved);
               }}
             >
+              <option disabled>Select up to 5 interests</option>
               {availableInterests.map((interest) => (
                 <option
                   className={styles.taskCreateSelectOption}

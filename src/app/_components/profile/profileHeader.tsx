@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { trpc } from "~/utils/trpc";
 import { Check, X } from "lucide-react";
-import { FollowerOrFollowingModal } from "../modals";
+import { FollowerOrFollowingModal, SelectInterestsModal } from "../modals";
 import { type Session } from "~/types/session";
 import { type SimpleUser } from "~/types/user";
 import { type Interest } from "~/types/interest";
@@ -21,6 +21,7 @@ export default function ProfileHeader(props: ProfileHeaderProps) {
   const [changeDisplay, setChangeDisplay] = useState(false);
   const [displayName, setDisplayName] = useState("");
   const [displayNameError, setDisplayNameError] = useState("");
+  const [showSelectInterests, setShowSelectInterests] = useState(false);
   const [showFollowModal, setShowFollowModal] = useState<[boolean, string]>([
     false,
     "",
@@ -165,22 +166,37 @@ export default function ProfileHeader(props: ProfileHeaderProps) {
         </div>
       </div>
       <div className={styles.profileHeaderInterestsContainer}>
-        {props.userInterests.map((interest) => (
-          <div
-            key={interest.id}
-            style={{
-              border: `${interest.colour} 1px solid`,
-              ["--text-glow" as any]: `linear-gradient(to top left,rgb(70, 70, 70), ${interest.colour})`,
-            }}
-            className={styles.glowingNugget}
-          >
-            <p className={styles.glowingNuggetText}>
-              {interest.icon}
-              {interest.name}
-            </p>
-          </div>
-        ))}
+        <div
+          className={styles.profileHeaderInterestPenContainer}
+          onClick={() => setShowSelectInterests(true)}
+        >
+          Edit <Image src="/images/pen.png" alt={""} width={15} height={15} />
+        </div>
+        <div className={styles.profileHeaderInterests}>
+          {props.userInterests.map((interest) => (
+            <div
+              key={interest.id}
+              style={{
+                border: `${interest.colour} 1px solid`,
+                ["--text-glow" as any]: `linear-gradient(to top left,rgb(70, 70, 70), ${interest.colour})`,
+              }}
+              className={styles.glowingNugget}
+            >
+              <p className={styles.glowingNuggetText}>
+                {interest.icon}
+                {interest.name}
+              </p>
+            </div>
+          ))}
+        </div>
       </div>
+      {showSelectInterests && (
+        <SelectInterestsModal
+          onComplete={() => setShowSelectInterests(false)}
+          interests={props.userInterests}
+          session={props.session}
+        />
+      )}
       {showFollowModal[0] && followers && following && (
         <FollowerOrFollowingModal
           onComplete={() => setShowFollowModal([false, ""])}

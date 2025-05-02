@@ -1,5 +1,7 @@
 import styles from "../index.module.css";
-import { useMemo, useState } from "react";
+import { useMemo, useState, Fragment } from "react";
+import Wheel from "@uiw/react-color-wheel";
+import { hsvaToHex } from "@uiw/color-convert";
 import { trpc } from "../../utils/trpc";
 import "~/styles/themes.css";
 import { shuffle } from "./util";
@@ -11,6 +13,7 @@ import { ProfilePicturePreviewWrapper } from "./images/cldImageWrapper";
 import { defaultInterests } from "~/const/defaultVar";
 import { type Interest } from "~/types/interest";
 import { api } from "~/trpc/react";
+import { Session } from "~/types/session";
 
 interface modalProps {
   onComplete: () => void;
@@ -290,6 +293,243 @@ export function NewUserModal(props: modalProps) {
                       "You can only select up to 10 interests",
                     ]);
                   } else addSelected(interest);
+                }}
+              >
+                {interest.icon}
+                {interest.name}
+              </button>
+            ))}
+          </div>
+          <button
+            type="submit"
+            disabled={
+              selected.length < 3 ||
+              selected.length > 10 ||
+              submitError[0] == true ||
+              choiceError[0] == true
+            }
+          >
+            Go
+          </button>
+          {choiceError[0] && (
+            <div className={styles.formError}>{choiceError[1]}</div>
+          )}
+        </form>
+      </div>
+    </div>
+  );
+}
+
+interface selectInterestsModalProps extends modalProps {
+  interests: Interest[];
+  session: Session;
+}
+
+export function SelectInterestsModal(props: selectInterestsModalProps) {
+  const [interestName, setInterestName] = useState("");
+  const [interestIcon, setInterestIcon] = useState("");
+  const [selected, setSelected] = useState<number[]>(
+    props.interests.map((i) => i.id)
+  );
+  const [choices, setChoices] = useState<Interest[]>([]);
+  const [customInterests, setCustomInterests] = useState<Interest[]>(
+    props.session.user.createdInterests ?? []
+  );
+  const [hsva, setHsva] = useState({ h: 214, s: 43, v: 90, a: 1 });
+  const [submitError, setSubmitError] = useState([false, ""]);
+  const [choiceError, setChoiceError] = useState([false, ""]);
+  const { theme } = useThemeStore();
+
+  useMemo(() => {
+    setChoices(shuffle(defaultInterests));
+  }, []);
+
+  const updateInterests = trpc.user.updateInterests.useMutation({});
+  const addCustomInterest = trpc.interest.createInterest.useMutation({});
+  const deleteCustomInterest = trpc.interest.deleteInterest.useMutation({});
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    updateInterests.mutate({ interestIds: selected });
+  };
+
+  const removeSelected = (interest: Interest) => {
+    if (selected.includes(interest.id)) {
+      setSelected((prev) => prev.filter((i) => i !== interest.id));
+    }
+  };
+
+  const addSelected = (interest: Interest) => {
+    if (!selected.includes(interest.id)) {
+      setSelected((prev) => [...prev, interest.id]);
+    }
+  };
+
+  return (
+    <div className={styles.modalContainer}>
+      <div className={styles.modalBackground} onClick={props.onComplete} />
+      <div
+        className={
+          theme == "default"
+            ? `${styles.modal}`
+            : `${styles.modal} ${styles[`theme-${theme}`]}`
+        }
+      >
+        <p className={styles.closeModalButton} onClick={props.onComplete}>
+          <X width={45} height={45} />
+        </p>
+        <h1>Choose your interests</h1>
+        <h4>
+          Below, you can create a custom interest. If this interest is selected
+          then it will be visible on your profile as well as any post with an
+          affiliated task.
+        </h4>
+        <form className={styles.modalForm}>
+          <label htmlFor="newInterestName">Create a new interest:</label>
+          <div className={styles.selectInterestModalInputContainer}>
+            <input
+              type="text"
+              id="newInterestIcon"
+              name="newInterestIcon"
+              className={styles.selectInterestModalIconInput}
+              placeholder={choices[10]?.icon}
+              required
+              value={interestIcon}
+              onChange={(e) => {
+                const newIcon = e.target.value;
+                setSubmitError([false, ""]);
+                if (newIcon.length > 1) {
+                  setSubmitError([
+                    true,
+                    "Interest icon can only be 1 character",
+                  ]);
+                } else {
+                  setInterestIcon(newIcon);
+                }
+              }}
+              autoComplete="off"
+            />
+            <input
+              type="text"
+              id="newInterestName"
+              name="newInterestName"
+              className={styles.selectInterestModalInterestInput}
+              placeholder="Interesting..."
+              required
+              value={interestName}
+              onChange={(e) => {
+                const newName = e.target.value;
+                if (newName.length > 20) {
+                  setSubmitError([
+                    true,
+                    "Interest name must be less than 20 characters",
+                  ]);
+                } else {
+                  setSubmitError([false, ""]);
+                  setInterestName(newName);
+                }
+              }}
+              autoComplete="off"
+            />
+            <button
+              className={styles.selectInterestModalInterestButton}
+              onClick={async () => {
+                const interest = await addCustomInterest.mutateAsync({
+                  name: interestName,
+                  icon: interestIcon,
+                  colour: hsvaToHex(hsva),
+                  private: false,
+                });
+                setCustomInterests((prev) => [interest as Interest, ...prev]);
+              }}
+              disabled={
+                interestName.length < 1 ||
+                interestName.length > 20 ||
+                interestIcon.length != 1
+              }
+            >
+              Add
+            </button>
+          </div>
+
+          {submitError[0] && (
+            <div className={styles.errorTooltip}>{submitError[1]}</div>
+          )}
+          <Fragment>
+            <Wheel
+              color={hsva}
+              onChange={(color) => setHsva({ ...hsva, ...color.hsva })}
+            />
+            <div
+              style={{
+                width: "100%",
+                height: 34,
+                marginTop: 20,
+                background: hsvaToHex(hsva),
+              }}
+            ></div>
+          </Fragment>
+        </form>
+        <div className={styles.selectInterestModalCustomInterestContainer}>
+          <h4>Your custom interests</h4>
+          {customInterests.length == 0 ? (
+            <div className={styles.selectInterestModalCustomInterest}>
+              No custom interests created.
+            </div>
+          ) : (
+            customInterests.map((custom) => (
+              <div
+                key={custom.id}
+                style={{ borderColor: custom.colour }}
+                className={styles.selectInterestModalCustomInterest}
+              >
+                {custom.icon}
+                {custom.name}
+                <X
+                  onClick={async () => {
+                    await deleteCustomInterest.mutateAsync({ id: custom.id });
+                    setCustomInterests(
+                      customInterests.filter((i) => i.id != custom.id)
+                    );
+                  }}
+                />
+              </div>
+            ))
+          )}
+        </div>
+        <form className={styles.modalForm} onSubmit={handleSubmit}>
+          <h4>
+            {selected.length < 3 && (
+              <>Please choose at least {3 - selected.length} more</>
+            )}
+            {selected.length >= 3 && (
+              <>You have {10 - selected.length} choices left:</>
+            )}
+          </h4>
+          <h5>You can have up to 10 interests.</h5>
+          <div className={styles.choiceList}>
+            {choices.map((interest) => (
+              <button
+                type="button"
+                key={interest.id}
+                className={`${styles.choiceButton} ${
+                  selected.includes(interest.id)
+                    ? `${styles.selectedChoiceButton}`
+                    : ""
+                }`}
+                onClick={() => {
+                  if (selected.includes(interest.id)) {
+                    removeSelected(interest);
+                    setChoiceError([false, ""]);
+                  } else if (selected.length == 10) {
+                    setChoiceError([
+                      true,
+                      "You can only select up to 10 interests",
+                    ]);
+                  } else {
+                    addSelected(interest);
+                    setChoiceError([false, ""]);
+                  }
                 }}
               >
                 {interest.icon}
