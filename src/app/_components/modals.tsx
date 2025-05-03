@@ -364,7 +364,7 @@ export function SelectInterestsModal(props: selectInterestsModalProps) {
         )
       ),
     ]);
-  }, [props.interests, selected, customInterests]);
+  }, [selected, customInterests]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
