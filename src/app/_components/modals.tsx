@@ -112,6 +112,7 @@ export function FollowerOrFollowingModal(props: followerOrFollowingProps) {
 
 export function SettingsModal(props: modalProps) {
   const { theme, setTheme } = useThemeStore();
+  const [reportMessage, setReportMessage] = useState("");
   const allThemes = [
     "default",
     "sunset",
@@ -126,6 +127,7 @@ export function SettingsModal(props: modalProps) {
     "twilight",
   ];
   const updateThemePreset = trpc.user.updateThemePreset.useMutation();
+  const sendReport = trpc.report.createIssueReport.useMutation();
   return (
     <div className={styles.modalContainer}>
       <div className={styles.modalBackground} onClick={props.onComplete} />
@@ -168,6 +170,29 @@ export function SettingsModal(props: modalProps) {
             ))}
           </div>
         </div>
+        <div>
+          <h4>Report an issue:</h4>
+          <div className={styles.reportContainer}>
+            <input
+              type="text"
+              value={reportMessage}
+              className={styles.reportInput}
+              onChange={(e) => setReportMessage(e.target.value)}
+            />
+            <button
+              className={`${styles.opusButton} ${styles.signOutButton}`}
+              onClick={async () => {
+                if (reportMessage != "") {
+                  sendReport.mutate({ message: reportMessage });
+                  setReportMessage("");
+                }
+              }}
+            >
+              Send
+            </button>
+          </div>
+        </div>
+        <br />
         <SignOutButton />
       </div>
     </div>
@@ -416,7 +441,6 @@ export function SelectInterestsModal(props: selectInterestsModalProps) {
               type="text"
               id="newInterestIcon"
               name="newInterestIcon"
-              className={styles.selectInterestModalIconInput}
               placeholder={choices[10]?.icon}
               required
               value={interestIcon}

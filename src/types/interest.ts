@@ -1,4 +1,3 @@
-import { type UserInterest } from "@prisma/client";
 import { type SimpleUser } from "./user";
 
 export interface Interest {
