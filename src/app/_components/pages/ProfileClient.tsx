@@ -1,13 +1,13 @@
 "use client";
 
 import styles from "../../index.module.css";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useThemeStore } from "~/store/themeStore";
 import { type Session } from "~/types/session";
 import ProfileHeader from "../profile/profileHeader";
 import { AllUserPosts } from "../posts/allUserPosts";
 import { type Interest } from "~/types/interest";
-import { defaultInterests } from "~/const/defaultVar";
+import { trpc } from "~/utils/trpc";
 
 interface ProfileClientProps {
   session: Session;
@@ -16,11 +16,16 @@ interface ProfileClientProps {
 
 export default function ProfileClient(props: ProfileClientProps) {
   const { theme, setTheme } = useThemeStore();
-  const [userInterests, setUserInterests] = useState<Interest[]>(
-    defaultInterests.filter((i) =>
-      props.session.user.interestIds.includes(i.id)
-    )
-  );
+  const [userInterests, setUserInterests] = useState<Interest[]>([]);
+  const getInterests = trpc.user.getUserInterests.useQuery({
+    userId: props.session.userId,
+  });
+
+  useMemo(() => {
+    if (getInterests.isLoading) return;
+    setUserInterests((getInterests.data as Interest[]) ?? []);
+  }, [getInterests.isLoading, getInterests.data]);
+
   useEffect(() => {
     if (theme === "unset") {
       setTheme(props.theme);

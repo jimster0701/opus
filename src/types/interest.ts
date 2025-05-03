@@ -1,3 +1,4 @@
+import { type UserInterest } from "@prisma/client";
 import { type SimpleUser } from "./user";
 
 export interface Interest {
@@ -8,4 +9,5 @@ export interface Interest {
   private: boolean;
   createdById: string;
   createdBy: SimpleUser;
+  users: UserInterest[];
 }

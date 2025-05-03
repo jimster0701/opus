@@ -46,22 +46,20 @@ export const userRouter = createTRPCRouter({
           id: input.userId,
         },
         select: {
-          interestIds: true,
-          createdInterests: true,
+          interests: true,
         },
       });
 
       const defaultInterests = await ctx.db.interest.findMany({
         where: {
-          createdById: "system",
-          id: { in: user?.interestIds ?? [] },
+          id: { in: user?.interests.map((i) => i.interestId) ?? [] },
         },
         include: {
           createdBy: { select: { id: true, displayName: true, image: true } },
         },
       });
 
-      return [...(user?.createdInterests ?? []), ...defaultInterests];
+      return defaultInterests;
     }),
 
   getImageUrl: protectedProcedure
@@ -84,7 +82,7 @@ export const userRouter = createTRPCRouter({
       const users = await ctx.db.user.findMany({
         orderBy: { id: "desc" },
         where: {
-          interestIds: { hasSome: input.interestIds },
+          interests: { some: { interestId: { in: input.interestIds } } },
           NOT: { followers: { some: { followerId: currentUserId } } },
         },
       });
@@ -189,9 +187,27 @@ export const userRouter = createTRPCRouter({
   updateInterests: protectedProcedure
     .input(z.object({ interestIds: z.array(z.number()) }))
     .mutation(async ({ ctx, input }) => {
-      return ctx.db.user.update({
-        where: { id: ctx.session.user.id },
-        data: { interestIds: input.interestIds },
+      const userId = ctx.session.user.id;
+
+      const interestConnections = input.interestIds.map((interestId) => ({
+        userId: userId,
+        interestId: interestId,
+      }));
+
+      await ctx.db.userInterest.deleteMany({
+        where: { userId: userId },
+      });
+
+      await ctx.db.userInterest.createMany({
+        data: interestConnections,
+        skipDuplicates: true,
+      });
+
+      return ctx.db.user.findUnique({
+        where: { id: userId },
+        include: {
+          interests: true,
+        },
       });
     }),
 

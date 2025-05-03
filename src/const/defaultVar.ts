@@ -18,6 +18,7 @@ export const defaultInterest: Interest = {
   private: false,
   createdById: defaultUser.id,
   createdBy: defaultUser,
+  users: [],
 };
 
 export const defaultTask: Task = {
@@ -51,7 +52,7 @@ export const defaultPost: Post = {
 
 export const defaultInterests = [
   {
-    id: 99999,
+    id: 999999,
     name: "Self-care",
     icon: "🧘",
     colour: "#A3D2CA",
@@ -60,7 +61,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100000,
+    id: 1000000,
     name: "Study",
     icon: "📚",
     colour: "#6C63FF",
@@ -69,7 +70,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100001,
+    id: 1000001,
     name: "Fitness",
     icon: "🏋️",
     colour: "#FF6B6B",
@@ -78,7 +79,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100002,
+    id: 1000002,
     name: "Social",
     icon: "👥",
     colour: "#4ECDC4",
@@ -87,7 +88,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100003,
+    id: 1000003,
     name: "Travel",
     icon: "✈️",
     colour: "#00B4D8",
@@ -96,7 +97,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100004,
+    id: 1000004,
     name: "Nature",
     icon: "🌳",
     colour: "#2E8B57",
@@ -105,7 +106,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100005,
+    id: 1000005,
     name: "Business",
     icon: "💼",
     colour: "#3D3D3D",
@@ -114,7 +115,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100006,
+    id: 1000006,
     name: "Dreams",
     icon: "💭",
     colour: "#B388EB",
@@ -123,7 +124,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100007,
+    id: 1000007,
     name: "Food",
     icon: "🍔",
     colour: "#FF7F50",
@@ -132,7 +133,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100008,
+    id: 1000008,
     name: "Health",
     icon: "💊",
     colour: "#EF476F",
@@ -141,7 +142,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100009,
+    id: 1000009,
     name: "Family",
     icon: "👪",
     colour: "#F5B7B1",
@@ -150,7 +151,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100010,
+    id: 1000010,
     name: "Friends",
     icon: "👫",
     colour: "#48CAE4",
@@ -159,7 +160,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100011,
+    id: 1000011,
     name: "Home",
     icon: "🏠",
     colour: "#7FB069",
@@ -168,7 +169,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100012,
+    id: 1000012,
     name: "Personal Growth",
     icon: "🧑‍🤝‍🧑",
     colour: "#CDB4DB",
@@ -177,7 +178,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100013,
+    id: 1000013,
     name: "Finance",
     icon: "💰",
     colour: "#06D6A0",
@@ -186,7 +187,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100014,
+    id: 1000014,
     name: "Education",
     icon: "🎓",
     colour: "#118AB2",
@@ -195,7 +196,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100015,
+    id: 1000015,
     name: "Entertainment",
     icon: "🎭",
     colour: "#FFB4A2",
@@ -204,7 +205,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100016,
+    id: 1000016,
     name: "Planning",
     icon: "🗓️",
     colour: "#6D6875",
@@ -213,7 +214,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100017,
+    id: 1000017,
     name: "Organization",
     icon: "🗄️",
     colour: "#8D99AE",
@@ -222,7 +223,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100018,
+    id: 1000018,
     name: "Appointments",
     icon: "📋",
     colour: "#FFD166",
@@ -231,7 +232,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100019,
+    id: 1000019,
     name: "Meditation",
     icon: "🧘‍♂️",
     colour: "#B5E48C",
@@ -240,7 +241,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100020,
+    id: 1000020,
     name: "Spirituality",
     icon: "🕯️",
     colour: "#F9C74F",
@@ -249,7 +250,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100021,
+    id: 1000021,
     name: "Shopping",
     icon: "🛒",
     colour: "#FFADAD",
@@ -258,7 +259,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100022,
+    id: 1000022,
     name: "Music",
     icon: "🎵",
     colour: "#9D4EDD",
@@ -267,7 +268,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100023,
+    id: 1000023,
     name: "Cleaning",
     icon: "🧹",
     colour: "#90E0EF",
@@ -276,7 +277,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100024,
+    id: 1000024,
     name: "Volunteering",
     icon: "🤝",
     colour: "#43AA8B",
@@ -285,7 +286,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100025,
+    id: 1000025,
     name: "Pets",
     icon: "🐕",
     colour: "#FFB703",
@@ -294,7 +295,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100026,
+    id: 1000026,
     name: "Art",
     icon: "🎨",
     colour: "#F4A261",
@@ -303,7 +304,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100027,
+    id: 1000027,
     name: "Cooking",
     icon: "🍳",
     colour: "#F77F00",
@@ -312,7 +313,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100028,
+    id: 1000028,
     name: "Celebration",
     icon: "🎉",
     colour: "#E5989B",
@@ -321,7 +322,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100029,
+    id: 1000029,
     name: "Design",
     icon: "🎨",
     colour: "#FFD6A5",
@@ -330,7 +331,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100030,
+    id: 1000030,
     name: "Sports",
     icon: "⚽",
     colour: "#48CAE4",
@@ -339,7 +340,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100031,
+    id: 1000031,
     name: "Technology",
     icon: "💻",
     colour: "#00B4D8",
@@ -348,7 +349,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100032,
+    id: 1000032,
     name: "Coding",
     icon: "👨‍💻",
     colour: "#6C63FF",
@@ -357,7 +358,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100033,
+    id: 1000033,
     name: "Exploration",
     icon: "🧭",
     colour: "#219EBC",
@@ -366,7 +367,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100034,
+    id: 1000034,
     name: "Fashion",
     icon: "👗",
     colour: "#FF9F1C",
@@ -375,7 +376,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100035,
+    id: 1000035,
     name: "Style",
     icon: "🕶️",
     colour: "#E5989B",
@@ -384,7 +385,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100036,
+    id: 1000036,
     name: "Gaming",
     icon: "🎮",
     colour: "#6A4C93",
@@ -393,7 +394,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100037,
+    id: 1000037,
     name: "Streaming",
     icon: "📺",
     colour: "#9D4EDD",
@@ -402,7 +403,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100038,
+    id: 1000038,
     name: "Photography",
     icon: "📷",
     colour: "#90E0EF",
@@ -411,7 +412,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100039,
+    id: 1000039,
     name: "Reading",
     icon: "📖",
     colour: "#8D99AE",
@@ -420,7 +421,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100040,
+    id: 1000040,
     name: "Writing",
     icon: "✍️",
     colour: "#F4A261",
@@ -429,7 +430,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100041,
+    id: 1000041,
     name: "Crafting",
     icon: "✂️",
     colour: "#F7B267",
@@ -438,7 +439,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100042,
+    id: 1000042,
     name: "DIY",
     icon: "🛠️",
     colour: "#5E6472",
@@ -447,7 +448,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100043,
+    id: 1000043,
     name: "Outdoor Activities",
     icon: "🥾",
     colour: "#2E8B57",
@@ -456,7 +457,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100044,
+    id: 1000044,
     name: "Community",
     icon: "🏘️",
     colour: "#6D6875",
@@ -465,7 +466,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100045,
+    id: 1000045,
     name: "Entrepreneurship",
     icon: "🚀",
     colour: "#06D6A0",
@@ -474,7 +475,7 @@ export const defaultInterests = [
     createdBy: defaultUser,
   },
   {
-    id: 100046,
+    id: 1000046,
     name: "Content Creation",
     icon: "🎥",
     colour: "#FF7F50",

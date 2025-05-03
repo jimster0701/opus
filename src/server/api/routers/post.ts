@@ -1,3 +1,4 @@
+import { type Post } from "~/types/post";
 import { z } from "zod";
 
 import {
@@ -94,7 +95,7 @@ export const postRouter = createTRPCRouter({
 
     const followingIds = following.map((f) => f.followingId);
 
-    const post = await ctx.db.post.findMany({
+    const dbPosts = await ctx.db.post.findMany({
       orderBy: { createdAt: "desc" },
       where: {
         createdBy: {
@@ -127,6 +128,7 @@ export const postRouter = createTRPCRouter({
                     private: true,
                     createdById: true,
                     createdBy: true,
+                    users: { select: { userId: true, interestId: true } },
                   },
                 },
                 task: {
@@ -161,13 +163,62 @@ export const postRouter = createTRPCRouter({
       },
     });
 
-    return post;
+    const posts = dbPosts.map((dbPost) => {
+      const transformedInterests = dbPost.task.interests.map(
+        (interestRelation) => {
+          const taskInterest = {
+            id: `${interestRelation.taskId}-${interestRelation.interestId}`,
+            taskId: interestRelation.taskId,
+            interestId: interestRelation.interestId,
+            task: {
+              id: interestRelation.interest.id,
+              type: interestRelation.task.type,
+              name: interestRelation.task.name,
+            },
+            interest: {
+              id: interestRelation.interest.id,
+              name: interestRelation.interest.name,
+              icon: interestRelation.interest.icon,
+              colour: interestRelation.interest.colour,
+              private: interestRelation.interest.private,
+              createdById: interestRelation.interest.createdById,
+              createdBy: interestRelation.interest.createdBy,
+              users: interestRelation.interest.users,
+            },
+          };
+          return taskInterest;
+        }
+      );
+
+      const post = {
+        id: dbPost.id,
+        name: dbPost.name ?? "",
+        description: dbPost.description ?? "",
+        createdAt: dbPost.createdAt,
+        updatedAt: dbPost.updatedAt,
+        private: dbPost.private,
+        createdById: dbPost.createdById,
+        createdBy: dbPost.createdBy,
+        likedBy: dbPost.likedBy ?? [],
+        imageUrl: dbPost.imageUrl,
+        comments: dbPost.comments,
+        task: {
+          ...dbPost.task,
+          interests: transformedInterests,
+        },
+      };
+
+      return post;
+    });
+
+    const typedPosts = posts as unknown as Post[];
+    return typedPosts;
   }),
 
   getAllUser: protectedProcedure
     .input(z.object({ userId: z.string().min(1) }))
     .query(async ({ ctx, input }) => {
-      const post = await ctx.db.post.findMany({
+      const dbPosts = await ctx.db.post.findMany({
         orderBy: { createdAt: "desc" },
         where: { createdBy: { id: input.userId } },
         include: {
@@ -196,6 +247,7 @@ export const postRouter = createTRPCRouter({
                       private: true,
                       createdById: true,
                       createdBy: true,
+                      users: { select: { userId: true, interestId: true } },
                     },
                   },
                   task: {
@@ -234,13 +286,62 @@ export const postRouter = createTRPCRouter({
         },
       });
 
-      return post ?? null;
+      const posts = dbPosts.map((dbPost) => {
+        const transformedInterests = dbPost.task.interests.map(
+          (interestRelation) => {
+            const taskInterest = {
+              id: `${interestRelation.taskId}-${interestRelation.interestId}`,
+              taskId: interestRelation.taskId,
+              interestId: interestRelation.interestId,
+              task: {
+                id: interestRelation.interest.id,
+                type: interestRelation.task.type,
+                name: interestRelation.task.name,
+              },
+              interest: {
+                id: interestRelation.interest.id,
+                name: interestRelation.interest.name,
+                icon: interestRelation.interest.icon,
+                colour: interestRelation.interest.colour,
+                private: interestRelation.interest.private,
+                createdById: interestRelation.interest.createdById,
+                createdBy: interestRelation.interest.createdBy,
+                users: interestRelation.interest.users,
+              },
+            };
+            return taskInterest;
+          }
+        );
+
+        const post = {
+          id: dbPost.id,
+          name: dbPost.name ?? "",
+          description: dbPost.description ?? "",
+          createdAt: dbPost.createdAt,
+          updatedAt: dbPost.updatedAt,
+          private: dbPost.private,
+          createdById: dbPost.createdById,
+          createdBy: dbPost.createdBy,
+          likedBy: dbPost.likedBy ?? [],
+          imageUrl: dbPost.imageUrl,
+          comments: dbPost.comments,
+          task: {
+            ...dbPost.task,
+            interests: transformedInterests,
+          },
+        };
+
+        return post;
+      });
+
+      const typedPosts = posts as unknown as Post[];
+      return typedPosts;
     }),
 
   getAllInterest: protectedProcedure
     .input(z.object({ interestIds: z.array(z.number().min(1)) }))
     .query(async ({ ctx, input }) => {
-      const post = await ctx.db.post.findMany({
+      const dbPosts = await ctx.db.post.findMany({
         orderBy: { createdAt: "desc" },
         where: {
           task: {
@@ -279,6 +380,7 @@ export const postRouter = createTRPCRouter({
                       private: true,
                       createdById: true,
                       createdBy: true,
+                      users: { select: { userId: true, interestId: true } },
                     },
                   },
                   task: {
@@ -317,7 +419,56 @@ export const postRouter = createTRPCRouter({
         },
       });
 
-      return post ?? null;
+      const posts = dbPosts.map((dbPost) => {
+        const transformedInterests = dbPost.task.interests.map(
+          (interestRelation) => {
+            const taskInterest = {
+              id: `${interestRelation.taskId}-${interestRelation.interestId}`,
+              taskId: interestRelation.taskId,
+              interestId: interestRelation.interestId,
+              task: {
+                id: interestRelation.interest.id,
+                type: interestRelation.task.type,
+                name: interestRelation.task.name,
+              },
+              interest: {
+                id: interestRelation.interest.id,
+                name: interestRelation.interest.name,
+                icon: interestRelation.interest.icon,
+                colour: interestRelation.interest.colour,
+                private: interestRelation.interest.private,
+                createdById: interestRelation.interest.createdById,
+                createdBy: interestRelation.interest.createdBy,
+                users: interestRelation.interest.users,
+              },
+            };
+            return taskInterest;
+          }
+        );
+
+        const post = {
+          id: dbPost.id,
+          name: dbPost.name ?? "",
+          description: dbPost.description ?? "",
+          createdAt: dbPost.createdAt,
+          updatedAt: dbPost.updatedAt,
+          private: dbPost.private,
+          createdById: dbPost.createdById,
+          createdBy: dbPost.createdBy,
+          likedBy: dbPost.likedBy ?? [],
+          imageUrl: dbPost.imageUrl,
+          comments: dbPost.comments,
+          task: {
+            ...dbPost.task,
+            interests: transformedInterests,
+          },
+        };
+
+        return post;
+      });
+
+      const typedPosts = posts as unknown as Post[];
+      return typedPosts;
     }),
 
   likePost: protectedProcedure

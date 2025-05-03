@@ -1,3 +1,4 @@
+import { type UserInterest } from "@prisma/client";
 import { type Account } from "./account";
 import { type Interest } from "./interest";
 import { type Post } from "./post";
@@ -29,7 +30,6 @@ export interface UserTask {
 
 export interface SlugUser extends SimpleUser {
   themePreset: string;
-  interestIds: number[];
 }
 
 export interface User {
@@ -41,13 +41,13 @@ export interface User {
   image: string;
   private: boolean;
   themePreset: string;
-  interestIds: number[];
   followers: Follow[];
   following: Follow[];
   comments: Comment[];
   replies: Reply[];
   assignedtasks: UserTask[];
   ownTasks: Task[];
+  interests: UserInterest[];
   createdInterests: Interest[];
   accounts: Account[];
   posts: Post[];

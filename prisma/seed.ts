@@ -15,7 +15,6 @@ async function main() {
       displayName: "System",
       image: defaultUser.image,
       themePreset: "unset",
-      interestIds: [],
     },
   });
 

@@ -76,22 +76,22 @@ model Session {
 }
 
 model User {
-  id               String     @id @default(cuid())
+  id               String         @id @default(cuid())
   name             String?
-  email            String?    @unique
+  email            String?        @unique
   emailVerified    DateTime?
   displayName      String?
   image            String?
-  private          Boolean    @default(false)
-  interestIds      Int[]
-  themePreset      String     @default("unset")
-  followers        Follow[]   @relation("Followers")
-  following        Follow[]   @relation("Following")
-  comments         Comment[]  @relation("UserComments")
-  replies          Reply[]    @relation("UserReplys")
-  assignedtasks    UserTask[] @relation("TaskAssigned")
-  ownTasks         Task[]     @relation("TaskOwn")
-  createdInterests Interest[] @relation("userCreatedInterests")
+  private          Boolean        @default(false)
+  themePreset      String         @default("unset")
+  followers        Follow[]       @relation("Followers")
+  following        Follow[]       @relation("Following")
+  comments         Comment[]      @relation("UserComments")
+  replies          Reply[]        @relation("UserReplys")
+  assignedtasks    UserTask[]     @relation("TaskAssigned")
+  ownTasks         Task[]         @relation("TaskOwn")
+  interests        UserInterest[]
+  createdInterests Interest[]     @relation("userCreatedInterests")
   accounts         Account[]
   posts            Post[]
   sessions         Session[]
@@ -107,6 +107,15 @@ model Follow {
   @@unique([followerId, followingId], name: "follower_following_unique")
 }
 
+model UserInterest {
+  userId     String
+  interestId Int
+  user       User     @relation(fields: [userId], references: [id])
+  interest   Interest @relation(fields: [interestId], references: [id])
+
+  @@id([userId, interestId])
+}
+
 model Interest {
   id          Int            @id @default(autoincrement())
   name        String
@@ -116,6 +125,7 @@ model Interest {
   createdById String
   createdBy   User           @relation("userCreatedInterests", fields: [createdById], references: [id])
   tasks       TaskInterest[] @relation("TaskInterest")
+  users       UserInterest[]
 }
 
 enum TaskType {

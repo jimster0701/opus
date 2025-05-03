@@ -1,5 +1,5 @@
 import styles from "../index.module.css";
-import { useMemo, useState, Fragment } from "react";
+import { useMemo, useState, Fragment, useEffect } from "react";
 import Wheel from "@uiw/react-color-wheel";
 import { hsvaToHex } from "@uiw/color-convert";
 import { trpc } from "../../utils/trpc";
@@ -13,7 +13,7 @@ import { ProfilePicturePreviewWrapper } from "./images/cldImageWrapper";
 import { defaultInterests } from "~/const/defaultVar";
 import { type Interest } from "~/types/interest";
 import { api } from "~/trpc/react";
-import { Session } from "~/types/session";
+import { type Session } from "~/types/session";
 
 interface modalProps {
   onComplete: () => void;
@@ -320,7 +320,8 @@ export function NewUserModal(props: modalProps) {
   );
 }
 
-interface selectInterestsModalProps extends modalProps {
+interface selectInterestsModalProps {
+  onComplete: (newInterests: Interest[]) => void;
   interests: Interest[];
   session: Session;
 }
@@ -328,9 +329,8 @@ interface selectInterestsModalProps extends modalProps {
 export function SelectInterestsModal(props: selectInterestsModalProps) {
   const [interestName, setInterestName] = useState("");
   const [interestIcon, setInterestIcon] = useState("");
-  const [selected, setSelected] = useState<number[]>(
-    props.interests.map((i) => i.id)
-  );
+  const [interestDeleted, setInterestDeleted] = useState(0);
+  const [selected, setSelected] = useState<Interest[]>(props.interests);
   const [choices, setChoices] = useState<Interest[]>([]);
   const [customInterests, setCustomInterests] = useState<Interest[]>(
     props.session.user.createdInterests ?? []
@@ -340,34 +340,56 @@ export function SelectInterestsModal(props: selectInterestsModalProps) {
   const [choiceError, setChoiceError] = useState([false, ""]);
   const { theme } = useThemeStore();
 
-  useMemo(() => {
-    setChoices(shuffle(defaultInterests));
-  }, []);
-
   const updateInterests = trpc.user.updateInterests.useMutation({});
+  const getCustomInterests = trpc.interest.getCustomUserInterests.useQuery({
+    userId: props.session.userId,
+  });
   const addCustomInterest = trpc.interest.createInterest.useMutation({});
   const deleteCustomInterest = trpc.interest.deleteInterest.useMutation({});
 
+  useEffect(() => {
+    if (getCustomInterests.isLoading) return;
+    setCustomInterests((getCustomInterests.data as Interest[]) ?? []);
+  }, [getCustomInterests.isLoading, getCustomInterests.data]);
+
+  useMemo(() => {
+    setChoices([
+      ...selected,
+      ...customInterests.filter(
+        (interest) => !selected.some((i) => i.id == interest.id)
+      ),
+      ...shuffle(
+        defaultInterests.filter(
+          (interest) => !selected.some((i) => i.id == interest.id)
+        )
+      ),
+    ]);
+  }, [props.interests, selected, customInterests]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    updateInterests.mutate({ interestIds: selected });
+    updateInterests.mutate({ interestIds: selected.map((i) => i.id) });
+    props.onComplete(selected);
   };
 
   const removeSelected = (interest: Interest) => {
-    if (selected.includes(interest.id)) {
-      setSelected((prev) => prev.filter((i) => i !== interest.id));
+    if (selected.some((i) => i.id == interest.id)) {
+      setSelected((prev) => prev.filter((i) => i.id !== interest.id));
     }
   };
 
   const addSelected = (interest: Interest) => {
-    if (!selected.includes(interest.id)) {
-      setSelected((prev) => [...prev, interest.id]);
+    if (!selected.some((i) => i.id == interest.id)) {
+      setSelected((prev) => [...prev, interest]);
     }
   };
 
   return (
     <div className={styles.modalContainer}>
-      <div className={styles.modalBackground} onClick={props.onComplete} />
+      <div
+        className={styles.modalBackground}
+        onClick={() => props.onComplete(selected)}
+      />
       <div
         className={
           theme == "default"
@@ -375,7 +397,10 @@ export function SelectInterestsModal(props: selectInterestsModalProps) {
             : `${styles.modal} ${styles[`theme-${theme}`]}`
         }
       >
-        <p className={styles.closeModalButton} onClick={props.onComplete}>
+        <p
+          className={styles.closeModalButton}
+          onClick={() => props.onComplete(selected)}
+        >
           <X width={45} height={45} />
         </p>
         <h1>Choose your interests</h1>
@@ -407,6 +432,7 @@ export function SelectInterestsModal(props: selectInterestsModalProps) {
                   setInterestIcon(newIcon);
                 }
               }}
+              onClick={() => setSubmitError([false, ""])}
               autoComplete="off"
             />
             <input
@@ -429,11 +455,14 @@ export function SelectInterestsModal(props: selectInterestsModalProps) {
                   setInterestName(newName);
                 }
               }}
+              onClick={() => setSubmitError([false, ""])}
               autoComplete="off"
             />
             <button
               className={styles.selectInterestModalInterestButton}
-              onClick={async () => {
+              onClick={async (e) => {
+                setSubmitError([false, ""]);
+                e.preventDefault();
                 const interest = await addCustomInterest.mutateAsync({
                   name: interestName,
                   icon: interestIcon,
@@ -441,6 +470,8 @@ export function SelectInterestsModal(props: selectInterestsModalProps) {
                   private: false,
                 });
                 setCustomInterests((prev) => [interest as Interest, ...prev]);
+                setInterestIcon("");
+                setInterestName("");
               }}
               disabled={
                 interestName.length < 1 ||
@@ -483,16 +514,26 @@ export function SelectInterestsModal(props: selectInterestsModalProps) {
                 style={{ borderColor: custom.colour }}
                 className={styles.selectInterestModalCustomInterest}
               >
-                {custom.icon}
-                {custom.name}
-                <X
-                  onClick={async () => {
-                    await deleteCustomInterest.mutateAsync({ id: custom.id });
-                    setCustomInterests(
-                      customInterests.filter((i) => i.id != custom.id)
-                    );
-                  }}
-                />
+                <div>
+                  <p>{custom.icon}</p>
+                  <p>{custom.name}</p>
+                </div>
+                {interestDeleted == custom.id &&
+                deleteCustomInterest.isPending ? (
+                  <span className={styles.loader} />
+                ) : (
+                  <X
+                    onClick={async () => {
+                      setInterestDeleted(custom.id);
+                      console.log(custom.id);
+                      console.log(props.session.userId);
+                      await deleteCustomInterest.mutateAsync({ id: custom.id });
+                      setCustomInterests(
+                        customInterests.filter((i) => i.id != custom.id)
+                      );
+                    }}
+                  />
+                )}
               </div>
             ))
           )}
@@ -513,12 +554,12 @@ export function SelectInterestsModal(props: selectInterestsModalProps) {
                 type="button"
                 key={interest.id}
                 className={`${styles.choiceButton} ${
-                  selected.includes(interest.id)
+                  selected.some((i) => i.id == interest.id)
                     ? `${styles.selectedChoiceButton}`
                     : ""
                 }`}
                 onClick={() => {
-                  if (selected.includes(interest.id)) {
+                  if (selected.some((i) => i.id == interest.id)) {
                     removeSelected(interest);
                     setChoiceError([false, ""]);
                   } else if (selected.length == 10) {

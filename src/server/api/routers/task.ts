@@ -36,6 +36,7 @@ export const taskRouter = createTRPCRouter({
                 private: true,
                 createdById: true,
                 createdBy: true,
+                users: true,
               },
             },
             task: {
@@ -87,6 +88,7 @@ export const taskRouter = createTRPCRouter({
                 private: true,
                 createdById: true,
                 createdBy: true,
+                users: true,
               },
             },
             task: {

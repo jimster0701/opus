@@ -192,7 +192,10 @@ export default function ProfileHeader(props: ProfileHeaderProps) {
       </div>
       {showSelectInterests && (
         <SelectInterestsModal
-          onComplete={() => setShowSelectInterests(false)}
+          onComplete={(newInterests) => {
+            setShowSelectInterests(false);
+            props.setUserInterests(newInterests);
+          }}
           interests={props.userInterests}
           session={props.session}
         />

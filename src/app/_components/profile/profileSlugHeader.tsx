@@ -6,9 +6,11 @@ import { useEffect, useState } from "react";
 import { trpc } from "~/utils/trpc";
 import { FollowerOrFollowingModal } from "../modals";
 import { type SlugUser, type SimpleUser, type User } from "~/types/user";
+import { type Interest } from "~/types/interest";
 
 interface ProfileSlugHeaderProps {
   sessionUser: User;
+  userInterests: Interest[];
   user: SlugUser;
 }
 
@@ -107,6 +109,25 @@ export default function ProfileSlugHeader(props: ProfileSlugHeaderProps) {
             Follow
           </button>
         )}
+      </div>
+      <div className={styles.profileHeaderInterestsContainer}>
+        <div className={styles.profileHeaderInterests}>
+          {props.userInterests.map((interest) => (
+            <div
+              key={interest.id}
+              style={{
+                border: `${interest.colour} 1px solid`,
+                ["--text-glow" as any]: `linear-gradient(to top left,rgb(70, 70, 70), ${interest.colour})`,
+              }}
+              className={styles.glowingNugget}
+            >
+              <p className={styles.glowingNuggetText}>
+                {interest.icon}
+                {interest.name}
+              </p>
+            </div>
+          ))}
+        </div>
       </div>
       {showFollowModal[0] && followers && following && (
         <FollowerOrFollowingModal

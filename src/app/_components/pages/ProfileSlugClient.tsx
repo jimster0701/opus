@@ -3,10 +3,11 @@ import styles from "../../index.module.css";
 import { type User, type SlugUser } from "~/types/user";
 import { trpc } from "~/utils/trpc";
 import { AllUserPosts } from "../posts/allUserPosts";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { defaultUser } from "~/const/defaultVar";
 import ProfileSlugHeader from "../profile/profileSlugHeader";
 import { useParams } from "next/navigation";
+import { type Interest } from "~/types/interest";
 
 interface ProfileSlugClientProps {
   sessionUser: User;
@@ -18,11 +19,20 @@ export default function ProfileSlugClient(props: ProfileSlugClientProps) {
   const slugData = params.slug;
   const [theme, setTheme] = useState(props.theme);
   const [user, setUser] = useState<SlugUser>(defaultUser as SlugUser);
-  console.log(slugData);
+  const [userInterests, setUserInterests] = useState<Interest[]>([]);
 
   const getUser = trpc.user.getUserById.useQuery({
     id: typeof slugData === "string" ? slugData : "",
   });
+
+  const getInterests = trpc.user.getUserInterests.useQuery({
+    userId: user.id,
+  });
+
+  useMemo(() => {
+    if (getInterests.isLoading) return;
+    setUserInterests((getInterests.data as Interest[]) ?? []);
+  }, [getInterests.isLoading, getInterests.data]);
 
   useEffect(() => {
     if (getUser.isLoading) return;
@@ -60,7 +70,11 @@ export default function ProfileSlugClient(props: ProfileSlugClientProps) {
       }
     >
       <div className={styles.container}>
-        <ProfileSlugHeader user={user} sessionUser={props.sessionUser} />
+        <ProfileSlugHeader
+          user={user}
+          sessionUser={props.sessionUser}
+          userInterests={userInterests}
+        />
         <br />
         <div className={styles.profilePostContainer}>
           <AllUserPosts userId={user.id} sessionUserId={props.sessionUser.id} />
