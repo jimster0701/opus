@@ -18,7 +18,6 @@ export const defaultInterest: Interest = {
   private: false,
   createdById: defaultUser.id,
   createdBy: defaultUser,
-  users: [],
 };
 
 export const defaultTask: Task = {

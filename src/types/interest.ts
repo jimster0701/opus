@@ -9,5 +9,4 @@ export interface Interest {
   private: boolean;
   createdById: string;
   createdBy: SimpleUser;
-  users: UserInterest[];
 }

@@ -128,7 +128,6 @@ export const postRouter = createTRPCRouter({
                     private: true,
                     createdById: true,
                     createdBy: true,
-                    users: { select: { userId: true, interestId: true } },
                   },
                 },
                 task: {
@@ -183,7 +182,6 @@ export const postRouter = createTRPCRouter({
               private: interestRelation.interest.private,
               createdById: interestRelation.interest.createdById,
               createdBy: interestRelation.interest.createdBy,
-              users: interestRelation.interest.users,
             },
           };
           return taskInterest;
@@ -247,7 +245,6 @@ export const postRouter = createTRPCRouter({
                       private: true,
                       createdById: true,
                       createdBy: true,
-                      users: { select: { userId: true, interestId: true } },
                     },
                   },
                   task: {
@@ -306,7 +303,6 @@ export const postRouter = createTRPCRouter({
                 private: interestRelation.interest.private,
                 createdById: interestRelation.interest.createdById,
                 createdBy: interestRelation.interest.createdBy,
-                users: interestRelation.interest.users,
               },
             };
             return taskInterest;
@@ -380,7 +376,6 @@ export const postRouter = createTRPCRouter({
                       private: true,
                       createdById: true,
                       createdBy: true,
-                      users: { select: { userId: true, interestId: true } },
                     },
                   },
                   task: {
@@ -439,7 +434,6 @@ export const postRouter = createTRPCRouter({
                 private: interestRelation.interest.private,
                 createdById: interestRelation.interest.createdById,
                 createdBy: interestRelation.interest.createdBy,
-                users: interestRelation.interest.users,
               },
             };
             return taskInterest;
