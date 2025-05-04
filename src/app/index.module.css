@@ -34,7 +34,6 @@
   height: fit-content;
   box-sizing: border-box;
   font-size: 1rem;
-  max-width: 30vw;
   text-overflow: ellipsis;
 }
 
@@ -423,7 +422,6 @@
 }
 
 .modalForm input[type="text"] {
-  padding: 0.75rem 1rem;
   border-radius: 6px;
   border: 2px solid rgba(255, 255, 255, 0.2);
   background-color: rgba(255, 255, 255, 0.1);
@@ -618,10 +616,13 @@
 /* Card Components
 ------------------------------------------ */
 .cardContainer {
-  display: flex;
+  background-color: #aaa7a77a;
   border-radius: 1rem;
-  box-shadow: 0 4px 12px rgba(170, 167, 167, 0.477);
-  background-color: rgba(170, 167, 167, 0.477);
+  display: flex;
+  width: 100%;
+  box-shadow: 0 4px 12px #aaa7a77a;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 /* Profile Components

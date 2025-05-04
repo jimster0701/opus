@@ -16,7 +16,7 @@ export default function FriendsClient(props: FriendsClientProps) {
   const { data: friendsData, isLoading } = trpc.user.getFriends.useQuery();
 
   useEffect(() => {
-    if (theme === "unset") {
+    if (theme === "unset" || theme != props.theme) {
       setTheme(props.theme);
     }
   }, [theme, props.theme, setTheme]);

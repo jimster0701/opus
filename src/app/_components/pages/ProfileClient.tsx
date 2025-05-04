@@ -27,7 +27,7 @@ export default function ProfileClient(props: ProfileClientProps) {
   }, [getInterests.isLoading, getInterests.data]);
 
   useEffect(() => {
-    if (theme === "unset") {
+    if (theme === "unset" || theme != props.theme) {
       setTheme(props.theme);
     }
   }, [theme, props.theme, setTheme]);

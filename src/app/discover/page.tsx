@@ -2,7 +2,7 @@ import { auth } from "~/server/auth";
 import { HydrateClient } from "~/trpc/server";
 import { redirect } from "next/navigation";
 import { Navbar } from "../_components/navbar";
-import Header from "../_components/header";
+import { Header } from "../_components/header";
 import DiscoverClient from "../_components/pages/DiscoverClient";
 
 export default async function Discover() {

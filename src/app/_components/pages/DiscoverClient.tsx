@@ -5,6 +5,9 @@ import { AllFriendsPosts } from "../posts/allFriendsPosts";
 import { type Session } from "~/types/session";
 import { useEffect, useState } from "react";
 import { AllInterestPosts } from "../posts/allInterestPosts";
+import { type Interest } from "~/types/interest";
+import { defaultInterest } from "~/const/defaultVar";
+import { trpc } from "~/utils/trpc";
 
 interface DiscoverClientProps {
   session: Session;
@@ -13,12 +16,23 @@ interface DiscoverClientProps {
 
 export default function DiscoverClient(props: DiscoverClientProps) {
   const [selectedTab, setSelectedTab] = useState("");
+  const [interests, setInterests] = useState<Interest[]>([defaultInterest]);
   const { theme, setTheme } = useThemeStore();
+  const getInterests = trpc.user.getUserInterests.useQuery({
+    userId: props.session.userId,
+  });
+
   useEffect(() => {
-    if (theme === "unset") {
+    if (theme === "unset" || theme != props.theme) {
       setTheme(props.theme);
     }
   }, [theme, props.theme, setTheme]);
+
+  useEffect(() => {
+    if (getInterests.isLoading) return;
+    setInterests(getInterests.data as Interest[]);
+  }, [getInterests.isLoading, getInterests.data]);
+
   return (
     <main
       className={
@@ -50,6 +64,7 @@ export default function DiscoverClient(props: DiscoverClientProps) {
         )}
         {selectedTab == "discover" && (
           <AllInterestPosts
+            interestIds={interests.map((i) => i.id)}
             userId={props.session?.user.id}
             session={props.session}
           />

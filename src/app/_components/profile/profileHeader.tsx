@@ -35,6 +35,8 @@ export default function ProfileHeader(props: ProfileHeaderProps) {
     userId: props.session.user.id,
   });
 
+  console.log(following);
+
   const updateDisplayName = trpc.user.updateDisplayName.useMutation();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -204,7 +206,7 @@ export default function ProfileHeader(props: ProfileHeaderProps) {
         <FollowerOrFollowingModal
           onComplete={() => setShowFollowModal([false, ""])}
           data={
-            showFollowModal[1]
+            showFollowModal[1] == "Followers"
               ? (followers.map((f) => f.follower) as SimpleUser[])
               : (following.map((f) => f.following) as SimpleUser[])
           }

@@ -61,6 +61,12 @@ export const interestRouter = createTRPCRouter({
         },
       });
 
+      await ctx.db.taskInterest.deleteMany({
+        where: {
+          interestId: input.id,
+        },
+      });
+
       return ctx.db.interest.delete({
         where: { id: input.id },
       });

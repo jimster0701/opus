@@ -59,7 +59,7 @@ export default function CreateClient(props: CreateClientProps) {
   }, [selectedTab]);
 
   useEffect(() => {
-    if (theme === "unset") {
+    if (theme === "unset" || theme != props.theme) {
       setTheme(props.theme);
     }
   }, [theme, props.theme, setTheme]);

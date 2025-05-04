@@ -4,20 +4,75 @@ import Image from "next/image";
 import { SettingsModal } from "./modals";
 import { useEffect, useState } from "react";
 import { useThemeStore } from "~/store/themeStore";
+import { useParams } from "next/navigation";
+import { trpc } from "~/utils/trpc";
+import { type SlugUser } from "~/types/user";
 
 interface HeaderProps {
   userId: string;
   theme: string;
+  page?: string;
 }
 
-export default function Header(props: HeaderProps) {
+export function Header(props: HeaderProps) {
   const [showSettings, setShowSettings] = useState(false);
   const { theme, setTheme } = useThemeStore();
+  useEffect(() => {
+    if (theme === "unset" || theme != props.theme) {
+      setTheme(props.theme);
+    }
+  }, [theme, props.theme, setTheme]);
+
+  return (
+    <div
+      className={
+        theme === "default"
+          ? `${styles.header}`
+          : `${styles.header} ${styles[`theme-${theme}`]}`
+      }
+    >
+      <div className={styles.logo}>Opus</div>
+      {props.userId != "null" && (
+        <div className={styles.navIcons}>
+          <Image src="/images/bell.png" alt={""} width={25} height={25} />
+
+          <Image
+            src="/images/setting.png"
+            alt={""}
+            width={25}
+            height={25}
+            onClick={() => setShowSettings(true)}
+          />
+          {showSettings && (
+            <SettingsModal onComplete={() => setShowSettings(false)} />
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export function SlugHeader(props: HeaderProps) {
+  const [showSettings, setShowSettings] = useState(false);
+  const { theme, setTheme } = useThemeStore();
+  const params = useParams();
+  const slugData = params.slug;
   useEffect(() => {
     if (theme === "unset") {
       setTheme(props.theme);
     }
   }, [theme, props.theme, setTheme]);
+
+  const getUser = trpc.user.getUserById.useQuery({
+    id: typeof slugData === "string" ? slugData : "",
+  });
+
+  useEffect(() => {
+    if (getUser.isLoading) return;
+    if (getUser.data && getUser.data.themePreset) {
+      setTheme(getUser.data.themePreset);
+    }
+  }, [getUser.isLoading, getUser.data]);
 
   return (
     <div

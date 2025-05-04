@@ -16,6 +16,7 @@ interface ProfileSlugHeaderProps {
 
 export default function ProfileSlugHeader(props: ProfileSlugHeaderProps) {
   const [isFollowing, setIsFollowing] = useState(false);
+  const [tempFollow, setTempFollow] = useState(0);
   const [showFollowModal, setShowFollowModal] = useState<[boolean, string]>([
     false,
     "",
@@ -51,6 +52,14 @@ export default function ProfileSlugHeader(props: ProfileSlugHeaderProps) {
     }
   }, [getIsFollowing.isLoading, getIsFollowing.data]);
 
+  const handleFollow = () => {
+    if (!isFollowing) {
+      setTempFollow(tempFollow + 1);
+    } else {
+      setTempFollow(tempFollow - 1);
+    }
+  };
+
   return (
     <div className={styles.profileHeaderContainer}>
       <div className={styles.profileSlugHeader}>
@@ -83,7 +92,7 @@ export default function ProfileSlugHeader(props: ProfileSlugHeaderProps) {
                 setShowFollowModal([true, "Followers"]);
               }}
             >
-              Followers:{followers?.length}
+              Followers:{followers?.length && followers.length + tempFollow}
             </p>
           </div>
         </div>
@@ -93,6 +102,8 @@ export default function ProfileSlugHeader(props: ProfileSlugHeaderProps) {
           <button
             className={styles.opusButton}
             onClick={async () => {
+              setIsFollowing(false);
+              handleFollow();
               await removeFollowing.mutateAsync({ userId: props.user.id });
             }}
           >
@@ -102,6 +113,8 @@ export default function ProfileSlugHeader(props: ProfileSlugHeaderProps) {
           <button
             className={styles.opusButton}
             onClick={async () => {
+              setIsFollowing(true);
+              handleFollow();
               await addFollowing.mutateAsync({ userId: props.user.id });
             }}
             disabled={props.user.id == props.sessionUser.id}

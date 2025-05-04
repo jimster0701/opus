@@ -14,6 +14,7 @@ import { defaultInterests } from "~/const/defaultVar";
 import { type Interest } from "~/types/interest";
 import { api } from "~/trpc/react";
 import { type Session } from "~/types/session";
+import { useRouter } from "next/navigation";
 
 interface modalProps {
   onComplete: () => void;
@@ -78,6 +79,7 @@ interface followerOrFollowingProps extends modalProps {
 
 export function FollowerOrFollowingModal(props: followerOrFollowingProps) {
   const [list] = useState<SimpleUser[]>(props.data);
+  const router = useRouter();
 
   return (
     <div className={styles.modalContainer}>
@@ -94,7 +96,13 @@ export function FollowerOrFollowingModal(props: followerOrFollowingProps) {
         </p>
         <h1>{props.type}:</h1>
         {list.map((user) => (
-          <div key={user.id} className={styles.cardContainer}>
+          <div
+            key={user.id}
+            className={styles.cardContainer}
+            onClick={() => {
+              router.push(`/profile/${user.id}`);
+            }}
+          >
             <ProfilePicturePreviewWrapper
               id={user.id}
               imageUrl={user.image}
@@ -383,10 +391,8 @@ export function SelectInterestsModal(props: selectInterestsModalProps) {
       ...customInterests.filter(
         (interest) => !selected.some((i) => i.id == interest.id)
       ),
-      ...shuffle(
-        defaultInterests.filter(
-          (interest) => !selected.some((i) => i.id == interest.id)
-        )
+      ...defaultInterests.filter(
+        (interest) => !selected.some((i) => i.id == interest.id)
       ),
     ]);
   }, [selected, customInterests]);
@@ -441,16 +447,17 @@ export function SelectInterestsModal(props: selectInterestsModalProps) {
               type="text"
               id="newInterestIcon"
               name="newInterestIcon"
+              className={styles.selectInterestModalIconInput}
               placeholder={choices[10]?.icon}
               required
               value={interestIcon}
               onChange={(e) => {
                 const newIcon = e.target.value;
                 setSubmitError([false, ""]);
-                if (newIcon.length > 1) {
+                if (newIcon.length > 2) {
                   setSubmitError([
                     true,
-                    "Interest icon can only be 1 character",
+                    "Interest icon can only be 2 character",
                   ]);
                 } else {
                   setInterestIcon(newIcon);
@@ -500,7 +507,7 @@ export function SelectInterestsModal(props: selectInterestsModalProps) {
               disabled={
                 interestName.length < 1 ||
                 interestName.length > 20 ||
-                interestIcon.length != 1
+                interestIcon.length < 1
               }
             >
               Add

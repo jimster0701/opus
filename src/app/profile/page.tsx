@@ -2,7 +2,7 @@ import { auth } from "~/server/auth";
 import ProfileClient from "../_components/pages/ProfileClient";
 import { redirect } from "next/navigation";
 import { HydrateClient } from "~/trpc/server";
-import Header from "../_components/header";
+import { Header } from "../_components/header";
 import { Navbar } from "../_components/navbar";
 
 export default async function Profile() {

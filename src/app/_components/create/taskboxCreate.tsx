@@ -136,7 +136,6 @@ export default function TaskboxCreate(props: TaskboxCreateProps) {
 
                 const newInterestIds = newInterests.map((i) => i.id);
 
-                // Avoid duplicates
                 const updatedSelected = [
                   ...selectedInterests,
                   ...newInterests.filter(

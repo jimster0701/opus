@@ -45,9 +45,18 @@ export default function TaskboxUpdate(props: TaskboxUpdateProps) {
     ) {
       const pulledInterests = userInterests.data as Interest[];
       const selectedIds = selectedInterests.map((i) => i.id);
-      setAvailableInterests(
-        pulledInterests.filter((i) => !selectedIds.includes(i.id))
+      const newAvailable = pulledInterests.filter(
+        (i) => !selectedIds.includes(i.id)
       );
+
+      if (
+        newAvailable.length !== availableInterests.length ||
+        !newAvailable.every((i) =>
+          availableInterests.some((prev) => prev.id === i.id)
+        )
+      ) {
+        setAvailableInterests(newAvailable);
+      }
     }
   }, [
     userInterests.isLoading,
