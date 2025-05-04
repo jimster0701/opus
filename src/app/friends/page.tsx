@@ -9,7 +9,7 @@ export default async function Friends() {
   const session = await auth();
   if (session?.user) {
     void api.user.getFriends.prefetch();
-    let newTheme = "";
+
     /*
     getFriends();
     friends.map((friend) => {

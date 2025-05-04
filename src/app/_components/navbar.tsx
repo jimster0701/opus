@@ -3,10 +3,9 @@ import { useThemeStore } from "~/store/themeStore";
 import styles from "../index.module.css";
 import Link from "next/link";
 import { Home, Search, PlusCircle, Users, User } from "lucide-react";
-import { type Session } from "~/types/session";
 import { useParams } from "next/navigation";
 import { trpc } from "~/utils/trpc";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 interface navbarProps {
   theme: string;
@@ -54,7 +53,7 @@ export function Navbar(props: navbarProps) {
 }
 
 export function SlugNavbar(props: navbarProps) {
-  const { theme, setTheme } = useThemeStore();
+  const [theme, setTheme] = useState("");
   const params = useParams();
   const slugData = params.slug;
 
