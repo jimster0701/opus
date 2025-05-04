@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import { useThemeStore } from "~/store/themeStore";
 import { useParams } from "next/navigation";
 import { trpc } from "~/utils/trpc";
-import { type SlugUser } from "~/types/user";
 
 interface HeaderProps {
   userId: string;
@@ -72,7 +71,7 @@ export function SlugHeader(props: HeaderProps) {
     if (getUser.data && getUser.data.themePreset) {
       setTheme(getUser.data.themePreset);
     }
-  }, [getUser.isLoading, getUser.data]);
+  }, [getUser.isLoading, getUser.data, setTheme]);
 
   return (
     <div
