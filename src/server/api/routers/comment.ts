@@ -61,4 +61,18 @@ export const commentRouter = createTRPCRouter({
         data: { likedBy: updatedLikedBy },
       });
     }),
+
+  deleteComment: protectedProcedure
+    .input(z.object({ id: z.number().min(1) }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.$transaction(async (prisma) => {
+        await prisma.reply.deleteMany({
+          where: { commentId: input.id },
+        });
+
+        return ctx.db.comment.delete({
+          where: { id: input.id },
+        });
+      });
+    }),
 });

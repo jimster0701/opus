@@ -9,12 +9,14 @@ import { ProfilePicturePreviewWrapper } from "../images/cldImageWrapper";
 import { useRouter } from "next/navigation";
 import Taskbox from "../tasks/taskbox";
 import { type Interest } from "~/types/interest";
+import { SquarePen } from "lucide-react";
 
 interface postProps {
   setShowInterestModal?: (value: boolean) => void;
   setNewInterest?: (value: Interest) => void;
   post: Post;
   userId: string;
+  setEditMode?: (value: boolean) => void;
 }
 
 export function Postbox(props: postProps) {
@@ -57,7 +59,18 @@ export function Postbox(props: postProps) {
           </h2>
         </div>
         <h3 className={styles.postHeaderDate}>
-          {props.post.createdAt.toLocaleString()}
+          {props.setEditMode ? (
+            <div
+              className={styles.taskEditContainer}
+              onClick={() => {
+                if (props.setEditMode) props.setEditMode(true);
+              }}
+            >
+              <SquarePen />
+            </div>
+          ) : (
+            props.post.createdAt.toLocaleString()
+          )}
         </h3>
       </div>
       <div className={styles.postTitleContainer}>

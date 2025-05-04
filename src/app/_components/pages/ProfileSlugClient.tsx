@@ -100,7 +100,7 @@ export default function ProfileSlugClient(props: ProfileSlugClientProps) {
             setNewInterest={setNewInterest}
             setShowInterestModal={setShowInterestModal}
             userId={user.id}
-            sessionUserId={props.sessionUser.id}
+            sessionUser={props.sessionUser}
           />
         </div>
       </div>

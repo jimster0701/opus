@@ -8,14 +8,18 @@ import { ProfilePicturePreviewWrapper } from "../images/cldImageWrapper";
 import Image from "next/image";
 import { ReplyComponent } from "./replyComponent";
 import { useRouter } from "next/navigation";
+import { DeleteCommentModal } from "../modals";
+import { Trash2 } from "lucide-react";
 
 interface commentProps {
   userId: string;
   comment: Comment;
+  removeComment: (id: number) => void;
 }
 
 export function CommentComponent(props: commentProps) {
   const router = useRouter();
+  const [showDeleteComment, setShowDeleteComment] = useState(false);
   const [liked, setLiked] = useState(
     props.comment.likedBy.includes(props.userId)
   );
@@ -69,7 +73,15 @@ export function CommentComponent(props: commentProps) {
             </p>
           </div>
           <p className={styles.commentTimestamp}>
-            {props.comment.createdAt.toDateString()}
+            {props.comment.createdById != props.userId ? (
+              props.comment.createdAt.toDateString()
+            ) : (
+              <Trash2
+                onClick={() => {
+                  setShowDeleteComment(true);
+                }}
+              />
+            )}
           </p>
         </div>
         <div className={styles.commentContentContainer}>
@@ -126,6 +138,16 @@ export function CommentComponent(props: commentProps) {
               userId={props.userId}
             />
           ))}
+        {showDeleteComment && (
+          <DeleteCommentModal
+            onComplete={(deleteComment) => {
+              if (deleteComment) props.removeComment(props.comment.id);
+              setShowDeleteComment(false);
+            }}
+            id={props.comment.id}
+            name={props.comment.message}
+          />
+        )}
       </div>
     );
 }

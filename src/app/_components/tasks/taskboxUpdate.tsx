@@ -314,8 +314,9 @@ export default function TaskboxUpdate(props: TaskboxUpdateProps) {
       <br />
       {showTaskDelete && (
         <DeleteTaskModal
-          onComplete={() => {
-            props.onComplete(props.task, props.task.interests, true);
+          onComplete={(deleteTask: boolean) => {
+            if (deleteTask)
+              props.onComplete(props.task, props.task.interests, true);
             setShowTaskDelete(false);
           }}
           id={props.task.id}

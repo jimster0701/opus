@@ -49,7 +49,7 @@ export default function ProfileClient(props: ProfileClientProps) {
         <div className={styles.profilePostContainer}>
           <AllUserPosts
             userId={props.session.user.id}
-            sessionUserId={props.session.user.id}
+            sessionUser={props.session.user}
             setNewInterest={undefined}
             setShowInterestModal={undefined}
           />

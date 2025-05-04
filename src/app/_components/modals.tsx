@@ -32,18 +32,134 @@ export function Modal() {
   );
 }
 
-interface deleteModalProps extends modalProps {
+interface deleteModalProps {
+  onComplete: (deleteThing: boolean) => void;
   id: number;
   name: string;
+}
+
+export function DeleteCommentModal(props: deleteModalProps) {
+  const deleteComment = api.comment.deleteComment.useMutation();
+  return (
+    <div className={styles.modalContainer}>
+      <div
+        className={styles.modalBackground}
+        onClick={() => props.onComplete(false)}
+      />
+      <div className={styles.modal}>
+        <h1>Are you sure you want to delete this comment:</h1>
+        <h2>{props.name}?</h2>
+        <div className={styles.taskUpdateControls}>
+          <button
+            className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
+            onClick={async () => {
+              try {
+                deleteComment.mutate({ id: props.id });
+                props.onComplete(true);
+                toast.success("Deleted comment!");
+              } catch (error) {
+                console.error(error);
+              }
+            }}
+          >
+            Yes <Check />
+          </button>
+          <button
+            className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
+            onClick={() => props.onComplete(false)}
+          >
+            No <X />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function DeletePostImageModal(props: deleteModalProps) {
+  return (
+    <div className={styles.modalContainer}>
+      <div
+        className={styles.modalBackground}
+        onClick={() => props.onComplete(false)}
+      />
+      <div className={styles.modal}>
+        <h1>Are you sure you want to delete this image?</h1>
+        <div className={styles.taskUpdateControls}>
+          <button
+            className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
+            onClick={async () => {
+              try {
+                props.onComplete(true);
+                toast.success("Deleting image!");
+              } catch (error) {
+                console.error(error);
+              }
+            }}
+          >
+            Yes <Check />
+          </button>
+          <button
+            className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
+            onClick={() => props.onComplete(false)}
+          >
+            No <X />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function DeletePostModal(props: deleteModalProps) {
+  const deletePost = api.post.deletePost.useMutation();
+  return (
+    <div className={styles.modalContainer}>
+      <div
+        className={styles.modalBackground}
+        onClick={() => props.onComplete(false)}
+      />
+      <div className={styles.modal}>
+        <h1>Are you sure you want to delete:</h1>
+        <h2>{props.name}?</h2>
+        <br />
+        <div className={styles.taskUpdateControls}>
+          <button
+            className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
+            onClick={async () => {
+              try {
+                deletePost.mutate({ id: props.id });
+                props.onComplete(true);
+                toast.success("Post Deleted!");
+              } catch (error) {
+                console.error(error);
+              }
+            }}
+          >
+            Yes <Check />
+          </button>
+          <button
+            className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
+            onClick={() => props.onComplete(false)}
+          >
+            No <X />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export function DeleteTaskModal(props: deleteModalProps) {
   const deleteTask = api.task.deleteTask.useMutation();
   return (
     <div className={styles.modalContainer}>
-      <div className={styles.modalBackground} onClick={props.onComplete} />
+      <div
+        className={styles.modalBackground}
+        onClick={() => props.onComplete(false)}
+      />
       <div className={styles.modal}>
-        <h1>Are you sure you want to delete</h1>
+        <h1>Are you sure you want to delete:</h1>
         <h2>{props.name}?</h2>
         <br />
         <div className={styles.taskUpdateControls}>
@@ -52,19 +168,20 @@ export function DeleteTaskModal(props: deleteModalProps) {
             onClick={async () => {
               try {
                 deleteTask.mutate({ id: props.id });
-                props.onComplete();
+                props.onComplete(true);
+                toast.success("Task Deleted!");
               } catch (error) {
                 console.error(error);
               }
             }}
           >
-            <Check />
+            Yes <Check />
           </button>
           <button
             className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
-            onClick={props.onComplete}
+            onClick={() => props.onComplete(false)}
           >
-            <X />
+            No <X />
           </button>
         </div>
       </div>

@@ -13,6 +13,6 @@ export interface Post {
   createdById: string;
   createdBy: SimpleUser;
   likedBy: string[];
-  imageUrl: string | null;
+  imageUrl: string;
   comments: Comment[];
 }

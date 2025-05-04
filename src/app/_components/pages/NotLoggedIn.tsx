@@ -13,7 +13,7 @@ export default function NotLoggedIn() {
         <div className={styles.showcaseContainer}>
           <p className={styles.showcaseText}>
             {
-              "You've been invited to be apart of the first and only trail testing of Opus."
+              "You've been invited to be a part of the first and only trial testing of Opus."
             }
           </p>
           <p className={styles.showcaseText}>

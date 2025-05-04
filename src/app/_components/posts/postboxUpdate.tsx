@@ -1,39 +1,45 @@
 "use client";
-import { type Post } from "~/types/post";
 import styles from "../../index.module.css";
-import { useState, type ChangeEvent, type FormEvent, useEffect } from "react";
-import { trpc } from "~/utils/trpc";
-import { X } from "lucide-react";
+import { type Post } from "~/types/post";
 import { type User } from "~/types/user";
-import { defaultTask } from "~/const/defaultVar";
-import { type Task } from "~/types/task";
-import { useRouter } from "next/navigation";
+import { type ChangeEvent, type FormEvent, useEffect, useState } from "react";
+import { api } from "~/trpc/react";
+import { trpc } from "~/utils/trpc";
+import { Check, Trash2, X } from "lucide-react";
+import { DeletePostImageModal, DeletePostModal } from "../modals";
 import Image from "next/image";
+import { type Task } from "~/types/task";
+import toast from "react-hot-toast";
 
-interface postboxCreateProps {
+interface PostboxUpdateProps {
   post: Post;
   user: User;
   availableTasks: Task[];
-  onPostChange?: (updatedPost: Post) => void;
+  onComplete: (finalPost: Post, deletePost: boolean) => void;
 }
 
-export function PostboxCreate(props: postboxCreateProps) {
-  const router = useRouter();
-
+export default function PostboxUpdate(props: PostboxUpdateProps) {
   const [formData, setFormData] = useState({
-    name: props.post.name ?? "",
-    taskId: props.post.task.id ?? defaultTask.id,
-    description: props.post.description ?? "",
+    name: props.post.name,
+    taskId: props.post.task.id,
+    description: props.post.description,
   });
 
-  const [newPostTime, setNewPostTime] = useState("");
+  const [updatedPost] = useState<Post>(props.post);
+  const [showPostImageDelete, setShowPostImageDelete] = useState(false);
+  const [showPostDelete, setShowPostDelete] = useState(false);
+  const [updatedPostTime, setupdatedPostTime] = useState("");
   const [image, setImage] = useState<File | null>(null);
   const [preview, setPreview] = useState<string>("");
+  const [uploadedURL, setUploadedURL] = useState<string>("");
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
   const utils = trpc.useUtils();
 
-  const createPost = trpc.post.createPost.useMutation();
+  const cloudinaryPrefix = `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/`;
+
+  const updatePost = api.post.updatePost.useMutation();
+
   const updateImage = trpc.post.updateImage.useMutation({
     onSuccess: async () => {
       await utils.post.invalidate();
@@ -41,7 +47,7 @@ export function PostboxCreate(props: postboxCreateProps) {
   });
 
   useEffect(() => {
-    setNewPostTime(new Date().toLocaleString());
+    setupdatedPostTime(new Date().toLocaleString());
   }, []);
 
   const handleInputChange = (
@@ -69,10 +75,9 @@ export function PostboxCreate(props: postboxCreateProps) {
     setUploading(true);
 
     try {
-      // Upload the new image to Cloudinary
       const formData = new FormData();
       formData.append("file", image);
-      formData.append("upload_preset", "opus-post-image"); // You should create a preset for posts
+      formData.append("upload_preset", "opus-post-image");
       formData.append("public_id", `post-pictures/${postId}`);
 
       const reqURL = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`;
@@ -106,43 +111,58 @@ export function PostboxCreate(props: postboxCreateProps) {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      // First create the post
-      const newPost = await createPost.mutateAsync({
+      const returnedPost = await updatePost.mutateAsync({
+        id: props.post.id,
         name: formData.name,
         taskId: Number(formData.taskId),
         description: formData.description,
         private: false,
-        imageUrl: "none",
+        imageUrl: props.post.imageUrl == "none" ? "none" : props.post.imageUrl,
       });
 
-      // If there's an image, upload it and update the post
-      if (image && newPost.id) {
+      if (image && returnedPost.id) {
         setUploading(true);
-        const cloudinaryPath = await handleUploadImage(newPost.id);
+        const cloudinaryPath = await handleUploadImage(returnedPost.id);
         if (cloudinaryPath) {
-          // Update the post with the image URL
+          setUploadedURL(cloudinaryPath);
           await updateImage.mutateAsync({
             imageUrl: cloudinaryPath,
-            id: newPost.id,
+            id: returnedPost.id,
           });
         }
       }
 
-      // Reset form after successful submission
-      setFormData({
-        name: "",
-        taskId: 0,
-        description: "",
-      });
-      setImage(null);
-      setPreview("");
-      setError("");
-
-      // Redirect to profile
-      router.push("/profile");
+      if (!image) {
+        props.onComplete(
+          {
+            ...updatedPost,
+            name: formData.name,
+            task: props.availableTasks.find(
+              (t) => t.id == formData.taskId
+            ) as Task,
+            description: formData.description,
+            imageUrl: props.post.imageUrl,
+          },
+          false
+        );
+      } else {
+        props.onComplete(
+          {
+            ...updatedPost,
+            name: formData.name,
+            task: props.availableTasks.find(
+              (t) => t.id == formData.taskId
+            ) as Task,
+            description: formData.description,
+            imageUrl: uploadedURL,
+          },
+          false
+        );
+      }
+      cancelImageUpload();
     } catch (error) {
-      console.error("Error creating post:", error);
-      setError("Failed to create post. Please try again.");
+      console.error("Error updating post:", error);
+      setError("Failed to update post. Please try again.");
     } finally {
       setUploading(false);
     }
@@ -152,6 +172,23 @@ export function PostboxCreate(props: postboxCreateProps) {
     setPreview("");
     setImage(null);
     setError("");
+  };
+
+  const deleteImage = async () => {
+    const deleteRes = await fetch("/api/cld-delete-image", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ public_id: "post-pictures/" + props.post.id }),
+    });
+    const deleteResult = await deleteRes.json();
+
+    if (!deleteRes.ok) {
+      throw new Error(deleteResult.error ?? "Failed to delete existing image.");
+    }
+    props.post.imageUrl = "none";
+    cancelImageUpload();
   };
 
   return (
@@ -173,7 +210,7 @@ export function PostboxCreate(props: postboxCreateProps) {
               required
             />
           </div>
-          <h3>{newPostTime}</h3>
+          <h3>{updatedPostTime}</h3>
         </div>
 
         <div className={styles.postCreateContent}>
@@ -217,21 +254,29 @@ export function PostboxCreate(props: postboxCreateProps) {
               ))}
             </select>
           </div>
-          {preview && (
+          {(preview || props.post.imageUrl != "none") && (
             <div className={styles.postCreateImagePreviewContainer}>
               <div className={styles.flexRow}>
                 <p>Delete image: </p>
                 <button
                   type="button"
                   className={`${styles.opusButton} ${styles.postCreateImagePreviewCancelButton}`}
-                  onClick={cancelImageUpload}
+                  onClick={() => {
+                    if (props.post.imageUrl != "none")
+                      setShowPostImageDelete(true);
+                    if (preview) cancelImageUpload();
+                  }}
                 >
                   <X />
                 </button>
               </div>
               <div className={styles.postCreateImagePreview}>
                 <Image
-                  src={preview}
+                  src={
+                    preview == ""
+                      ? cloudinaryPrefix + props.post.imageUrl
+                      : preview
+                  }
                   className={styles.imagePreview}
                   alt={""}
                   width={100}
@@ -241,8 +286,20 @@ export function PostboxCreate(props: postboxCreateProps) {
             </div>
           )}
         </div>
-        {uploading && <p className={styles.uploading}>Uploading...</p>}
+        {uploading && <p className={styles.uploading}>Uploading ...</p>}
         {error && <p className={styles.error}>{error}</p>}
+        <div className={styles.postUpdateDeleteContainer}>
+          {/** <SquareCheckBig onClick={async () => {
+                          try{
+                            completeTask.mutate({id:props.task.id});
+                          } catch
+                        }} />  */}
+          <Trash2
+            onClick={() => {
+              setShowPostDelete(true);
+            }}
+          />
+        </div>
       </div>
 
       <div className={styles.postSubmitContainer}>
@@ -251,9 +308,45 @@ export function PostboxCreate(props: postboxCreateProps) {
           className={`${styles.opusButton} ${styles.submitButton}`}
           disabled={uploading}
         >
-          {uploading ? "Creating..." : "Create"}
+          {uploading ? "Updating..." : "Confirm"}
+
+          <Check />
+        </button>
+        <button
+          className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
+          onClick={() => {
+            props.onComplete(props.post, false);
+          }}
+        >
+          Cancel
+          <X />
         </button>
       </div>
+      {showPostImageDelete && (
+        <DeletePostImageModal
+          onComplete={(deletePostImage: boolean) => {
+            if (deletePostImage)
+              deleteImage().catch(() =>
+                toast.error("Something went wrong deleting your image")
+              );
+
+            setShowPostImageDelete(false);
+          }}
+          id={props.post.id}
+          name={props.post.imageUrl}
+        />
+      )}
+      {showPostDelete && (
+        <DeletePostModal
+          onComplete={(deletePost: boolean) => {
+            if (deletePost) props.onComplete(props.post, deletePost);
+
+            setShowPostDelete(false);
+          }}
+          id={props.post.id}
+          name={props.post.name}
+        />
+      )}
     </form>
   );
 }

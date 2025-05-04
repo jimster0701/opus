@@ -43,6 +43,7 @@ export const postRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.number().min(1),
+        taskId: z.number().min(1),
         name: z.string().min(1),
         private: z.boolean(),
         imageUrl: z.string().min(1),
@@ -54,6 +55,7 @@ export const postRouter = createTRPCRouter({
         where: { id: input.id },
         data: {
           name: input.name,
+          taskId: input.taskId,
           description: input.description,
           imageUrl: input.imageUrl,
           private: input.private,
@@ -64,8 +66,20 @@ export const postRouter = createTRPCRouter({
   deletePost: protectedProcedure
     .input(z.object({ id: z.number().min(1) }))
     .mutation(async ({ ctx, input }) => {
-      return ctx.db.post.delete({
-        where: { id: input.id },
+      return ctx.db.$transaction(async (prisma) => {
+        const commentIds = await prisma.comment.findMany({
+          where: { postId: input.id },
+          select: { id: true },
+        });
+
+        await prisma.reply.deleteMany({
+          where: { commentId: { in: commentIds.map((c) => c.id) } },
+        });
+        await prisma.comment.deleteMany({ where: { postId: input.id } });
+
+        return ctx.db.post.delete({
+          where: { id: input.id },
+        });
       });
     }),
 
