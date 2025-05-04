@@ -11,13 +11,12 @@ import { type Interest } from "~/types/interest";
 
 interface ProfileSlugClientProps {
   sessionUser: User;
-  theme: string;
 }
 
 export default function ProfileSlugClient(props: ProfileSlugClientProps) {
   const params = useParams();
   const slugData = params.slug;
-  const [theme, setTheme] = useState(props.theme);
+  const [theme, setTheme] = useState("");
   const [user, setUser] = useState<SlugUser>(defaultUser as SlugUser);
   const [userInterests, setUserInterests] = useState<Interest[]>([]);
 

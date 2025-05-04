@@ -33,9 +33,9 @@ export default function HomeClient(props: HomeClientProps) {
   const getCustomTasks = trpc.task.getCustomTasks.useQuery();
 
   useEffect(() => {
-    if (theme === "unset" || theme != props.theme) {
+    if (theme === "unset") {
       setTheme(props.theme);
-    }
+    } else setTheme(theme);
   }, [theme, props.theme, setTheme]);
 
   useEffect(() => {

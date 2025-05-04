@@ -8,18 +8,19 @@ import { useParams } from "next/navigation";
 import { trpc } from "~/utils/trpc";
 
 interface HeaderProps {
-  userId: string;
   theme: string;
+  userId: string;
   page?: string;
 }
 
 export function Header(props: HeaderProps) {
   const [showSettings, setShowSettings] = useState(false);
   const { theme, setTheme } = useThemeStore();
+
   useEffect(() => {
-    if (theme === "unset" || theme != props.theme) {
+    if (theme === "unset") {
       setTheme(props.theme);
-    }
+    } else setTheme(theme);
   }, [theme, props.theme, setTheme]);
 
   return (
@@ -33,8 +34,6 @@ export function Header(props: HeaderProps) {
       <div className={styles.logo}>Opus</div>
       {props.userId != "null" && (
         <div className={styles.navIcons}>
-          <Image src="/images/bell.png" alt={""} width={25} height={25} />
-
           <Image
             src="/images/setting.png"
             alt={""}
@@ -53,14 +52,9 @@ export function Header(props: HeaderProps) {
 
 export function SlugHeader(props: HeaderProps) {
   const [showSettings, setShowSettings] = useState(false);
-  const { theme, setTheme } = useThemeStore();
+  const [theme, setTheme] = useState("");
   const params = useParams();
   const slugData = params.slug;
-  useEffect(() => {
-    if (theme === "unset") {
-      setTheme(props.theme);
-    }
-  }, [theme, props.theme, setTheme]);
 
   const getUser = trpc.user.getUserById.useQuery({
     id: typeof slugData === "string" ? slugData : "",
@@ -84,15 +78,6 @@ export function SlugHeader(props: HeaderProps) {
       <div className={styles.logo}>Opus</div>
       {props.userId != "null" && (
         <div className={styles.navIcons}>
-          <Image src="/images/bell.png" alt={""} width={25} height={25} />
-
-          <Image
-            src="/images/setting.png"
-            alt={""}
-            width={25}
-            height={25}
-            onClick={() => setShowSettings(true)}
-          />
           {showSettings && (
             <SettingsModal onComplete={() => setShowSettings(false)} />
           )}

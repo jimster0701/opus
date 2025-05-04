@@ -18,24 +18,26 @@ export const userRouter = createTRPCRouter({
   getFriends: protectedProcedure.query(async ({ ctx }) => {
     const currentUserId = ctx.session.user.id;
 
+    const following = await ctx.db.follow.findMany({
+      where: { followerId: currentUserId },
+      select: { followingId: true },
+    });
+
+    const followingIds = following.map((f) => f.followingId);
+
     const friends = await ctx.db.follow.findMany({
       where: {
-        OR: [{ followerId: currentUserId }, { followingId: currentUserId }],
+        followerId: {
+          in: followingIds,
+        },
+        followingId: currentUserId,
       },
       include: {
         follower: true,
-        following: true,
       },
     });
 
-    // Filter and map to return unique friend details
-    const friendList = friends.map((relation) => {
-      return relation.followerId === currentUserId
-        ? relation.following
-        : relation.follower;
-    });
-
-    return friendList;
+    return friends.map((f) => f.follower);
   }),
 
   getUserInterests: protectedProcedure
@@ -226,6 +228,15 @@ export const userRouter = createTRPCRouter({
       return ctx.db.user.update({
         where: { id: ctx.session.user.id },
         data: { themePreset: input.theme },
+      });
+    }),
+
+  updatePrivate: protectedProcedure
+    .input(z.object({ private: z.boolean() }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.user.update({
+        where: { id: ctx.session.user.id },
+        data: { private: input.private },
       });
     }),
 });

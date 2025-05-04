@@ -11,7 +11,6 @@ import { trpc } from "~/utils/trpc";
 
 interface ProfileClientProps {
   session: Session;
-  theme: string;
 }
 
 export default function ProfileClient(props: ProfileClientProps) {
@@ -27,10 +26,10 @@ export default function ProfileClient(props: ProfileClientProps) {
   }, [getInterests.isLoading, getInterests.data]);
 
   useEffect(() => {
-    if (theme === "unset" || theme != props.theme) {
-      setTheme(props.theme);
-    }
-  }, [theme, props.theme, setTheme]);
+    if (theme === "unset") {
+      setTheme(props.session.user.themePreset);
+    } else setTheme(theme);
+  }, [theme, props.session.user.themePreset, setTheme]);
 
   return (
     <main

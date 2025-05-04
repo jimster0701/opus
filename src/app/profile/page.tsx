@@ -12,7 +12,7 @@ export default async function Profile() {
     return (
       <HydrateClient>
         <Header userId={userId} theme={session.user.themePreset} />
-        <ProfileClient session={session} theme={session.user.themePreset} />
+        <ProfileClient session={session} />
         <Navbar />
       </HydrateClient>
     );

@@ -23,9 +23,9 @@ export default function DiscoverClient(props: DiscoverClientProps) {
   });
 
   useEffect(() => {
-    if (theme === "unset" || theme != props.theme) {
+    if (theme === "unset") {
       setTheme(props.theme);
-    }
+    } else setTheme(theme);
   }, [theme, props.theme, setTheme]);
 
   useEffect(() => {
