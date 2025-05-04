@@ -8,8 +8,11 @@ import { CommentSection } from "./commentSection";
 import { ProfilePicturePreviewWrapper } from "../images/cldImageWrapper";
 import { useRouter } from "next/navigation";
 import Taskbox from "../tasks/taskbox";
+import { type Interest } from "~/types/interest";
 
 interface postProps {
+  setShowInterestModal?: (value: boolean) => void;
+  setNewInterest?: (value: Interest) => void;
   post: Post;
   userId: string;
 }
@@ -93,7 +96,11 @@ export function Postbox(props: postProps) {
       <div className={styles.postInterestContainer}>
         <p>Based on:</p>
         <br />
-        <Taskbox task={props.post.task} />
+        <Taskbox
+          task={props.post.task}
+          setNewInterest={props.setNewInterest}
+          setShowInterestModal={props.setShowInterestModal}
+        />
       </div>
       <CommentSection userId={props.userId} post={props.post} />
     </div>

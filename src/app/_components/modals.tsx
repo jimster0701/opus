@@ -80,6 +80,10 @@ interface gainInterestModalProps extends modalProps {
 
 export function GainInterestModal(props: gainInterestModalProps) {
   const updateInterests = api.user.updateInterests.useMutation();
+  const [newSelectedError, setNewSelectedError] = useState<[boolean, string]>([
+    false,
+    "",
+  ]);
   const [newUserInterests, setNewUserInterests] = useState<Interest[]>(
     props.userInterests
   );
@@ -96,10 +100,50 @@ export function GainInterestModal(props: gainInterestModalProps) {
       <div className={styles.modalContainer}>
         <div className={styles.modalBackground} onClick={props.onComplete} />
         <div className={styles.modal}>
-          <h1>
-            You have 10 interests selected, please deselect an interest to add a
-            new one
-          </h1>
+          <h3>You can only have 10 interests</h3>
+          <h4>
+            Choose one for this to replace:
+            <br />
+            {props.interest.icon}
+            {props.interest.name}
+          </h4>
+          <div className={styles.gainInterestReplacementList}>
+            {newUserInterests.map((interest) => (
+              <button
+                type="button"
+                key={interest.id}
+                className={`${styles.choiceButton} ${
+                  newUserInterests.some((i) => i.id == interest.id)
+                    ? `${styles.selectedChoiceButton}`
+                    : ""
+                }`}
+                onClick={() => {
+                  if (newUserInterests.some((i) => i.id == interest.id)) {
+                    setNewUserInterests((prev) =>
+                      prev.filter((i) => i.id != interest.id)
+                    );
+                    setNewSelectedError([false, ""]);
+                  } else if (newUserInterests.length > 10) {
+                    setNewSelectedError([
+                      true,
+                      "You can only select up to 10 interests",
+                    ]);
+                  } else {
+                    setNewUserInterests((prev) =>
+                      prev.filter((i) => i.id != interest.id)
+                    );
+                    setNewSelectedError([false, ""]);
+                  }
+                }}
+              >
+                {interest.icon}
+                {interest.name}
+              </button>
+            ))}
+          </div>
+          {newSelectedError[0] && (
+            <div className={styles.formError}>{newSelectedError[1]}</div>
+          )}
         </div>
       </div>
     );
@@ -258,11 +302,13 @@ export function SettingsModal(props: modalProps) {
         </div>
         <br />
         <div>
-          <h4>Leave a message, report an issue or just say hi :)</h4>
+          <h3>Leave a message</h3>
+          <h4>Report a bug or give your opinion</h4>
           <div className={styles.reportContainer}>
             <input
               type="text"
               value={reportMessage}
+              placeholder="Message"
               className={styles.reportInput}
               onChange={(e) => setReportMessage(e.target.value)}
             />
@@ -397,9 +443,7 @@ export function NewUserModal(props: modalProps) {
                   if (selected.includes(interest.id)) {
                     removeSelected(interest);
                     setChoiceError([false, ""]);
-                  }
-
-                  if (selected.length == 10) {
+                  } else if (selected.length > 10) {
                     setChoiceError([
                       true,
                       "You can only select up to 10 interests",

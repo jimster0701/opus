@@ -50,6 +50,8 @@ export default function ProfileClient(props: ProfileClientProps) {
           <AllUserPosts
             userId={props.session.user.id}
             sessionUserId={props.session.user.id}
+            setNewInterest={undefined}
+            setShowInterestModal={undefined}
           />
         </div>
       </div>

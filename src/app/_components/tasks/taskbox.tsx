@@ -8,6 +8,8 @@ import { shuffle } from "../util";
 import { SquarePen } from "lucide-react";
 
 interface TaskboxProps {
+  setNewInterest?: (value: Interest) => void;
+  setShowInterestModal?: (value: boolean) => void;
   task: Task;
   setEditMode?: (value: boolean) => void;
 }
@@ -58,6 +60,12 @@ export default function Taskbox(props: TaskboxProps) {
               ["--text-glow" as any]: `linear-gradient(to top left,rgb(70, 70, 70), ${interest.colour})`,
             }}
             className={styles.glowingNugget}
+            onClick={() => {
+              if (props.setNewInterest && props.setShowInterestModal) {
+                props.setShowInterestModal(true);
+                props.setNewInterest(interest);
+              }
+            }}
           >
             <p className={styles.glowingNuggetText}>
               {interest.icon}

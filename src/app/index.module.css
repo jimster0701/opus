@@ -470,6 +470,18 @@
 }
 
 /* Choice buttons container */
+
+.gainInterestReplacementList {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 2rem;
+  overflow-y: auto;
+  padding: 0.5rem;
+  width: 100%;
+}
+
 .choiceList {
   display: flex;
   flex-wrap: wrap;

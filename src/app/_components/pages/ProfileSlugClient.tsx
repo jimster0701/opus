@@ -4,10 +4,11 @@ import { type User, type SlugUser } from "~/types/user";
 import { trpc } from "~/utils/trpc";
 import { AllUserPosts } from "../posts/allUserPosts";
 import { useEffect, useMemo, useState } from "react";
-import { defaultUser } from "~/const/defaultVar";
+import { defaultInterest, defaultUser } from "~/const/defaultVar";
 import ProfileSlugHeader from "../profile/profileSlugHeader";
 import { useParams } from "next/navigation";
 import { type Interest } from "~/types/interest";
+import { GainInterestModal } from "../modals";
 
 interface ProfileSlugClientProps {
   sessionUser: User;
@@ -27,6 +28,21 @@ export default function ProfileSlugClient(props: ProfileSlugClientProps) {
   const getInterests = trpc.user.getUserInterests.useQuery({
     userId: user.id,
   });
+
+  const [showInterestModal, setShowInterestModal] = useState(false);
+  const [sessionUserInterests, setSessionUserInterests] = useState<Interest[]>(
+    []
+  );
+  const [newInterest, setNewInterest] = useState<Interest>(defaultInterest);
+
+  const getSessionUserInterests = trpc.user.getUserInterests.useQuery({
+    userId: props.sessionUser.id,
+  });
+
+  useMemo(() => {
+    if (getSessionUserInterests.isLoading) return;
+    setSessionUserInterests((getSessionUserInterests.data as Interest[]) ?? []);
+  }, [getSessionUserInterests.isLoading, getSessionUserInterests.data]);
 
   useMemo(() => {
     setTheme(props.sessionUser.themePreset);
@@ -80,9 +96,22 @@ export default function ProfileSlugClient(props: ProfileSlugClientProps) {
         />
         <br />
         <div className={styles.profilePostContainer}>
-          <AllUserPosts userId={user.id} sessionUserId={props.sessionUser.id} />
+          <AllUserPosts
+            setNewInterest={setNewInterest}
+            setShowInterestModal={setShowInterestModal}
+            userId={user.id}
+            sessionUserId={props.sessionUser.id}
+          />
         </div>
       </div>
+      {showInterestModal && (
+        <GainInterestModal
+          interest={newInterest}
+          userId={props.sessionUser.id}
+          onComplete={() => setShowInterestModal(false)}
+          userInterests={sessionUserInterests}
+        />
+      )}
     </main>
   );
 }

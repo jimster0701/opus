@@ -88,6 +88,34 @@ export default function ProfileSlugHeader(props: ProfileSlugHeaderProps) {
               >
                 {props.user.displayName}
               </p>
+              <div>
+                {isFollowing ? (
+                  <button
+                    className={styles.opusButton}
+                    onClick={async () => {
+                      setIsFollowing(false);
+                      handleFollow();
+                      await removeFollowing.mutateAsync({
+                        userId: props.user.id,
+                      });
+                    }}
+                  >
+                    Following
+                  </button>
+                ) : (
+                  <button
+                    className={styles.opusButton}
+                    onClick={async () => {
+                      setIsFollowing(true);
+                      handleFollow();
+                      await addFollowing.mutateAsync({ userId: props.user.id });
+                    }}
+                    disabled={props.user.id == props.sessionUser.id}
+                  >
+                    Follow
+                  </button>
+                )}
+              </div>
             </div>
           </div>
           <div className={styles.flexRow}>
@@ -111,32 +139,6 @@ export default function ProfileSlugHeader(props: ProfileSlugHeaderProps) {
             </p>
           </div>
         </div>
-      </div>
-      <div>
-        {isFollowing ? (
-          <button
-            className={styles.opusButton}
-            onClick={async () => {
-              setIsFollowing(false);
-              handleFollow();
-              await removeFollowing.mutateAsync({ userId: props.user.id });
-            }}
-          >
-            Following
-          </button>
-        ) : (
-          <button
-            className={styles.opusButton}
-            onClick={async () => {
-              setIsFollowing(true);
-              handleFollow();
-              await addFollowing.mutateAsync({ userId: props.user.id });
-            }}
-            disabled={props.user.id == props.sessionUser.id}
-          >
-            Follow
-          </button>
-        )}
       </div>
       <div className={styles.profileHeaderInterestsContainer}>
         <div className={styles.profileHeaderInterests}>
