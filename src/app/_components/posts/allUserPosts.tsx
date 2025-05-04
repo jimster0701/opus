@@ -22,8 +22,8 @@ export function AllUserPosts(props: allUserPostsProps) {
   else if (posts[0].length > 0) {
     return posts[0].map((post) => (
       <Postbox
-        setNewInterest={props.setNewInterest || undefined}
-        setShowInterestModal={props.setShowInterestModal || undefined}
+        setNewInterest={props.setNewInterest ?? undefined}
+        setShowInterestModal={props.setShowInterestModal ?? undefined}
         key={post.id}
         userId={props.sessionUserId}
         post={post as Post}

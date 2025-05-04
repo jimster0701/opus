@@ -14,9 +14,13 @@ interface FriendsClientProps {
 export default function FriendsClient(props: FriendsClientProps) {
   const router = useRouter();
   const { theme, setTheme } = useThemeStore();
-  const [friends, setFriends] = useState<any[]>([]);
+  const [hasMounted, setHasMounted] = useState(false);
 
   const { data: friendsData, isLoading } = trpc.user.getFriends.useQuery();
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
 
   useEffect(() => {
     if (theme === "unset" || theme != props.session.user.themePreset) {
@@ -24,11 +28,17 @@ export default function FriendsClient(props: FriendsClientProps) {
     } else setTheme(theme);
   }, [theme, props.session.user.themePreset, setTheme]);
 
-  useEffect(() => {
-    if (friendsData) {
-      setFriends(friendsData);
-    }
-  }, [friendsData]);
+  if (!hasMounted) {
+    return (
+      <main
+        className={
+          theme === "default"
+            ? `${styles.main}`
+            : `${styles.main} ${styles[`theme-${theme}`]}`
+        }
+      ></main>
+    );
+  }
 
   return (
     <main
@@ -42,9 +52,9 @@ export default function FriendsClient(props: FriendsClientProps) {
         <h1 className={styles.opusText}>Friends List</h1>
         {isLoading ? (
           <p className={styles.opusText}>Loading friends...</p>
-        ) : friends.length > 0 ? (
+        ) : friendsData && friendsData.length > 0 ? (
           <div className={styles.friendsContainer}>
-            {friends.map((friend) => (
+            {friendsData.map((friend) => (
               <div
                 key={friend.id}
                 className={styles.cardContainer}
@@ -54,7 +64,7 @@ export default function FriendsClient(props: FriendsClientProps) {
               >
                 <ProfilePicturePreviewWrapper
                   id={friend.id}
-                  imageUrl={friend.image}
+                  imageUrl={friend.image ?? ""}
                   width={10}
                   height={10}
                 />

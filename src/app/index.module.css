@@ -1507,6 +1507,9 @@
 /* Friends Components
 ------------------------------------------ */
 .friendsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
   width: 100%;
   padding: 0;
   margin: 0;
