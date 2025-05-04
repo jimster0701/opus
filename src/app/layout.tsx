@@ -6,6 +6,8 @@ import { type Metadata } from "next";
 import { TRPCReactProvider } from "~/trpc/react";
 import Script from "next/script";
 
+import { Toaster } from "react-hot-toast";
+
 export const metadata: Metadata = {
   title: "Opus",
   description: "A social media app based on tasks",
@@ -30,7 +32,10 @@ export default function RootLayout({
           src="https://widget.cloudinary.com/v2.0/global/all.js"
           strategy="lazyOnload"
         />
-        <TRPCReactProvider>{children}</TRPCReactProvider>
+        <TRPCReactProvider>
+          <Toaster position="bottom-center" />
+          {children}
+        </TRPCReactProvider>
       </body>
     </html>
   );

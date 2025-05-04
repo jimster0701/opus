@@ -3,9 +3,76 @@ import { useThemeStore } from "~/store/themeStore";
 import styles from "../index.module.css";
 import Link from "next/link";
 import { Home, Search, PlusCircle, Users, User } from "lucide-react";
+import { type Session } from "~/types/session";
+import { useParams } from "next/navigation";
+import { trpc } from "~/utils/trpc";
+import { useEffect, useMemo } from "react";
 
-export function Navbar() {
-  const { theme } = useThemeStore();
+interface navbarProps {
+  theme: string;
+}
+
+export function Navbar(props: navbarProps) {
+  const { theme, setTheme } = useThemeStore();
+
+  useEffect(() => {
+    if (theme === "unset" || theme != props.theme) {
+      setTheme(props.theme);
+    } else setTheme(theme);
+  }, [theme, props.theme, setTheme]);
+
+  return (
+    <nav
+      className={
+        theme === "default"
+          ? `${styles.navbar}`
+          : `${styles.navbar} ${styles[`theme-${theme}`]}`
+      }
+    >
+      <Link className={styles.navbarItem} href={"/"}>
+        <Home size={20} />
+        <p>Home</p>
+      </Link>
+      <Link className={styles.navbarItem} href={"/discover"}>
+        <Search size={20} />
+        <p>Discover</p>
+      </Link>
+      <Link className={styles.navbarItem} href={"/create"}>
+        <PlusCircle size={20} />
+        <p>Create</p>
+      </Link>
+      <Link className={styles.navbarItem} href={"/friends"}>
+        <Users size={20} />
+        <p>Friends</p>
+      </Link>
+      <Link className={styles.navbarItem} href={"/profile"}>
+        <User size={20} />
+        <p>Profile</p>
+      </Link>
+    </nav>
+  );
+}
+
+export function SlugNavbar(props: navbarProps) {
+  const { theme, setTheme } = useThemeStore();
+  const params = useParams();
+  const slugData = params.slug;
+
+  const getUser = trpc.user.getUserById.useQuery({
+    id: typeof slugData === "string" ? slugData : "",
+  });
+
+  useMemo(() => {
+    setTheme(props.theme);
+  }, [props.theme]);
+
+  useEffect(() => {
+    if (getUser.isLoading) return;
+    if (getUser.data && getUser.data.themePreset) {
+      setTheme(getUser.data.themePreset);
+    }
+  }, [getUser.isLoading, getUser.data, setTheme]);
+
   return (
     <nav
       className={

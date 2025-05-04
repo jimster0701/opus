@@ -9,6 +9,7 @@ import { CommentSection } from "./commentSection";
 import { ProfilePicturePreviewWrapper } from "../images/cldImageWrapper";
 import { shuffle } from "../util";
 import { useRouter } from "next/navigation";
+import Taskbox from "../tasks/taskbox";
 
 interface postProps {
   post: Post;
@@ -107,21 +108,7 @@ export function Postbox(props: postProps) {
       <div className={styles.postInterestContainer}>
         <p>Based on:</p>
         <br />
-        {interests.map((interest) => (
-          <div
-            key={interest.id}
-            style={{
-              border: `${interest.colour} 1px solid`,
-              ["--text-glow" as any]: `linear-gradient(to top left,rgb(70, 70, 70), ${interest.colour})`,
-            }}
-            className={styles.glowingNugget}
-          >
-            <p className={styles.glowingNuggetText}>
-              {interest.icon}
-              {interest.name}
-            </p>
-          </div>
-        ))}
+        <Taskbox task={props.post.task} />
       </div>
       <CommentSection userId={props.userId} post={props.post} />
     </div>

@@ -15,6 +15,7 @@ import { type Interest } from "~/types/interest";
 import { api } from "~/trpc/react";
 import { type Session } from "~/types/session";
 import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
 
 interface modalProps {
   onComplete: () => void;
@@ -31,12 +32,12 @@ export function Modal() {
   );
 }
 
-interface deleteModal extends modalProps {
+interface deleteModalProps extends modalProps {
   id: number;
   name: string;
 }
 
-export function DeleteTaskModal(props: deleteModal) {
+export function DeleteTaskModal(props: deleteModalProps) {
   const deleteTask = api.task.deleteTask.useMutation();
   return (
     <div className={styles.modalContainer}>
@@ -69,6 +70,81 @@ export function DeleteTaskModal(props: deleteModal) {
       </div>
     </div>
   );
+}
+
+interface gainInterestModalProps extends modalProps {
+  interest: Interest;
+  userInterests: Interest[];
+  userId: string;
+}
+
+export function GainInterestModal(props: gainInterestModalProps) {
+  const updateInterests = api.user.updateInterests.useMutation();
+  const [newUserInterests, setNewUserInterests] = useState<Interest[]>(
+    props.userInterests
+  );
+  const getInterests = trpc.user.getUserInterests.useQuery({
+    userId: props.userId,
+  });
+
+  useMemo(() => {
+    if (getInterests.isLoading) return;
+    setNewUserInterests((getInterests.data as Interest[]) ?? []);
+  }, [getInterests.isLoading, getInterests.data]);
+  if (newUserInterests.length == 10) {
+    return (
+      <div className={styles.modalContainer}>
+        <div className={styles.modalBackground} onClick={props.onComplete} />
+        <div className={styles.modal}>
+          <h1>
+            You have 10 interests selected, please deselect an interest to add a
+            new one
+          </h1>
+        </div>
+      </div>
+    );
+  } else {
+    return (
+      <div className={styles.modalContainer}>
+        <div className={styles.modalBackground} onClick={props.onComplete} />
+        <div className={styles.modal}>
+          <h1>Do you want to add this interest to your own profile?</h1>
+          <h2>
+            {props.interest.icon}
+            {props.interest.name}
+          </h2>
+          <br />
+          <div className={styles.taskUpdateControls}>
+            <button
+              className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
+              onClick={async () => {
+                try {
+                  updateInterests.mutate({
+                    interestIds: [
+                      ...newUserInterests.map((i) => i.id),
+                      props.interest.id,
+                    ],
+                  });
+                  toast.success("Interest added to your profile!");
+                  props.onComplete();
+                } catch (error) {
+                  console.error(error);
+                }
+              }}
+            >
+              Yes <Check />
+            </button>
+            <button
+              className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
+              onClick={props.onComplete}
+            >
+              No <X />
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
 
 interface followerOrFollowingProps extends modalProps {
@@ -135,7 +211,9 @@ export function SettingsModal(props: modalProps) {
     "twilight",
   ];
   const updateThemePreset = trpc.user.updateThemePreset.useMutation();
+  //const updatePrivateSetting = trpc.user.updatePrivate.useMutation();
   const sendReport = trpc.report.createIssueReport.useMutation();
+
   return (
     <div className={styles.modalContainer}>
       <div className={styles.modalBackground} onClick={props.onComplete} />
@@ -178,8 +256,9 @@ export function SettingsModal(props: modalProps) {
             ))}
           </div>
         </div>
+        <br />
         <div>
-          <h4>Report an issue:</h4>
+          <h4>Leave a message, report an issue or just say hi :)</h4>
           <div className={styles.reportContainer}>
             <input
               type="text"
@@ -556,8 +635,6 @@ export function SelectInterestsModal(props: selectInterestsModalProps) {
                   <X
                     onClick={async () => {
                       setInterestDeleted(custom.id);
-                      console.log(custom.id);
-                      console.log(props.session.userId);
                       await deleteCustomInterest.mutateAsync({ id: custom.id });
                       setCustomInterests(
                         customInterests.filter((i) => i.id != custom.id)

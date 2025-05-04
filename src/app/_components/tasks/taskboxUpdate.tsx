@@ -256,7 +256,6 @@ export default function TaskboxUpdate(props: TaskboxUpdateProps) {
                         interestIds: selectedInterests.map((i) => i.id),
                         description: updatedTask.description,
                       });
-                    console.log(updatedTaskWithInterests?.interests);
                     props.onComplete(
                       updatedTask,
                       updatedTaskWithInterests?.interests as TaskInterest[],

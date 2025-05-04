@@ -20,7 +20,7 @@ export default async function Home() {
           userId={session.user.id}
           displayName={session?.user.displayName ?? null}
         />
-        <Navbar />
+        <Navbar theme={session.user.themePreset} />
       </HydrateClient>
     );
   }

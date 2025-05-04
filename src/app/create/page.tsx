@@ -13,7 +13,7 @@ export default async function Create() {
       <HydrateClient>
         <Header userId={userId} theme={session.user.themePreset} />
         <CreateClient theme={session.user.themePreset} session={session} />
-        <Navbar />
+        <Navbar theme={session.user.themePreset} />
       </HydrateClient>
     );
   } else redirect("/");

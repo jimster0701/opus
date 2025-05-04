@@ -2,7 +2,7 @@
 import styles from "../index.module.css";
 import Image from "next/image";
 import { SettingsModal } from "./modals";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useThemeStore } from "~/store/themeStore";
 import { useParams } from "next/navigation";
 import { trpc } from "~/utils/trpc";
@@ -18,7 +18,7 @@ export function Header(props: HeaderProps) {
   const { theme, setTheme } = useThemeStore();
 
   useEffect(() => {
-    if (theme === "unset") {
+    if (theme === "unset" || theme != props.theme) {
       setTheme(props.theme);
     } else setTheme(theme);
   }, [theme, props.theme, setTheme]);
@@ -59,6 +59,10 @@ export function SlugHeader(props: HeaderProps) {
   const getUser = trpc.user.getUserById.useQuery({
     id: typeof slugData === "string" ? slugData : "",
   });
+
+  useMemo(() => {
+    setTheme(props.theme);
+  }, [props.theme]);
 
   useEffect(() => {
     if (getUser.isLoading) return;

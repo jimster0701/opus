@@ -29,6 +29,10 @@ export default function ProfileSlugClient(props: ProfileSlugClientProps) {
   });
 
   useMemo(() => {
+    setTheme(props.sessionUser.themePreset);
+  }, [props.sessionUser.themePreset]);
+
+  useMemo(() => {
     if (getInterests.isLoading) return;
     setUserInterests((getInterests.data as Interest[]) ?? []);
   }, [getInterests.isLoading, getInterests.data]);

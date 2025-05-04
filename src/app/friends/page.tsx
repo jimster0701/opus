@@ -20,7 +20,7 @@ export default async function Friends() {
       <HydrateClient>
         <Header userId={session.user.id} theme={session.user.themePreset} />
         <FriendsClient session={session} />
-        <Navbar />
+        <Navbar theme={session.user.themePreset} />
       </HydrateClient>
     );
   } else redirect("/");

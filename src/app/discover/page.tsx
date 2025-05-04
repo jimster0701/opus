@@ -13,7 +13,7 @@ export default async function Discover() {
       <HydrateClient>
         <Header userId={userId} theme={session.user.themePreset} />
         <DiscoverClient theme={session.user.themePreset} session={session} />
-        <Navbar />
+        <Navbar theme={session.user.themePreset} />
       </HydrateClient>
     );
   } else redirect("/");

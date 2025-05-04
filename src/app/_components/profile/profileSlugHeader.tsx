@@ -2,11 +2,12 @@
 
 import styles from "../../index.module.css";
 import { ProfileSlugPictureWrapper } from "../images/cldImageWrapper";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { trpc } from "~/utils/trpc";
-import { FollowerOrFollowingModal } from "../modals";
+import { FollowerOrFollowingModal, GainInterestModal } from "../modals";
 import { type SlugUser, type SimpleUser, type User } from "~/types/user";
 import { type Interest } from "~/types/interest";
+import { defaultInterest } from "~/const/defaultVar";
 
 interface ProfileSlugHeaderProps {
   sessionUser: User;
@@ -16,6 +17,11 @@ interface ProfileSlugHeaderProps {
 
 export default function ProfileSlugHeader(props: ProfileSlugHeaderProps) {
   const [isFollowing, setIsFollowing] = useState(false);
+  const [showInterestModal, setShowInterestModal] = useState(false);
+  const [sessionUserInterests, setSessionUserInterests] = useState<Interest[]>(
+    []
+  );
+  const [newInterest, setNewInterest] = useState<Interest>(defaultInterest);
   const [tempFollow, setTempFollow] = useState(0);
   const [showFollowModal, setShowFollowModal] = useState<[boolean, string]>([
     false,
@@ -44,6 +50,15 @@ export default function ProfileSlugHeader(props: ProfileSlugHeaderProps) {
   const handleFollowingPrefetch = async () => {
     await utils.user.getFollowers.prefetch({ userId: props.user.id });
   };
+
+  const getSessionUserInterests = trpc.user.getUserInterests.useQuery({
+    userId: props.sessionUser.id,
+  });
+
+  useMemo(() => {
+    if (getSessionUserInterests.isLoading) return;
+    setSessionUserInterests((getSessionUserInterests.data as Interest[]) ?? []);
+  }, [getSessionUserInterests.isLoading, getSessionUserInterests.data]);
 
   useEffect(() => {
     if (getIsFollowing.isLoading) return;
@@ -133,6 +148,10 @@ export default function ProfileSlugHeader(props: ProfileSlugHeaderProps) {
                 ["--text-glow" as any]: `linear-gradient(to top left,rgb(70, 70, 70), ${interest.colour})`,
               }}
               className={styles.glowingNugget}
+              onClick={() => {
+                setShowInterestModal(true);
+                setNewInterest(interest);
+              }}
             >
               <p className={styles.glowingNuggetText}>
                 {interest.icon}
@@ -152,6 +171,14 @@ export default function ProfileSlugHeader(props: ProfileSlugHeaderProps) {
           }
           user={props.user}
           type={showFollowModal[1]}
+        />
+      )}
+      {showInterestModal && (
+        <GainInterestModal
+          interest={newInterest}
+          userId={props.sessionUser.id}
+          onComplete={() => setShowInterestModal(false)}
+          userInterests={sessionUserInterests}
         />
       )}
     </div>

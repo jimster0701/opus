@@ -13,7 +13,7 @@ export default async function Profile() {
       <HydrateClient>
         <Header userId={userId} theme={session.user.themePreset} />
         <ProfileClient session={session} />
-        <Navbar />
+        <Navbar theme={session.user.themePreset} />
       </HydrateClient>
     );
   else redirect("/");

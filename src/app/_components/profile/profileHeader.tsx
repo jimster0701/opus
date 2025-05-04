@@ -35,8 +35,6 @@ export default function ProfileHeader(props: ProfileHeaderProps) {
     userId: props.session.user.id,
   });
 
-  console.log(following);
-
   const updateDisplayName = trpc.user.updateDisplayName.useMutation();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
