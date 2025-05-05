@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { NotificationType } from "~/types/notification";
 
 export const userRouter = createTRPCRouter({
   getUserById: protectedProcedure
@@ -169,6 +170,14 @@ export const userRouter = createTRPCRouter({
       });
 
       if (existingFollow) return existingFollow;
+
+      await ctx.db.notification.create({
+        data: {
+          type: NotificationType.FOLLOW,
+          fromUserId: currentUserId,
+          toUserId: input.userId,
+        },
+      });
 
       return await ctx.db.follow.create({
         data: {

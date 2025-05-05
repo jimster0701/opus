@@ -30,10 +30,20 @@ export const replyRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const reply = await ctx.db.reply.findUnique({
         where: { id: input.replyId },
-        select: { likedBy: true },
+        select: { likedBy: true, createdById: true },
       });
       if (reply?.likedBy.includes(input.userId))
         throw new Error("Reply already liked");
+      if (reply)
+        await ctx.db.notification.create({
+          data: {
+            type: "LIKE_REPLY",
+            fromUserId: ctx.session.userId,
+            toUserId: reply.createdById,
+            replyId: input.replyId,
+          },
+        });
+
       return ctx.db.reply.update({
         where: { id: input.replyId },
         data: {

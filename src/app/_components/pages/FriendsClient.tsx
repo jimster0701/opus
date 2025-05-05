@@ -5,7 +5,6 @@ import { useThemeStore } from "~/store/themeStore";
 import { trpc } from "~/utils/trpc";
 import { useRouter } from "next/navigation";
 import { ProfilePicturePreviewWrapper } from "../images/cldImageWrapper";
-import { type Session } from "~/types/session";
 
 export default function FriendsClient() {
   const router = useRouter();

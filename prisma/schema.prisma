@@ -96,6 +96,8 @@ model User {
   accounts         Account[]
   posts            Post[]
   sessions         Session[]
+  NotificationFrom Notification[] @relation("NotificationsFrom")
+  NotificationTo   Notification[] @relation("NotificationsTo")
 }
 
 model Follow {
@@ -186,4 +188,28 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Notification {
+  id         Int              @id @default(autoincrement())
+  type       NotificationType
+  fromUserId String
+  toUserId   String
+  postId     Int?
+  commentId  Int?
+  replyId    Int?
+  interestId Int?
+  createdAt  DateTime         @default(now())
+  read       Boolean          @default(false)
+
+  fromUser User @relation("NotificationsFrom", fields: [fromUserId], references: [id])
+  toUser   User @relation("NotificationsTo", fields: [toUserId], references: [id])
+}
+
+enum NotificationType {
+  LIKE_POST
+  LIKE_COMMENT
+  LIKE_REPLY
+  TAKE_INTEREST
+  FOLLOW
 }

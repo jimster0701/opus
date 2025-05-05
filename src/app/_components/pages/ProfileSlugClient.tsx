@@ -166,6 +166,8 @@ export default function ProfileSlugClient(props: ProfileSlugClientProps) {
                     setNewInterest={setNewInterest}
                     setShowInterestModal={setShowInterestModal}
                     userId={user.id}
+                    isFriend={usersAreFriends}
+                    isPrivate={user.private}
                   />
                 ) : (
                   <TaskListSlug

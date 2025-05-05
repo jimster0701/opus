@@ -228,11 +228,18 @@ export const postRouter = createTRPCRouter({
   }),
 
   getAllUser: protectedProcedure
-    .input(z.object({ userId: z.string().min(1) }))
+    .input(
+      z.object({
+        userId: z.string().min(1),
+        isFriend: z.boolean(),
+        isPrivate: z.boolean(),
+      })
+    )
     .query(async ({ ctx, input }) => {
+      if (!input.isFriend && input.isPrivate) return;
       const dbPosts = await ctx.db.post.findMany({
         orderBy: { createdAt: "desc" },
-        where: { createdBy: { id: input.userId, private: false } },
+        where: { createdBy: { id: input.userId } },
         include: {
           createdBy: true,
           task: {
@@ -604,10 +611,21 @@ export const postRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const post = await ctx.db.post.findUnique({
         where: { id: input.postId },
-        select: { likedBy: true },
+        select: { likedBy: true, createdById: true },
       });
       if (post?.likedBy.includes(input.userId))
         throw new Error("Post already liked");
+
+      if (post)
+        await ctx.db.notification.create({
+          data: {
+            type: "LIKE_POST",
+            fromUserId: ctx.session.userId,
+            toUserId: post.createdById,
+            postId: input.postId,
+          },
+        });
+
       return ctx.db.post.update({
         where: { id: input.postId },
         data: {

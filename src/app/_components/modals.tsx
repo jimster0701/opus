@@ -14,6 +14,7 @@ import { defaultInterests } from "~/const/defaultVar";
 import { type Interest } from "~/types/interest";
 import { api } from "~/trpc/react";
 import { type Session } from "~/types/session";
+import { NotificationType, type Notification } from "~/types/notification";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 
@@ -286,6 +287,8 @@ export function GainInterestModal(props: gainInterestModalProps) {
     userId: props.userId,
   });
 
+  const notifyUser = trpc.notification.createInterestNotification.useMutation();
+
   useMemo(() => {
     if (getInterests.isLoading) return;
     setNewUserInterests((getInterests.data as Interest[]) ?? []);
@@ -363,6 +366,10 @@ export function GainInterestModal(props: gainInterestModalProps) {
                       ...newUserInterests.map((i) => i.id),
                       props.interest.id,
                     ],
+                  });
+                  notifyUser.mutate({
+                    userId: props.interest.createdById,
+                    interestId: props.interest.id,
                   });
                   toast.success("Interest added to your profile!");
                   props.onComplete();
@@ -697,6 +704,69 @@ export function SettingsModal(props: settingsModalProps) {
         {showRemoveCookies && (
           <RemoveCookiesModal onComplete={() => setShowRemoveCookies(false)} />
         )}
+      </div>
+    </div>
+  );
+}
+
+interface notificationModalProps extends modalProps {
+  notifications: Notification[];
+}
+
+export function NotificationsModal(props: notificationModalProps) {
+  const { theme } = useThemeStore();
+  const router = useRouter();
+  const markAsRead = trpc.notification.markNotificationsAsRead.useMutation();
+  useEffect(() => {
+    if (props.notifications.some((n) => !n.read) == true) markAsRead.mutate();
+  }, [props.notifications, markAsRead]);
+
+  return (
+    <div className={styles.modalContainer}>
+      <div className={styles.modalBackground} onClick={props.onComplete} />
+      <div
+        className={
+          theme == "default"
+            ? `${styles.modal}`
+            : `${styles.modal} ${styles[`theme-${theme}`]}`
+        }
+      >
+        <p className={styles.closeModalButton} onClick={props.onComplete}>
+          <X width={45} height={45} />
+        </p>
+        <h2>Notifications</h2>
+        {props.notifications.length == 0 && <h3>No notifications yet.</h3>}
+        {props.notifications.map((notification) => (
+          <div
+            key={notification.id}
+            className={styles.cardContainer}
+            onClick={() => {
+              router.push(`/profile/${notification.fromUserId}`);
+            }}
+          >
+            <ProfilePicturePreviewWrapper
+              id={notification.fromUserId}
+              imageUrl={notification.fromUser.image}
+              width={10}
+              height={10}
+            />
+            {notification.type == NotificationType.FOLLOW && (
+              <p>{notification.fromUser.displayName} has followed you!</p>
+            )}
+            {notification.type == NotificationType.LIKE_COMMENT && (
+              <p>{notification.fromUser.displayName} liked your comment!</p>
+            )}
+            {notification.type == NotificationType.LIKE_REPLY && (
+              <p>{notification.fromUser.displayName} liked your reply!</p>
+            )}
+            {notification.type == NotificationType.LIKE_POST && (
+              <p>{notification.fromUser.displayName} liked your post!</p>
+            )}
+            {notification.type == NotificationType.TAKE_INTEREST && (
+              <p>{notification.fromUser.displayName} borrowed your interest!</p>
+            )}
+          </div>
+        ))}
       </div>
     </div>
   );

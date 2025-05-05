@@ -5,22 +5,33 @@ import styles from "../../index.module.css";
 import { Postbox } from "./postbox";
 import { type Post } from "~/types/post";
 import { type Interest } from "~/types/interest";
+import { useEffect, useState } from "react";
 
 interface allUserPostsProps {
   userId: string;
+  isFriend: boolean;
+  isPrivate: boolean;
   setNewInterest?: (value: Interest) => void;
   setShowInterestModal?: (value: boolean) => void;
 }
 
 export function AllUserPosts(props: allUserPostsProps) {
-  const posts = api.post.getAllUser.useSuspenseQuery({
+  const [posts, setPosts] = useState<Post[]>([]);
+  const getPosts = api.post.getAllUser.useQuery({
     userId: props.userId,
+    isFriend: props.isFriend,
+    isPrivate: props.isPrivate,
   });
 
-  if (posts[1].isLoading) {
+  useEffect(() => {
+    if (getPosts.isLoading) return;
+    if (getPosts.data?.length != 0) return setPosts(getPosts.data as Post[]);
+  }, [getPosts.isLoading, getPosts.data?.length, getPosts.data]);
+
+  if (getPosts.isLoading) {
     return <p className={styles.showcaseText}>Loading...</p>;
-  } else if (posts[0].length > 0) {
-    return posts[0].map((post) => (
+  } else if (posts.length > 0) {
+    return posts.map((post) => (
       <Postbox
         setNewInterest={props.setNewInterest ?? undefined}
         setShowInterestModal={props.setShowInterestModal ?? undefined}

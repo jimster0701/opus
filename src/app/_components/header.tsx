@@ -1,12 +1,13 @@
 "use client";
 import styles from "../index.module.css";
 import Image from "next/image";
-import { SettingsModal } from "./modals";
+import { NotificationsModal, SettingsModal } from "./modals";
 import { useEffect, useMemo, useState } from "react";
 import { useThemeStore } from "~/store/themeStore";
 import { useParams } from "next/navigation";
 import { trpc } from "~/utils/trpc";
 import { CookieConsent } from "./cookieConsentBanner";
+import { type Notification } from "~/types/notification";
 
 interface HeaderProps {
   theme: string;
@@ -17,8 +18,28 @@ interface HeaderProps {
 }
 
 export function Header(props: HeaderProps) {
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [unreadNotifications, setUnreadNotifications] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const { theme, setTheme } = useThemeStore();
+
+  const getNotifications = trpc.notification.getNotifications.useQuery();
+
+  useEffect(() => {
+    if (getNotifications.isLoading) return;
+    if (getNotifications.data?.length != 0) {
+      setNotifications(getNotifications.data as Notification[]);
+      if (getNotifications.data)
+        setUnreadNotifications(getNotifications.data?.some((n) => !n.read));
+    }
+  }, [
+    getNotifications.isLoading,
+    getNotifications.data?.length,
+    getNotifications.data,
+    notifications,
+    unreadNotifications,
+  ]);
 
   useEffect(() => {
     if (theme === "unset") {
@@ -38,12 +59,29 @@ export function Header(props: HeaderProps) {
       {props.userId != "null" && (
         <div className={styles.navIcons}>
           <Image
+            src={
+              unreadNotifications
+                ? "/images/bell-unread.png"
+                : "/images/bell.png"
+            }
+            alt={""}
+            width={25}
+            height={25}
+            onClick={() => setShowNotifications(true)}
+          />
+          <Image
             src="/images/setting.png"
             alt={""}
             width={25}
             height={25}
             onClick={() => setShowSettings(true)}
           />
+          {showNotifications && (
+            <NotificationsModal
+              onComplete={() => setShowNotifications(false)}
+              notifications={notifications}
+            />
+          )}
           {showSettings && (
             <SettingsModal
               onComplete={() => setShowSettings(false)}
@@ -59,6 +97,9 @@ export function Header(props: HeaderProps) {
 }
 
 export function SlugHeader(props: HeaderProps) {
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [unreadNotifications, setUnreadNotifications] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [theme, setTheme] = useState("");
   const params = useParams();
@@ -67,6 +108,23 @@ export function SlugHeader(props: HeaderProps) {
   const getUser = trpc.user.getUserById.useQuery({
     id: typeof slugData === "string" ? slugData : "",
   });
+
+  const getNotifications = trpc.notification.getNotifications.useQuery();
+
+  useEffect(() => {
+    if (getNotifications.isLoading) return;
+    if (getNotifications.data?.length != 0) {
+      setNotifications(getNotifications.data as Notification[]);
+
+      setUnreadNotifications(notifications.some((n) => n.read));
+      console.log(notifications);
+      console.log(unreadNotifications);
+    }
+  }, [
+    getNotifications.isLoading,
+    getNotifications.data?.length,
+    getNotifications.data,
+  ]);
 
   useMemo(() => {
     setTheme(props.theme);
@@ -91,12 +149,30 @@ export function SlugHeader(props: HeaderProps) {
       {props.userId != "null" && (
         <div className={styles.navIcons}>
           <Image
+            src={
+              unreadNotifications
+                ? "/images/bell-unread.png"
+                : "/images/bell.png"
+            }
+            alt={""}
+            width={25}
+            height={25}
+            onClick={() => setShowNotifications(true)}
+          />
+
+          <Image
             src="/images/setting.png"
             alt={""}
             width={25}
             height={25}
             onClick={() => setShowSettings(true)}
           />
+          {showNotifications && (
+            <NotificationsModal
+              onComplete={() => setShowNotifications(false)}
+              notifications={notifications}
+            />
+          )}
           {showSettings && (
             <SettingsModal
               onComplete={() => setShowSettings(false)}

@@ -31,10 +31,19 @@ export const commentRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const comment = await ctx.db.comment.findUnique({
         where: { id: input.commentId },
-        select: { likedBy: true },
+        select: { likedBy: true, createdById: true },
       });
       if (comment?.likedBy.includes(input.userId))
         throw new Error("Comment already liked");
+      if (comment)
+        await ctx.db.notification.create({
+          data: {
+            type: "LIKE_COMMENT",
+            fromUserId: ctx.session.userId,
+            toUserId: comment.createdById,
+            commentId: input.commentId,
+          },
+        });
       return ctx.db.comment.update({
         where: { id: input.commentId },
         data: {
