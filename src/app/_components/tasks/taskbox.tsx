@@ -46,7 +46,6 @@ export default function Taskbox(props: TaskboxProps) {
           <p>{props.task.icon}</p>
         </div>
         <div className={styles.taskContentContainer}>
-          {" "}
           <div className={styles.taskTitleContainer}>
             <p className={styles.taskTitle}>{props.task.name}</p>
             {props.setEditMode && (

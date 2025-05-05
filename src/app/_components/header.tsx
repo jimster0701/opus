@@ -115,10 +115,8 @@ export function SlugHeader(props: HeaderProps) {
     if (getNotifications.isLoading) return;
     if (getNotifications.data?.length != 0) {
       setNotifications(getNotifications.data as Notification[]);
-
-      setUnreadNotifications(notifications.some((n) => n.read));
-      console.log(notifications);
-      console.log(unreadNotifications);
+      if (getNotifications.data)
+        setUnreadNotifications(getNotifications.data.some((n) => !n.read));
     }
   }, [
     getNotifications.isLoading,

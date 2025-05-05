@@ -107,7 +107,6 @@ export function Postbox(props: postProps) {
       )}
 
       <div className={styles.postInterestContainer}>
-        <p>Based on:</p>
         <br />
         <Taskbox
           task={props.post.task}
