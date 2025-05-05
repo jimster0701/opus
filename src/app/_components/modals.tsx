@@ -357,6 +357,8 @@ export function FollowerOrFollowingModal(props: followerOrFollowingProps) {
 
 export function SettingsModal(props: modalProps) {
   const { theme, setTheme } = useThemeStore();
+  const [profilePrivate, setProfilePrivate] = useState(false);
+  const [profileTaskPrivate, setProfileTaskPrivate] = useState(false);
   const [reportMessage, setReportMessage] = useState("");
   const allThemes = [
     "default",
@@ -372,7 +374,7 @@ export function SettingsModal(props: modalProps) {
     "twilight",
   ];
   const updateThemePreset = trpc.user.updateThemePreset.useMutation();
-  //const updatePrivateSetting = trpc.user.updatePrivate.useMutation();
+  const updatePrivateSetting = trpc.user.updatePrivate.useMutation();
   const sendReport = trpc.report.createIssueReport.useMutation();
 
   return (
@@ -418,6 +420,37 @@ export function SettingsModal(props: modalProps) {
           </div>
         </div>
         <br />
+        <div>
+          <h4 className={`${styles.opusText} ${styles.settingsTitle}`}>
+            Profile settings:
+          </h4>
+          <div className={styles.flexRow}>
+            <p>
+              Private profile:
+              <br />
+              {"(Hide interests and posts)"}
+            </p>
+            <input
+              type="checkbox"
+              checked={profilePrivate}
+              onChange={(e) => {
+                setProfilePrivate(e.target.checked);
+                updatePrivateSetting.mutate({ private: e.target.checked });
+              }}
+            />
+          </div>
+          <div className={styles.flexRow}>
+            <p>Show tasks on profile:</p>
+            <input
+              type="checkbox"
+              checked={profilePrivate}
+              onChange={(e) => {
+                setProfilePrivate(e.target.checked);
+                updatePrivateSetting.mutate({ private: e.target.checked });
+              }}
+            />
+          </div>
+        </div>
         <div>
           <h3>Leave a message</h3>
           <h4>Report a bug or give your opinion</h4>

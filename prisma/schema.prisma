@@ -83,6 +83,7 @@ model User {
   displayName      String?
   image            String?
   private          Boolean        @default(false)
+  tasksPrivate     Boolean        @default(false)
   themePreset      String         @default("unset")
   followers        Follow[]       @relation("Followers")
   following        Follow[]       @relation("Following")

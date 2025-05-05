@@ -122,8 +122,10 @@ export default function ProfileSlugHeader(props: ProfileSlugHeaderProps) {
             <p
               className={`${styles.profileHeaderText} ${styles.profileHeaderFollowText}`}
               onClick={async () => {
-                await handleFollowingPrefetch();
-                setShowFollowModal([true, "Following"]);
+                if (!props.user.private) {
+                  await handleFollowingPrefetch();
+                  setShowFollowModal([true, "Following"]);
+                }
               }}
             >
               Following:{following?.length}
@@ -131,8 +133,10 @@ export default function ProfileSlugHeader(props: ProfileSlugHeaderProps) {
             <p
               className={`${styles.profileHeaderText} ${styles.profileHeaderFollowText}`}
               onClick={async () => {
-                await handleFollowersPrefetch();
-                setShowFollowModal([true, "Followers"]);
+                if (!props.user.private) {
+                  await handleFollowersPrefetch();
+                  setShowFollowModal([true, "Followers"]);
+                }
               }}
             >
               Followers:{followers?.length && followers.length + tempFollow}
@@ -142,25 +146,26 @@ export default function ProfileSlugHeader(props: ProfileSlugHeaderProps) {
       </div>
       <div className={styles.profileHeaderInterestsContainer}>
         <div className={styles.profileHeaderInterests}>
-          {props.userInterests.map((interest) => (
-            <div
-              key={interest.id}
-              style={{
-                border: `${interest.colour} 1px solid`,
-                ["--text-glow" as any]: `linear-gradient(to top left,rgb(70, 70, 70), ${interest.colour})`,
-              }}
-              className={styles.glowingNugget}
-              onClick={() => {
-                setShowInterestModal(true);
-                setNewInterest(interest);
-              }}
-            >
-              <p className={styles.glowingNuggetText}>
-                {interest.icon}
-                {interest.name}
-              </p>
-            </div>
-          ))}
+          {!props.user.private &&
+            props.userInterests.map((interest) => (
+              <div
+                key={interest.id}
+                style={{
+                  border: `${interest.colour} 1px solid`,
+                  ["--text-glow" as any]: `linear-gradient(to top left,rgb(70, 70, 70), ${interest.colour})`,
+                }}
+                className={styles.glowingNugget}
+                onClick={() => {
+                  setShowInterestModal(true);
+                  setNewInterest(interest);
+                }}
+              >
+                <p className={styles.glowingNuggetText}>
+                  {interest.icon}
+                  {interest.name}
+                </p>
+              </div>
+            ))}
         </div>
       </div>
       {showFollowModal[0] && followers && following && (

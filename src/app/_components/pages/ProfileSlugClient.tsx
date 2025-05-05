@@ -1,6 +1,6 @@
 "use client";
 import styles from "../../index.module.css";
-import { type User, type SlugUser } from "~/types/user";
+import { type SlugUser } from "~/types/user";
 import { trpc } from "~/utils/trpc";
 import { AllUserPosts } from "../posts/allUserPosts";
 import { useEffect, useMemo, useState } from "react";
@@ -9,9 +9,12 @@ import ProfileSlugHeader from "../profile/profileSlugHeader";
 import { useParams } from "next/navigation";
 import { type Interest } from "~/types/interest";
 import { GainInterestModal } from "../modals";
+import TaskList from "../tasks/taskList";
+import { type Session } from "~/types/session";
+import { type Task } from "~/types/task";
 
 interface ProfileSlugClientProps {
-  sessionUser: User;
+  session: Session;
 }
 
 export default function ProfileSlugClient(props: ProfileSlugClientProps) {
@@ -36,8 +39,21 @@ export default function ProfileSlugClient(props: ProfileSlugClientProps) {
   const [newInterest, setNewInterest] = useState<Interest>(defaultInterest);
 
   const getSessionUserInterests = trpc.user.getUserInterests.useQuery({
-    userId: props.sessionUser.id,
+    userId: props.session.user.id,
   });
+
+  const [customTasks, setCustomTasks] = useState<Task[]>([]);
+  const [dailyTasks, setDailyTasks] = useState<Task[]>([]);
+
+  const [selectedTab, setSelectedTab] = useState<string>("post");
+
+  const [selectedTabCount, setSelectedTabCount] = useState<[string, number]>([
+    "daily",
+    0,
+  ]);
+
+  const getDailyTasks = trpc.task.getDailyTasks.useQuery();
+  const getCustomTasks = trpc.task.getCustomTasks.useQuery();
 
   useMemo(() => {
     if (getSessionUserInterests.isLoading) return;
@@ -45,8 +61,8 @@ export default function ProfileSlugClient(props: ProfileSlugClientProps) {
   }, [getSessionUserInterests.isLoading, getSessionUserInterests.data]);
 
   useMemo(() => {
-    setTheme(props.sessionUser.themePreset);
-  }, [props.sessionUser.themePreset]);
+    setTheme(props.session.user.themePreset);
+  }, [props.session.user.themePreset]);
 
   useMemo(() => {
     if (getInterests.isLoading) return;
@@ -62,6 +78,27 @@ export default function ProfileSlugClient(props: ProfileSlugClientProps) {
       }
     }
   }, [getUser.isLoading, getUser.data]);
+
+  if (!user.private) {
+    useEffect(() => {
+      if (getDailyTasks.isLoading) return;
+      if (getDailyTasks.data?.length != 0) {
+        // call gpt
+        setDailyTasks([]);
+      }
+    }, [getDailyTasks.isLoading, getDailyTasks.data?.length]);
+
+    useEffect(() => {
+      if (getCustomTasks.isLoading) return;
+      if (getCustomTasks.data?.length != 0) {
+        setCustomTasks(getCustomTasks.data as Task[]);
+      }
+    }, [
+      getCustomTasks.isLoading,
+      getCustomTasks.data?.length,
+      getCustomTasks.data,
+    ]);
+  }
 
   if (getUser.isLoading) {
     return (
@@ -79,39 +116,74 @@ export default function ProfileSlugClient(props: ProfileSlugClientProps) {
         </div>
       </main>
     );
-  }
-  return (
-    <main
-      className={
-        theme == "default"
-          ? `${styles.main}`
-          : `${styles.main} ${styles[`theme-${theme}`]}`
-      }
-    >
-      <div className={styles.container}>
-        <ProfileSlugHeader
-          user={user}
-          sessionUser={props.sessionUser}
-          userInterests={userInterests}
-        />
-        <br />
-        <div className={styles.profilePostContainer}>
-          <AllUserPosts
-            setNewInterest={setNewInterest}
-            setShowInterestModal={setShowInterestModal}
-            userId={user.id}
-            sessionUser={props.sessionUser}
+  } else {
+    return (
+      <main
+        className={
+          theme == "default"
+            ? `${styles.main}`
+            : `${styles.main} ${styles[`theme-${theme}`]}`
+        }
+      >
+        <div className={styles.container}>
+          <ProfileSlugHeader
+            user={user}
+            sessionUser={props.session.user}
+            userInterests={userInterests}
           />
+          <br />
+          <div className={styles.profilePostContainer}>
+            {user.private ? (
+              <h2 className={styles.opusText}>Private user.</h2>
+            ) : (
+              <>
+                <div className={styles.profileTabContainer}>
+                  <button
+                    onClick={() => {
+                      setSelectedTab("post");
+                    }}
+                  >
+                    Posts
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (user.tasksPrivate) setSelectedTab("task");
+                    }}
+                    disabled={user.tasksPrivate}
+                  >
+                    Tasks
+                  </button>
+                </div>
+                {selectedTab == "post" ? (
+                  <AllUserPosts
+                    setNewInterest={setNewInterest}
+                    setShowInterestModal={setShowInterestModal}
+                    userId={user.id}
+                    sessionUser={props.session.user}
+                  />
+                ) : (
+                  <TaskList
+                    session={props.session}
+                    setSelectedTab={setSelectedTabCount}
+                    selectedTab={selectedTabCount}
+                    dailyTasks={dailyTasks}
+                    customTasks={customTasks}
+                    setCustomTasks={setCustomTasks}
+                  />
+                )}
+              </>
+            )}
+          </div>
         </div>
-      </div>
-      {showInterestModal && (
-        <GainInterestModal
-          interest={newInterest}
-          userId={props.sessionUser.id}
-          onComplete={() => setShowInterestModal(false)}
-          userInterests={sessionUserInterests}
-        />
-      )}
-    </main>
-  );
+        {showInterestModal && (
+          <GainInterestModal
+            interest={newInterest}
+            userId={props.session.user.id}
+            onComplete={() => setShowInterestModal(false)}
+            userInterests={sessionUserInterests}
+          />
+        )}
+      </main>
+    );
+  }
 }

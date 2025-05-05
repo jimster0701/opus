@@ -30,6 +30,8 @@ export interface UserTask {
 
 export interface SlugUser extends SimpleUser {
   themePreset: string;
+  private: boolean;
+  tasksPrivate: boolean;
 }
 
 export interface User {
@@ -40,6 +42,7 @@ export interface User {
   displayName: string;
   image: string;
   private: boolean;
+  tasksPrivate: boolean;
   themePreset: string;
   followers: Follow[];
   following: Follow[];

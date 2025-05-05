@@ -8,6 +8,8 @@ import ProfileHeader from "../profile/profileHeader";
 import { AllUserPosts } from "../posts/allUserPosts";
 import { type Interest } from "~/types/interest";
 import { trpc } from "~/utils/trpc";
+import { type Task } from "~/types/task";
+import TaskList from "../tasks/taskList";
 
 interface ProfileClientProps {
   session: Session;
@@ -19,6 +21,37 @@ export default function ProfileClient(props: ProfileClientProps) {
   const getInterests = trpc.user.getUserInterests.useQuery({
     userId: props.session.userId,
   });
+
+  const [customTasks, setCustomTasks] = useState<Task[]>([]);
+  const [dailyTasks, setDailyTasks] = useState<Task[]>([]);
+
+  const [selectedTab, setSelectedTab] = useState<string>("post");
+
+  const [selectedTabCount, setSelectedTabCount] = useState<[string, number]>([
+    "daily",
+    0,
+  ]);
+
+  const getDailyTasks = trpc.task.getDailyTasks.useQuery();
+  const getCustomTasks = trpc.task.getCustomTasks.useQuery();
+
+  useEffect(() => {
+    if (getDailyTasks.isLoading) return;
+    if (getDailyTasks.data?.length != 0) {
+      setDailyTasks(getCustomTasks.data as Task[]);
+    }
+  }, [getDailyTasks.isLoading, getDailyTasks.data?.length, getDailyTasks.data]);
+
+  useEffect(() => {
+    if (getCustomTasks.isLoading) return;
+    if (getCustomTasks.data?.length != 0) {
+      setCustomTasks(getCustomTasks.data as Task[]);
+    }
+  }, [
+    getCustomTasks.isLoading,
+    getCustomTasks.data?.length,
+    getCustomTasks.data,
+  ]);
 
   useMemo(() => {
     if (getInterests.isLoading) return;
@@ -47,12 +80,37 @@ export default function ProfileClient(props: ProfileClientProps) {
         />
         <br />
         <div className={styles.profilePostContainer}>
-          <AllUserPosts
-            userId={props.session.user.id}
-            sessionUser={props.session.user}
-            setNewInterest={undefined}
-            setShowInterestModal={undefined}
-          />
+          <div className={styles.profileTabContainer}>
+            <button
+              onClick={() => {
+                setSelectedTab("post");
+              }}
+            >
+              Posts
+            </button>
+            <button
+              onClick={() => {
+                setSelectedTab("task");
+              }}
+            >
+              Tasks
+            </button>
+          </div>
+          {selectedTab == "post" ? (
+            <AllUserPosts
+              userId={props.session.user.id}
+              sessionUser={props.session.user}
+            />
+          ) : (
+            <TaskList
+              session={props.session}
+              setSelectedTab={setSelectedTabCount}
+              selectedTab={selectedTabCount}
+              dailyTasks={dailyTasks}
+              customTasks={customTasks}
+              setCustomTasks={setCustomTasks}
+            />
+          )}
         </div>
       </div>
     </main>

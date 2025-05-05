@@ -803,6 +803,17 @@
   align-items: center;
 }
 
+.profileTabContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  width: 100%;
+  border-radius: 1rem;
+  background-color: white;
+}
+
 /* Profile content */
 .profilePostContainer {
   width: 100%;
@@ -1336,7 +1347,8 @@
   margin-bottom: 1rem;
 }
 
-.taskTabContainer > button {
+.taskTabContainer > button,
+.profileTabContainer > button {
   border: none;
   border-bottom: 3px solid transparent;
   background-color: white;
@@ -1351,11 +1363,18 @@
 
 .taskTabContainer > button:hover,
 .taskTabContainer > button:focus {
-  border-bottom: 3px solid var(--accent-color); /* purple highlight */
-  background-color: #f3f4f6; /* subtle hover */
+  border-bottom: 3px solid var(--accent-color);
+  background-color: #f3f4f6;
 }
 
-.taskTabContainer > button.selected {
+.profileTabContainer > button:hover,
+.profileTabContainer > button:focus {
+  border-bottom: 0.1rem solid var(--accent-color);
+  background-color: #f3f4f6;
+}
+
+.taskTabContainer > button.selected,
+.profileTabContainer > button.selected {
   border-bottom: 3px solid var(--accent-color);
   background-color: #f9fafb;
 }

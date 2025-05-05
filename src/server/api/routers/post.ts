@@ -232,7 +232,7 @@ export const postRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const dbPosts = await ctx.db.post.findMany({
         orderBy: { createdAt: "desc" },
-        where: { createdBy: { id: input.userId } },
+        where: { createdBy: { id: input.userId, private: false } },
         include: {
           createdBy: true,
           task: {
@@ -354,6 +354,7 @@ export const postRouter = createTRPCRouter({
       const dbPosts = await ctx.db.post.findMany({
         orderBy: { createdAt: "desc" },
         where: {
+          createdBy: { private: false },
           task: {
             interests: {
               some: {
