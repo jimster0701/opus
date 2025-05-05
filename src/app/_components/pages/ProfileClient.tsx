@@ -38,7 +38,7 @@ export default function ProfileClient(props: ProfileClientProps) {
   useEffect(() => {
     if (getDailyTasks.isLoading) return;
     if (getDailyTasks.data?.length != 0) {
-      setDailyTasks(getCustomTasks.data as Task[]);
+      setDailyTasks(getDailyTasks.data as Task[]);
     }
   }, [getDailyTasks.isLoading, getDailyTasks.data?.length, getDailyTasks.data]);
 

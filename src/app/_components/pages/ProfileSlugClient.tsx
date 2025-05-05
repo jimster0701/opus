@@ -79,26 +79,24 @@ export default function ProfileSlugClient(props: ProfileSlugClientProps) {
     }
   }, [getUser.isLoading, getUser.data]);
 
-  if (!user.private) {
-    useEffect(() => {
-      if (getDailyTasks.isLoading) return;
-      if (getDailyTasks.data?.length != 0) {
-        // call gpt
-        setDailyTasks([]);
-      }
-    }, [getDailyTasks.isLoading, getDailyTasks.data?.length]);
+  useEffect(() => {
+    if (getDailyTasks.isLoading) return;
+    if (getDailyTasks.data?.length != 0) {
+      // call gpt
+      setDailyTasks([]);
+    }
+  }, [getDailyTasks.isLoading, getDailyTasks.data?.length]);
 
-    useEffect(() => {
-      if (getCustomTasks.isLoading) return;
-      if (getCustomTasks.data?.length != 0) {
-        setCustomTasks(getCustomTasks.data as Task[]);
-      }
-    }, [
-      getCustomTasks.isLoading,
-      getCustomTasks.data?.length,
-      getCustomTasks.data,
-    ]);
-  }
+  useEffect(() => {
+    if (getCustomTasks.isLoading) return;
+    if (getCustomTasks.data?.length != 0) {
+      setCustomTasks(getCustomTasks.data as Task[]);
+    }
+  }, [
+    getCustomTasks.isLoading,
+    getCustomTasks.data?.length,
+    getCustomTasks.data,
+  ]);
 
   if (getUser.isLoading) {
     return (

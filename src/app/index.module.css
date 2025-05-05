@@ -1553,6 +1553,22 @@
   width: 100%;
 }
 
+.settingsPrivacyContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.settingsPrivacyTitle {
+  margin: 0;
+  font-weight: 700;
+}
+
+.settingsPrivacyInput {
+  display: flex;
+  justify-content: space-around;
+}
+
 .reportContainer {
   display: flex;
   gap: 0.25rem;

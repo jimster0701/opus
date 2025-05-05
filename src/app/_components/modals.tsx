@@ -375,6 +375,7 @@ export function SettingsModal(props: modalProps) {
   ];
   const updateThemePreset = trpc.user.updateThemePreset.useMutation();
   const updatePrivateSetting = trpc.user.updatePrivate.useMutation();
+  const updateTasksPrivateSetting = trpc.user.updateTasksPrivate.useMutation();
   const sendReport = trpc.report.createIssueReport.useMutation();
 
   return (
@@ -420,11 +421,12 @@ export function SettingsModal(props: modalProps) {
           </div>
         </div>
         <br />
-        <div>
-          <h4 className={`${styles.opusText} ${styles.settingsTitle}`}>
-            Profile settings:
-          </h4>
-          <div className={styles.flexRow}>
+
+        <h3 className={`${styles.opusText} ${styles.settingsPrivacyTitle}`}>
+          Profile privacy
+        </h3>
+        <div className={styles.settingsPrivacyContainer}>
+          <div className={styles.settingsPrivacyInput}>
             <p>
               Private profile:
               <br />
@@ -439,14 +441,16 @@ export function SettingsModal(props: modalProps) {
               }}
             />
           </div>
-          <div className={styles.flexRow}>
+          <div className={styles.settingsPrivacyInput}>
             <p>Show tasks on profile:</p>
             <input
               type="checkbox"
-              checked={profilePrivate}
+              checked={profileTaskPrivate}
               onChange={(e) => {
-                setProfilePrivate(e.target.checked);
-                updatePrivateSetting.mutate({ private: e.target.checked });
+                setProfileTaskPrivate(e.target.checked);
+                updateTasksPrivateSetting.mutate({
+                  tasksPrivate: e.target.checked,
+                });
               }}
             />
           </div>
@@ -475,6 +479,7 @@ export function SettingsModal(props: modalProps) {
             </button>
           </div>
         </div>
+        <br />
         <br />
         <SignOutButton />
       </div>

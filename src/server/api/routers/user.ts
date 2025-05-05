@@ -239,4 +239,13 @@ export const userRouter = createTRPCRouter({
         data: { private: input.private },
       });
     }),
+
+  updateTasksPrivate: protectedProcedure
+    .input(z.object({ tasksPrivate: z.boolean() }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.user.update({
+        where: { id: ctx.session.user.id },
+        data: { tasksPrivate: input.tasksPrivate },
+      });
+    }),
 });
