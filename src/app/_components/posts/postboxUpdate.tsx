@@ -305,7 +305,7 @@ export default function PostboxUpdate(props: PostboxUpdateProps) {
       <div className={styles.postSubmitContainer}>
         <button
           type="submit"
-          className={`${styles.opusButton} ${styles.submitButton}`}
+          className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
           disabled={uploading}
         >
           {uploading ? "Updating..." : "Confirm"}

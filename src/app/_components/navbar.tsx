@@ -3,7 +3,7 @@ import { useThemeStore } from "~/store/themeStore";
 import styles from "../index.module.css";
 import Link from "next/link";
 import { Home, Search, PlusCircle, Users, User } from "lucide-react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { trpc } from "~/utils/trpc";
 import { useEffect, useMemo, useState } from "react";
 
@@ -11,14 +11,8 @@ interface navbarProps {
   theme: string;
 }
 
-export function Navbar(props: navbarProps) {
-  const { theme, setTheme } = useThemeStore();
-
-  useEffect(() => {
-    if (theme === "unset" || theme != props.theme) {
-      setTheme(props.theme);
-    } else setTheme(theme);
-  }, [theme, props.theme, setTheme]);
+export function Navbar() {
+  const { theme } = useThemeStore();
 
   return (
     <nav
@@ -53,13 +47,25 @@ export function Navbar(props: navbarProps) {
 }
 
 export function SlugNavbar(props: navbarProps) {
+  const router = useRouter();
   const [theme, setTheme] = useState("");
   const params = useParams();
   const slugData = params.slug;
 
-  const getUser = trpc.user.getUserById.useQuery({
-    id: typeof slugData === "string" ? slugData : "",
-  });
+  const getUser = trpc.user.getUserById.useQuery(
+    {
+      id: typeof slugData === "string" ? slugData : "",
+    },
+    {
+      retry: (_count, err) => {
+        // `onError` only runs once React Query stops retrying
+        if (err.data?.code === "UNAUTHORIZED") {
+          void router.push("/");
+        }
+        return true;
+      },
+    }
+  );
 
   useMemo(() => {
     setTheme(props.theme);

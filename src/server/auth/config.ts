@@ -49,6 +49,11 @@ export const authConfig = {
      * @see https://next-auth.js.org/providers/github
      */
   ],
+  session: {
+    strategy: "database",
+    maxAge: 60 * 60, // 1 hour (in seconds)
+    updateAge: 60 * 2, // Refresh session every 2 mins
+  },
   adapter: PrismaAdapter(db),
   callbacks: {
     session: ({ session, user }) => ({

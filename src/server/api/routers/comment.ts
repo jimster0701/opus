@@ -70,7 +70,7 @@ export const commentRouter = createTRPCRouter({
           where: { commentId: input.id },
         });
 
-        return ctx.db.comment.delete({
+        await prisma.comment.delete({
           where: { id: input.id },
         });
       });

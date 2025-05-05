@@ -7,13 +7,9 @@ import { useRouter } from "next/navigation";
 import { ProfilePicturePreviewWrapper } from "../images/cldImageWrapper";
 import { type Session } from "~/types/session";
 
-interface FriendsClientProps {
-  session: Session;
-}
-
-export default function FriendsClient(props: FriendsClientProps) {
+export default function FriendsClient() {
   const router = useRouter();
-  const { theme, setTheme } = useThemeStore();
+  const { theme } = useThemeStore();
   const [hasMounted, setHasMounted] = useState(false);
 
   const { data: friendsData, isLoading } = trpc.user.getFriends.useQuery();
@@ -21,12 +17,6 @@ export default function FriendsClient(props: FriendsClientProps) {
   useEffect(() => {
     setHasMounted(true);
   }, []);
-
-  useEffect(() => {
-    if (theme === "unset" || theme != props.session.user.themePreset) {
-      setTheme(props.session.user.themePreset);
-    } else setTheme(theme);
-  }, [theme, props.session.user.themePreset, setTheme]);
 
   if (!hasMounted) {
     return (

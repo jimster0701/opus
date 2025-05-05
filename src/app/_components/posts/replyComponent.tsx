@@ -6,14 +6,18 @@ import { trpc } from "~/utils/trpc";
 import { ProfilePicturePreviewWrapper } from "../images/cldImageWrapper";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { Trash2 } from "lucide-react";
+import { DeleteReplyModal } from "../modals";
 
 interface replyProps {
   userId: string;
   reply: Reply;
+  removeReply: (id: number) => void;
 }
 
 export function ReplyComponent(props: replyProps) {
   const router = useRouter();
+  const [showDeleteReply, setShowDeleteReply] = useState(false);
   const [liked, setLiked] = useState(
     props.reply.likedBy.includes(props.userId)
   );
@@ -57,7 +61,15 @@ export function ReplyComponent(props: replyProps) {
             </p>
           </div>
           <p className={styles.commentTimestamp}>
-            {props.reply.createdAt.toDateString()}
+            {props.reply.createdById != props.userId ? (
+              props.reply.createdAt.toDateString()
+            ) : (
+              <Trash2
+                onClick={() => {
+                  setShowDeleteReply(true);
+                }}
+              />
+            )}
           </p>
         </div>
         <div className={styles.commentContentContainer}>
@@ -78,6 +90,16 @@ export function ReplyComponent(props: replyProps) {
             </p>
           </div>
         </div>
+        {showDeleteReply && (
+          <DeleteReplyModal
+            onComplete={(deleteReply) => {
+              if (deleteReply) props.removeReply(props.reply.id);
+              setShowDeleteReply(false);
+            }}
+            id={props.reply.id}
+            name={props.reply.message}
+          />
+        )}
       </div>
     );
 }

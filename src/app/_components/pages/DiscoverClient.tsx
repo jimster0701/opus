@@ -18,7 +18,7 @@ interface DiscoverClientProps {
 export default function DiscoverClient(props: DiscoverClientProps) {
   const [selectedTab, setSelectedTab] = useState("");
   const [interests, setInterests] = useState<Interest[]>([defaultInterest]);
-  const { theme, setTheme } = useThemeStore();
+  const { theme } = useThemeStore();
   const getInterests = trpc.user.getUserInterests.useQuery({
     userId: props.session.userId,
   });
@@ -37,12 +37,6 @@ export default function DiscoverClient(props: DiscoverClientProps) {
     if (getSessionUserInterests.isLoading) return;
     setSessionUserInterests((getSessionUserInterests.data as Interest[]) ?? []);
   }, [getSessionUserInterests.isLoading, getSessionUserInterests.data]);
-
-  useEffect(() => {
-    if (theme === "unset" || theme != props.theme) {
-      setTheme(props.theme);
-    } else setTheme(theme);
-  }, [theme, props.theme, setTheme]);
 
   useEffect(() => {
     if (getInterests.isLoading) return;

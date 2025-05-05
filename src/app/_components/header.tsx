@@ -6,10 +6,13 @@ import { useEffect, useMemo, useState } from "react";
 import { useThemeStore } from "~/store/themeStore";
 import { useParams } from "next/navigation";
 import { trpc } from "~/utils/trpc";
+import { CookieConsent } from "./cookieConsentBanner";
 
 interface HeaderProps {
   theme: string;
   userId: string;
+  userPrivate: boolean;
+  userTasksPrivate: boolean;
   page?: string;
 }
 
@@ -18,7 +21,7 @@ export function Header(props: HeaderProps) {
   const { theme, setTheme } = useThemeStore();
 
   useEffect(() => {
-    if (theme === "unset" || theme != props.theme) {
+    if (theme === "unset") {
       setTheme(props.theme);
     } else setTheme(theme);
   }, [theme, props.theme, setTheme]);
@@ -42,10 +45,15 @@ export function Header(props: HeaderProps) {
             onClick={() => setShowSettings(true)}
           />
           {showSettings && (
-            <SettingsModal onComplete={() => setShowSettings(false)} />
+            <SettingsModal
+              onComplete={() => setShowSettings(false)}
+              userPrivate={props.userPrivate}
+              userTasksPrivate={props.userTasksPrivate}
+            />
           )}
         </div>
       )}
+      {localStorage.getItem("cookie_consent") == null && <CookieConsent />}
     </div>
   );
 }
@@ -82,11 +90,23 @@ export function SlugHeader(props: HeaderProps) {
       <div className={styles.logo}>Opus</div>
       {props.userId != "null" && (
         <div className={styles.navIcons}>
+          <Image
+            src="/images/setting.png"
+            alt={""}
+            width={25}
+            height={25}
+            onClick={() => setShowSettings(true)}
+          />
           {showSettings && (
-            <SettingsModal onComplete={() => setShowSettings(false)} />
+            <SettingsModal
+              onComplete={() => setShowSettings(false)}
+              userPrivate={props.userPrivate}
+              userTasksPrivate={props.userTasksPrivate}
+            />
           )}
         </div>
       )}
+      {localStorage.getItem("cookie_consent") == null && <CookieConsent />}
     </div>
   );
 }

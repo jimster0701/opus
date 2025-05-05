@@ -16,7 +16,7 @@ export default function CreateClient(props: CreateClientProps) {
   const [titleWord, setTitleWord] = useState("something");
   const [availableTasks, setAvailableTasks] = useState<Task[]>([]);
   const [customTasks, setCustomTasks] = useState<Task[]>([]);
-  const { theme, setTheme } = useThemeStore();
+  const { theme } = useThemeStore();
 
   const getCustomTasks = trpc.task.getCustomTasks.useQuery();
   const getDailyTasks = trpc.task.getDailyTasks.useQuery();
@@ -57,12 +57,6 @@ export default function CreateClient(props: CreateClientProps) {
         setTitleWord("something");
     }
   }, [selectedTab]);
-
-  useEffect(() => {
-    if (theme === "unset" || theme != props.theme) {
-      setTheme(props.theme);
-    } else setTheme(theme);
-  }, [theme, props.theme, setTheme]);
 
   return (
     <main

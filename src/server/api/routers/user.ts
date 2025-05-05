@@ -92,6 +92,28 @@ export const userRouter = createTRPCRouter({
       return users ?? null;
     }),
 
+  IsFriend: protectedProcedure
+    .input(z.object({ userId: z.string().min(1) }))
+    .query(async ({ ctx, input }) => {
+      const relation1 = await ctx.db.follow.findUnique({
+        where: {
+          follower_following_unique: {
+            followerId: ctx.session.user.id,
+            followingId: input.userId,
+          },
+        },
+      });
+      const relation2 = await ctx.db.follow.findUnique({
+        where: {
+          follower_following_unique: {
+            followerId: input.userId,
+            followingId: ctx.session.user.id,
+          },
+        },
+      });
+      return relation1 != null && relation2 != null;
+    }),
+
   IsFollowing: protectedProcedure
     .input(z.object({ userId: z.string().min(1) }))
     .query(async ({ ctx, input }) => {

@@ -129,13 +129,15 @@ export function CommentComponent(props: commentProps) {
             </svg>
           </button>
         </div>
-        {props.comment.replies &&
-          replies.length > 0 &&
-          props.comment.replies.map((reply) => (
+        {replies.length > 0 &&
+          replies.map((reply) => (
             <ReplyComponent
               key={reply.id}
               reply={reply}
               userId={props.userId}
+              removeReply={(id) => {
+                setReplies(replies.filter((r) => r.id != id));
+              }}
             />
           ))}
         {showDeleteComment && (

@@ -11,9 +11,14 @@ export default async function Discover() {
     const userId = session.user.id || "null";
     return (
       <HydrateClient>
-        <Header userId={userId} theme={session.user.themePreset} />
+        <Header
+          userId={userId}
+          theme={session.user.themePreset}
+          userPrivate={session.user.private}
+          userTasksPrivate={session.user.tasksPrivate}
+        />
         <DiscoverClient theme={session.user.themePreset} session={session} />
-        <Navbar theme={session.user.themePreset} />
+        <Navbar />
       </HydrateClient>
     );
   } else redirect("/");

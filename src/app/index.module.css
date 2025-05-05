@@ -84,12 +84,14 @@
   background-color: #ffe0e0;
   color: #a00;
   border: 1px solid #f99;
+  margin-top: 0.5rem;
   padding: 0.4rem;
-  width: 30vw;
+  min-width: 30vw;
+  max-width: 60%;
   border-radius: 1rem;
   font-size: 0.9rem;
   font-weight: 700;
-  z-index: 10;
+  z-index: 5;
 }
 
 .formError {
@@ -384,6 +386,10 @@
   overflow: hidden scroll;
 }
 
+.privacyPolicyModal {
+  align-items: flex-start;
+}
+
 .closeModalButton {
   margin: 0;
   position: absolute;
@@ -649,6 +655,19 @@
   box-shadow: 0 4px 12px #aaa7a77a;
   align-items: center;
   gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+/* Cookie banner Components
+------------------------------------------ */
+.cookieBanner {
+  background: var(--modal-background);
+  border-radius: 1rem 1rem 0rem 0rem;
+  border-top: 0.1rem groove var(--accent-color);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
 }
 
 /* Profile Components
@@ -685,7 +704,7 @@
 }
 
 .profileHeaderUsernameForm {
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
 }
 
 .profileHeaderFollowText {
@@ -1586,9 +1605,13 @@
   width: 90%;
 }
 
+.reportInput::placeholder {
+  color: var(--text-secondary);
+}
+
 .signOutButton {
   color: var(--text-primary);
-  font-size: medium;
+  font-size: large;
 }
 
 /* Theme Settings

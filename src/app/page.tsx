@@ -14,13 +14,18 @@ export default async function Home() {
   if (session) {
     return (
       <HydrateClient>
-        <Header userId={userId} theme={session.user.themePreset} />
+        <Header
+          userId={userId}
+          theme={session.user.themePreset}
+          userPrivate={session.user.private}
+          userTasksPrivate={session.user.tasksPrivate}
+        />
         <HomeClient session={session} theme={session.user.themePreset} />
         <NewUserModalWrapper
           userId={session.user.id}
           displayName={session?.user.displayName ?? null}
         />
-        <Navbar theme={session.user.themePreset} />
+        <Navbar />
       </HydrateClient>
     );
   }

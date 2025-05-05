@@ -58,4 +58,12 @@ export const replyRouter = createTRPCRouter({
         data: { likedBy: updatedLikedBy },
       });
     }),
+
+  deleteReply: protectedProcedure
+    .input(z.object({ id: z.number().min(1) }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.reply.delete({
+        where: { id: input.id },
+      });
+    }),
 });

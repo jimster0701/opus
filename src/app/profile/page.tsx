@@ -11,9 +11,14 @@ export default async function Profile() {
   if (session)
     return (
       <HydrateClient>
-        <Header userId={userId} theme={session.user.themePreset} />
+        <Header
+          userId={userId}
+          theme={session.user.themePreset}
+          userPrivate={session.user.private}
+          userTasksPrivate={session.user.tasksPrivate}
+        />
         <ProfileClient session={session} />
-        <Navbar theme={session.user.themePreset} />
+        <Navbar />
       </HydrateClient>
     );
   else redirect("/");

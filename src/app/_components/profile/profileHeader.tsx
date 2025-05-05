@@ -113,30 +113,32 @@ export default function ProfileHeader(props: ProfileHeaderProps) {
                     }
                   }}
                 />
-                <button
-                  className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
-                  onClick={(e) => {
-                    if (displayName.length == 0) {
-                      e.preventDefault();
-                      setDisplayNameError("Display name cannot be empty.");
-                    } else {
-                      setDisplayNameError("");
-                    }
-                  }}
-                  type="submit"
-                >
-                  <Check />
-                </button>
-                <button
-                  className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
-                  onClick={() => {
-                    setDisplayName("");
-                    setChangeDisplay(false);
-                  }}
-                  type="button"
-                >
-                  <X />
-                </button>
+                <div className={styles.flexRow}>
+                  <button
+                    className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
+                    onClick={(e) => {
+                      if (displayName.length == 0) {
+                        e.preventDefault();
+                        setDisplayNameError("Display name cannot be empty.");
+                      } else {
+                        setDisplayNameError("");
+                      }
+                    }}
+                    type="submit"
+                  >
+                    <Check />
+                  </button>
+                  <button
+                    className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
+                    onClick={() => {
+                      setDisplayName("");
+                      setChangeDisplay(false);
+                    }}
+                    type="button"
+                  >
+                    <X />
+                  </button>
+                </div>
                 {displayNameError && (
                   <div className={styles.errorTooltip}>{displayNameError}</div>
                 )}

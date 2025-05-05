@@ -9,9 +9,9 @@ import ProfileSlugHeader from "../profile/profileSlugHeader";
 import { useParams } from "next/navigation";
 import { type Interest } from "~/types/interest";
 import { GainInterestModal } from "../modals";
-import TaskList from "../tasks/taskList";
 import { type Session } from "~/types/session";
 import { type Task } from "~/types/task";
+import TaskListSlug from "../tasks/tasklistSlug";
 
 interface ProfileSlugClientProps {
   session: Session;
@@ -37,6 +37,7 @@ export default function ProfileSlugClient(props: ProfileSlugClientProps) {
     []
   );
   const [newInterest, setNewInterest] = useState<Interest>(defaultInterest);
+  const [usersAreFriends, setUsersAreFriends] = useState(false);
 
   const getSessionUserInterests = trpc.user.getUserInterests.useQuery({
     userId: props.session.user.id,
@@ -52,6 +53,7 @@ export default function ProfileSlugClient(props: ProfileSlugClientProps) {
     0,
   ]);
 
+  const isFriend = trpc.user.IsFriend.useQuery({ userId: user.id });
   const getDailyTasks = trpc.task.getDailyTasks.useQuery();
   const getCustomTasks = trpc.task.getCustomTasks.useQuery();
 
@@ -80,12 +82,18 @@ export default function ProfileSlugClient(props: ProfileSlugClientProps) {
   }, [getUser.isLoading, getUser.data]);
 
   useEffect(() => {
+    if (isFriend.isLoading) return;
+    if (isFriend.data) {
+      setUsersAreFriends(isFriend.data);
+    }
+  }, [isFriend.isLoading, isFriend.data]);
+
+  useEffect(() => {
     if (getDailyTasks.isLoading) return;
     if (getDailyTasks.data?.length != 0) {
-      // call gpt
-      setDailyTasks([]);
+      setDailyTasks(getDailyTasks.data as Task[]);
     }
-  }, [getDailyTasks.isLoading, getDailyTasks.data?.length]);
+  }, [getDailyTasks.isLoading, getDailyTasks.data?.length, getDailyTasks.data]);
 
   useEffect(() => {
     if (getCustomTasks.isLoading) return;
@@ -131,42 +139,40 @@ export default function ProfileSlugClient(props: ProfileSlugClientProps) {
           />
           <br />
           <div className={styles.profilePostContainer}>
-            {user.private ? (
+            {user.private && !usersAreFriends ? (
               <h2 className={styles.opusText}>Private user.</h2>
             ) : (
               <>
-                <div className={styles.profileTabContainer}>
-                  <button
-                    onClick={() => {
-                      setSelectedTab("post");
-                    }}
-                  >
-                    Posts
-                  </button>
-                  <button
-                    onClick={() => {
-                      if (user.tasksPrivate) setSelectedTab("task");
-                    }}
-                    disabled={user.tasksPrivate}
-                  >
-                    Tasks
-                  </button>
-                </div>
+                {!user.tasksPrivate && (
+                  <div className={styles.profileTabContainer}>
+                    <button
+                      onClick={() => {
+                        setSelectedTab("post");
+                      }}
+                    >
+                      Posts
+                    </button>
+                    <button
+                      onClick={() => {
+                        setSelectedTab("task");
+                      }}
+                    >
+                      Tasks
+                    </button>
+                  </div>
+                )}
                 {selectedTab == "post" ? (
                   <AllUserPosts
                     setNewInterest={setNewInterest}
                     setShowInterestModal={setShowInterestModal}
                     userId={user.id}
-                    sessionUser={props.session.user}
                   />
                 ) : (
-                  <TaskList
-                    session={props.session}
+                  <TaskListSlug
                     setSelectedTab={setSelectedTabCount}
                     selectedTab={selectedTabCount}
                     dailyTasks={dailyTasks}
                     customTasks={customTasks}
-                    setCustomTasks={setCustomTasks}
                   />
                 )}
               </>

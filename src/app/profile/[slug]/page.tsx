@@ -11,7 +11,12 @@ export default async function ProfileSlug() {
   if (session?.user)
     return (
       <HydrateClient>
-        <SlugHeader userId={session.user.id} theme={session.user.themePreset} />
+        <SlugHeader
+          userPrivate={session.user.private}
+          userTasksPrivate={session.user.tasksPrivate}
+          userId={session.user.id}
+          theme={session.user.themePreset}
+        />
         <ProfileSlugClient session={session} />
         <SlugNavbar theme={session.user.themePreset} />
       </HydrateClient>

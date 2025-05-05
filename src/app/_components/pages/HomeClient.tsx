@@ -14,7 +14,7 @@ interface HomeClientProps {
 }
 
 export default function HomeClient(props: HomeClientProps) {
-  const { theme, setTheme } = useThemeStore();
+  const { theme } = useThemeStore();
 
   const searchParams = useSearchParams();
   const [preselectedTab, setPreselectedTab] = useState(
@@ -31,12 +31,6 @@ export default function HomeClient(props: HomeClientProps) {
 
   const getDailyTasks = trpc.task.getDailyTasks.useQuery();
   const getCustomTasks = trpc.task.getCustomTasks.useQuery();
-
-  useEffect(() => {
-    if (theme === "unset" || theme != props.theme) {
-      setTheme(props.theme);
-    } else setTheme(theme);
-  }, [theme, props.theme, setTheme]);
 
   useEffect(() => {
     if (preselectedTab == "custom") {

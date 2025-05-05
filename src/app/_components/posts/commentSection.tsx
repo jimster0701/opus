@@ -58,7 +58,7 @@ export function CommentSection(props: commentSectionProps) {
               comment={comment}
               userId={props.userId}
               removeComment={(id) => {
-                comments.filter((c) => c.id != id);
+                setComments(comments.filter((c) => c.id != id));
               }}
             />
           ))

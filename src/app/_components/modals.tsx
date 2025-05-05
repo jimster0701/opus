@@ -76,6 +76,44 @@ export function DeleteCommentModal(props: deleteModalProps) {
   );
 }
 
+export function DeleteReplyModal(props: deleteModalProps) {
+  const deleteReply = api.reply.deleteReply.useMutation();
+  return (
+    <div className={styles.modalContainer}>
+      <div
+        className={styles.modalBackground}
+        onClick={() => props.onComplete(false)}
+      />
+      <div className={styles.modal}>
+        <h1>Are you sure you want to delete this reply:</h1>
+        <h2>{props.name}?</h2>
+        <div className={styles.taskUpdateControls}>
+          <button
+            className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
+            onClick={async () => {
+              try {
+                deleteReply.mutate({ id: props.id });
+                props.onComplete(true);
+                toast.success("Deleted reply!");
+              } catch (error) {
+                console.error(error);
+              }
+            }}
+          >
+            Yes <Check />
+          </button>
+          <button
+            className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
+            onClick={() => props.onComplete(false)}
+          >
+            No <X />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function DeletePostImageModal(props: deleteModalProps) {
   return (
     <div className={styles.modalContainer}>
@@ -180,6 +218,46 @@ export function DeleteTaskModal(props: deleteModalProps) {
           <button
             className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
             onClick={() => props.onComplete(false)}
+          >
+            No <X />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function RemoveCookiesModal(props: modalProps) {
+  const handleCookieReset = async () => {
+    localStorage.removeItem("cookie_consent");
+  };
+
+  return (
+    <div className={styles.modalContainer}>
+      <div className={styles.modalBackground} onClick={props.onComplete} />
+      <div className={styles.modal}>
+        <h1>Are you sure you want to revoke your cookie acception?</h1>
+        <h2>
+          You will be asked to accept again to allow non-essential cookies.
+        </h2>
+        <br />
+        <div className={styles.taskUpdateControls}>
+          <button
+            className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
+            onClick={async () => {
+              try {
+                handleCookieReset().catch((error) => console.error(error));
+                props.onComplete();
+              } catch (error) {
+                console.error(error);
+              }
+            }}
+          >
+            Yes <Check />
+          </button>
+          <button
+            className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
+            onClick={() => props.onComplete()}
           >
             No <X />
           </button>
@@ -355,10 +433,135 @@ export function FollowerOrFollowingModal(props: followerOrFollowingProps) {
   );
 }
 
-export function SettingsModal(props: modalProps) {
+export function PrivacyPolicyModal(props: modalProps) {
+  return (
+    <div className={styles.modalContainer}>
+      <div className={styles.modalBackground} onClick={props.onComplete} />
+      <div className={styles.modal}>
+        <p className={styles.closeModalButton} onClick={props.onComplete}>
+          <X width={45} height={45} />
+        </p>
+        <h1>Privacy Policy</h1>
+        <p>
+          <strong>Effective Date:</strong> 05/05/2025
+          <br />
+          <strong>Last Updated:</strong> 05/05/2025
+        </p>
+
+        <h2>1. Who We Are</h2>
+        <p>
+          Opus is a social productivity platform designed to help users create
+          and manage tasks, connect with friends, and share content based around
+          being productive. Opus and its creator are the data controller
+          responsible for handling your personal data in accordance with the UK
+          GDPR and other relevant data protection laws.
+        </p>
+        <p>
+          For any privacy-related questions or requests, you can contact us at:{" "}
+          <a href="mailto:jimmypm0701@gmail.com">jimmypm0701@gmail.com</a>
+        </p>
+
+        <h2>2. What Data We Collect</h2>
+        <ul>
+          <li>Display name, name, email, profile image (via Google)</li>
+          <li>Posts, comments, replies, images, interests, likes, followers</li>
+          <li>Tasks you create or are assigned</li>
+          <li>Session data via Google OAuth</li>
+          <li>Issue reports you submit</li>
+        </ul>
+        <p>
+          <strong>Note:</strong> We do not store passwords. Google OAuth handles
+          authentication.
+        </p>
+
+        <h2>3. Why We Collect Your Data</h2>
+        <ul>
+          <li>To enable social media features</li>
+          <li>To generate personalized tasks based on interests</li>
+          <li>To show and store content you create</li>
+          <li>To improve and maintain the service</li>
+        </ul>
+
+        <h2>4. Legal Basis for Processing</h2>
+        <ul>
+          <li>Contract: To provide app functionality</li>
+          <li>Legitimate Interests: Improve, secure, and operate the app</li>
+          <li>Consent: For optional features</li>
+          <li>Legal Obligation: As required under UK law</li>
+        </ul>
+
+        <h2>5. Data Retention</h2>
+        <p>
+          Your data is stored until you delete your account. Inactive accounts
+          may be removed after 12 months.
+        </p>
+
+        <h2>6. Third-Party Services We Use</h2>
+        <ul>
+          <li>Vercel - Hosting and serverless infrastructure</li>
+          <li>Prisma - Data ORM layer</li>
+          <li>T3 Stack / Next.js - App framework</li>
+          <li>Neon - PostgreSQL database</li>
+          <li>Cloudinary - Image hosting and delivery</li>
+          <li>Google - Authentication via OAuth</li>
+        </ul>
+
+        <h2>7. Your Rights Under UK GDPR</h2>
+        <p>You have the right to:</p>
+        <ul>
+          <li>Access your data</li>
+          <li>Correct inaccurate data</li>
+          <li>Delete your data</li>
+          <li>Receive a portable copy of your data</li>
+          <li>Restrict or object to processing</li>
+          <li>Withdraw consent at any time</li>
+        </ul>
+        <p>
+          To exercise these rights, contact us at{" "}
+          <strong>[your-email@example.com]</strong>.
+        </p>
+
+        <h2>8. Cookies & Tracking</h2>
+        <p>
+          We may use cookies to store session data. You will be asked to consent
+          to non-essential cookies.
+        </p>
+
+        <h2>9. Data Security</h2>
+        <ul>
+          <li>All communication is secured via HTTPS</li>
+          <li>Tokens and sessions are securely handled</li>
+          <li>No passwords are stored</li>
+        </ul>
+
+        <h2>10. Policy Updates</h2>
+        <p>
+          We may update this policy from time to time. Significant changes will
+          be communicated through the app or by email.
+        </p>
+
+        <h2>11. Contact Us</h2>
+        <p>
+          📧 <strong>Email:</strong> jimmypm0701@gmail.com
+        </p>
+      </div>
+    </div>
+  );
+}
+
+interface settingsModalProps extends modalProps {
+  userPrivate: boolean;
+  userTasksPrivate: boolean;
+}
+
+export function SettingsModal(props: settingsModalProps) {
   const { theme, setTheme } = useThemeStore();
-  const [profilePrivate, setProfilePrivate] = useState(false);
-  const [profileTaskPrivate, setProfileTaskPrivate] = useState(false);
+  const [profilePrivate, setProfilePrivate] = useState(props.userPrivate);
+  const [profileTaskPrivate, setProfileTaskPrivate] = useState(
+    props.userTasksPrivate
+  );
+  const [showRemoveCookies, setShowRemoveCookies] = useState(false);
+  const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
   const [reportMessage, setReportMessage] = useState("");
   const allThemes = [
     "default",
@@ -428,9 +631,9 @@ export function SettingsModal(props: modalProps) {
         <div className={styles.settingsPrivacyContainer}>
           <div className={styles.settingsPrivacyInput}>
             <p>
-              Private profile:
+              Friends only profile:
               <br />
-              {"(Hide interests and posts)"}
+              {"(Hide everything)"}
             </p>
             <input
               type="checkbox"
@@ -442,7 +645,7 @@ export function SettingsModal(props: modalProps) {
             />
           </div>
           <div className={styles.settingsPrivacyInput}>
-            <p>Show tasks on profile:</p>
+            <p>Hide tasks on profile:</p>
             <input
               type="checkbox"
               checked={profileTaskPrivate}
@@ -452,6 +655,7 @@ export function SettingsModal(props: modalProps) {
                   tasksPrivate: e.target.checked,
                 });
               }}
+              disabled={profilePrivate}
             />
           </div>
         </div>
@@ -482,6 +686,17 @@ export function SettingsModal(props: modalProps) {
         <br />
         <br />
         <SignOutButton />
+        <p onClick={() => setShowPrivacyPolicy(true)}>Privacy Policy</p>
+        <p onClick={() => setShowRemoveCookies(true)}>
+          Revoke Cookie acception
+        </p>
+        <p></p>
+        {showPrivacyPolicy && (
+          <PrivacyPolicyModal onComplete={() => setShowPrivacyPolicy(false)} />
+        )}
+        {showRemoveCookies && (
+          <RemoveCookiesModal onComplete={() => setShowRemoveCookies(false)} />
+        )}
       </div>
     </div>
   );

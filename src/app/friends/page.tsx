@@ -18,9 +18,14 @@ export default async function Friends() {
   */
     return (
       <HydrateClient>
-        <Header userId={session.user.id} theme={session.user.themePreset} />
-        <FriendsClient session={session} />
-        <Navbar theme={session.user.themePreset} />
+        <Header
+          userId={session.user.id}
+          theme={session.user.themePreset}
+          userPrivate={session.user.private}
+          userTasksPrivate={session.user.tasksPrivate}
+        />
+        <FriendsClient />
+        <Navbar />
       </HydrateClient>
     );
   } else redirect("/");
