@@ -42,7 +42,7 @@ export default function TaskList(props: TaskListProps) {
             props.setSelectedTab(["custom", customCount]);
           }}
         >
-          Your tasks {`(${customCount})`}
+          Custom tasks {`(${customCount})`}
         </button>
       </div>
       {selectedTab == "daily" && (
