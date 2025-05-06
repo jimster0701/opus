@@ -199,6 +199,7 @@ model Notification {
   commentId  Int?
   replyId    Int?
   interestId Int?
+  reportId   Int?
   createdAt  DateTime         @default(now())
   read       Boolean          @default(false)
 
@@ -211,5 +212,6 @@ enum NotificationType {
   LIKE_COMMENT
   LIKE_REPLY
   TAKE_INTEREST
+  BUG_REPORT
   FOLLOW
 }

@@ -17,6 +17,7 @@ import { type Session } from "~/types/session";
 import { NotificationType, type Notification } from "~/types/notification";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
+import { AboutUsInnerModal } from "./innerModals";
 
 interface modalProps {
   onComplete: () => void;
@@ -31,6 +32,66 @@ export function Modal() {
       </div>
     </div>
   );
+}
+
+export function AboutUsModal(props: modalProps) {
+  return (
+    <div className={styles.modalContainer}>
+      <div className={styles.modalBackground} />
+      <div className={styles.modal}>
+        <p className={styles.closeModalButton} onClick={props.onComplete}>
+          <X width={45} height={45} />
+        </p>
+        <AboutUsInnerModal />
+      </div>
+    </div>
+  );
+}
+
+interface firstLoginModalProps {
+  displayName: string | null;
+}
+
+export function FirstLoginModal(props: firstLoginModalProps) {
+  const [closed, setClosed] = useState(false);
+  if (!closed && !props.displayName)
+    return (
+      <div className={styles.modalContainer}>
+        <div className={styles.modalBackground} />
+        <div className={styles.modal}>
+          <p
+            className={styles.closeModalButton}
+            onClick={() => setClosed(true)}
+          >
+            <X width={45} height={45} />
+          </p>
+          <h1>Welcome new user</h1>
+          <p className={styles.showcaseText}>
+            {
+              "You've been invited to be a part of the first and only trial testing of Opus."
+            }
+          </p>
+          <p className={styles.showcaseText}>
+            You are free to use the app until the 22nd of May, after which
+            access will start to be limit.
+          </p>
+          <p className={styles.showcaseText}>
+            The main purpose of this trial is data collection.
+            <br />
+            So, within the next two weeks after some time with the app you will
+            be asked to fill out a survery ranking the app based on a few
+            pre-selected attributes.
+          </p>
+          <p className={styles.showcaseText}>
+            During the mean time you can leave messages to the dev at any point
+            using the settings page, which is intended to be used for bug
+            reports, opinions and reviews on the app, so feel free to use it as
+            you wish.
+          </p>
+          <p className={styles.showcaseText}>Thank you for trying Opus :)</p>
+        </div>
+      </div>
+    );
 }
 
 interface deleteModalProps {
@@ -1085,11 +1146,11 @@ export function SelectInterestsModal(props: selectInterestsModalProps) {
         >
           <X width={45} height={45} />
         </p>
-        <h1>Choose your interests</h1>
+        <h1>Create and choose your interests</h1>
         <h4>
-          Below, you can create a custom interest. If this interest is selected
-          then it will be visible on your profile as well as any post with an
-          affiliated task.
+          Below, you can create a custom interest. When selected the interest
+          will be visible on your profile as well as any task or post affiliated
+          with the interest.
         </h4>
         <form className={styles.modalForm}>
           <label htmlFor="newInterestName">Create a new interest:</label>
@@ -1144,6 +1205,7 @@ export function SelectInterestsModal(props: selectInterestsModalProps) {
               className={styles.selectInterestModalInterestButton}
               onClick={async (e) => {
                 setSubmitError([false, ""]);
+                if (interestIcon.length == 0) return;
                 e.preventDefault();
                 const interest = await addCustomInterest.mutateAsync({
                   name: interestName,
@@ -1155,11 +1217,7 @@ export function SelectInterestsModal(props: selectInterestsModalProps) {
                 setInterestIcon("");
                 setInterestName("");
               }}
-              disabled={
-                interestName.length < 1 ||
-                interestName.length > 20 ||
-                interestIcon.length < 1
-              }
+              disabled={interestName.length < 1 || interestName.length > 20}
             >
               Add
             </button>
@@ -1184,7 +1242,7 @@ export function SelectInterestsModal(props: selectInterestsModalProps) {
           </Fragment>
         </form>
         <div className={styles.selectInterestModalCustomInterestContainer}>
-          <h4>Your custom interests</h4>
+          <h2>Your custom interests</h2>
           {customInterests.length == 0 ? (
             <div className={styles.selectInterestModalCustomInterest}>
               No custom interests created.
@@ -1219,6 +1277,7 @@ export function SelectInterestsModal(props: selectInterestsModalProps) {
           )}
         </div>
         <form className={styles.modalForm} onSubmit={handleSubmit}>
+          <h2>Your selected interests</h2>
           <h4>
             {selected.length < 3 && (
               <>Please choose at least {3 - selected.length} more</>

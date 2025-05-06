@@ -21,5 +21,6 @@ export enum NotificationType {
   LIKE_COMMENT = "LIKE_COMMENT",
   LIKE_REPLY = "LIKE_REPLY",
   TAKE_INTEREST = "TAKE_INTEREST",
+  BUG_REPORT = "BUG_REPORT",
   FOLLOW = "FOLLOW",
 }

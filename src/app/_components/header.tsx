@@ -1,7 +1,7 @@
 "use client";
 import styles from "../index.module.css";
 import Image from "next/image";
-import { NotificationsModal, SettingsModal } from "./modals";
+import { AboutUsModal, NotificationsModal, SettingsModal } from "./modals";
 import { useEffect, useMemo, useState } from "react";
 import { useThemeStore } from "~/store/themeStore";
 import { useParams, useRouter } from "next/navigation";
@@ -22,6 +22,7 @@ export function Header(props: HeaderProps) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showCookieConsent, setShowCookieConsent] = useState(false);
+  const [showAboutUs, setShowAboutUs] = useState(false);
   const [unreadNotifications, setUnreadNotifications] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const { theme, setTheme } = useThemeStore();
@@ -74,7 +75,14 @@ export function Header(props: HeaderProps) {
           : `${styles.header} ${styles[`theme-${theme}`]}`
       }
     >
-      <div className={styles.logo}>Opus</div>
+      <div
+        className={styles.logo}
+        onClick={() => {
+          setShowAboutUs(true);
+        }}
+      >
+        Opus
+      </div>
       {props.userId != "null" && (
         <div className={styles.navIcons}>
           <Image
@@ -111,6 +119,7 @@ export function Header(props: HeaderProps) {
         </div>
       )}
       {showCookieConsent && <CookieConsent />}
+      {showAboutUs && <AboutUsModal onComplete={() => setShowAboutUs(false)} />}
     </div>
   );
 }

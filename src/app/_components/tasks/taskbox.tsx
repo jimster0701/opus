@@ -60,7 +60,7 @@ export default function Taskbox(props: TaskboxProps) {
                 <SquarePen />
               </div>
             ) : (
-              props.task.completed && (
+              completedTask && (
                 <div className={styles.taskEditContainer}>
                   <BadgeCheck width={30} height={30} />
                 </div>
@@ -79,7 +79,11 @@ export default function Taskbox(props: TaskboxProps) {
               border: `${interest.colour} 1px solid`,
               ["--text-glow" as any]: `linear-gradient(to top left,rgb(70, 70, 70), ${interest.colour})`,
             }}
-            className={styles.glowingNugget}
+            className={`${
+              !completedTask
+                ? `${styles.glowingNugget}`
+                : `${styles.glowingNugget} ${styles.glowingNuggetCompleted}`
+            }`}
             onClick={() => {
               if (props.setNewInterest && props.setShowInterestModal) {
                 props.setShowInterestModal(true);
@@ -87,7 +91,13 @@ export default function Taskbox(props: TaskboxProps) {
               }
             }}
           >
-            <p className={styles.glowingNuggetText}>
+            <p
+              className={`${
+                !completedTask
+                  ? `${styles.glowingNuggetText}`
+                  : `${styles.glowingNuggetText} ${styles.glowingNuggetTextCompleted}`
+              }`}
+            >
               {interest.icon}
               {interest.name}
             </p>

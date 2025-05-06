@@ -7,6 +7,7 @@ import { type Task } from "~/types/task";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { type Session } from "~/types/session";
+import { NewUserModalWrapper } from "../modalWrappers";
 
 interface HomeClientProps {
   session: Session;
@@ -19,6 +20,10 @@ export default function HomeClient(props: HomeClientProps) {
   const searchParams = useSearchParams();
   const [preselectedTab, setPreselectedTab] = useState(
     searchParams.get("selectedTab")
+  );
+
+  const [newUser, setNewUser] = useState(
+    props.session.user.displayName == null
   );
 
   const [isGenerating, setIsGenerating] = useState(false);
@@ -58,7 +63,7 @@ export default function HomeClient(props: HomeClientProps) {
   }, [preselectedTab, selectedTabCount, getCustomTasks]);
 
   useEffect(() => {
-    if (getDailyTasks.isLoading) return;
+    if (getDailyTasks.isLoading || isGenerating) return;
     if (getDailyTasks.data?.length != 0) {
       setDailyTasks(getDailyTasks.data as Task[]);
     } else {
@@ -85,6 +90,7 @@ export default function HomeClient(props: HomeClientProps) {
     getDailyTasks.data?.length,
     getDailyTasks.data,
     generateDailyTasks,
+    isGenerating,
   ]);
 
   useEffect(() => {
@@ -151,6 +157,13 @@ export default function HomeClient(props: HomeClientProps) {
           />
         )}
       </div>
+      {newUser && (
+        <NewUserModalWrapper
+          userId={props.session.user.id}
+          displayName={props.session.user.displayName ?? null}
+          onComplete={() => setNewUser(false)}
+        />
+      )}
     </main>
   );
 }

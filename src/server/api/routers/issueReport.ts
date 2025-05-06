@@ -9,11 +9,20 @@ export const reportRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      return ctx.db.issueReport.create({
+      const report = await ctx.db.issueReport.create({
         data: {
           userId: ctx.session.userId,
           message: input.message,
         },
       });
+      await ctx.db.notification.create({
+        data: {
+          type: "BUG_REPORT",
+          fromUserId: ctx.session.userId,
+          toUserId: "cma27qvsr00007xxedkmacbik",
+          reportId: report.id,
+        },
+      });
+      return report;
     }),
 });
