@@ -5,7 +5,7 @@ import { type Interest } from "~/types/interest";
 import { trpc } from "~/utils/trpc";
 import { useEffect, useState } from "react";
 import { shuffle } from "../util";
-import { SquarePen } from "lucide-react";
+import { BadgeCheck, SquarePen } from "lucide-react";
 import { CompleteTaskModal, UncompleteTaskModal } from "../modals";
 
 interface TaskboxProps {
@@ -50,7 +50,7 @@ export default function Taskbox(props: TaskboxProps) {
         <div className={styles.taskContentContainer}>
           <div className={styles.taskTitleContainer}>
             <p className={styles.taskTitle}>{props.task.name}</p>
-            {props.setEditMode && (
+            {props.setEditMode ? (
               <div
                 className={styles.taskEditContainer}
                 onClick={() => {
@@ -59,6 +59,12 @@ export default function Taskbox(props: TaskboxProps) {
               >
                 <SquarePen />
               </div>
+            ) : (
+              props.task.completed && (
+                <div className={styles.taskEditContainer}>
+                  <BadgeCheck width={30} height={30} />
+                </div>
+              )
             )}
           </div>
           <p className={styles.taskText}>{props.task.description}</p>

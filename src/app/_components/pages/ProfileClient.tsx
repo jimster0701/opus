@@ -32,8 +32,12 @@ export default function ProfileClient(props: ProfileClientProps) {
     0,
   ]);
 
-  const getDailyTasks = trpc.task.getDailyTasks.useQuery();
-  const getCustomTasks = trpc.task.getCustomTasks.useQuery();
+  const getDailyTasks = trpc.task.getDailyTasks.useQuery({
+    userId: props.session.userId,
+  });
+  const getCustomTasks = trpc.task.getCustomTasks.useQuery({
+    userId: props.session.userId,
+  });
 
   useEffect(() => {
     if (getDailyTasks.isLoading) return;

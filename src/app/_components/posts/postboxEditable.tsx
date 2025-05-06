@@ -19,8 +19,12 @@ export default function PostboxEditable(props: postboxEditableProps) {
   const [customTasks, setCustomTasks] = useState<Task[]>([]);
   const [availableTasks, setAvailableTasks] = useState<Task[]>([]);
 
-  const getCustomTasks = trpc.task.getCustomTasks.useQuery();
-  const getDailyTasks = trpc.task.getDailyTasks.useQuery();
+  const getCustomTasks = trpc.task.getCustomTasks.useQuery({
+    userId: props.user.id,
+  });
+  const getDailyTasks = trpc.task.getDailyTasks.useQuery({
+    userId: props.user.id,
+  });
 
   useEffect(() => {
     if (getCustomTasks.isLoading) return;

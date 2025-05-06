@@ -18,8 +18,12 @@ export default function CreateClient(props: CreateClientProps) {
   const [customTasks, setCustomTasks] = useState<Task[]>([]);
   const { theme } = useThemeStore();
 
-  const getCustomTasks = trpc.task.getCustomTasks.useQuery();
-  const getDailyTasks = trpc.task.getDailyTasks.useQuery();
+  const getCustomTasks = trpc.task.getCustomTasks.useQuery({
+    userId: props.session.userId,
+  });
+  const getDailyTasks = trpc.task.getDailyTasks.useQuery({
+    userId: props.session.userId,
+  });
 
   useEffect(() => {
     if (getCustomTasks.isLoading) return;
