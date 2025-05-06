@@ -1584,6 +1584,28 @@
   margin: 0;
 }
 
+/* Help Components
+------------------------------------------ */
+.helpContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.25rem;
+  width: 100%;
+}
+
+.helpContainer > * {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: left;
+}
+
+.helpContentContainer {
+  width: 75%;
+}
+
 /* Settings Components
 ------------------------------------------ */
 .settingsTitle {

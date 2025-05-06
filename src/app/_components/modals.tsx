@@ -7,7 +7,15 @@ import "~/styles/themes.css";
 import { shuffle } from "./util";
 import { useThemeStore } from "~/store/themeStore";
 import { SignOutButton } from "./settings/signOutButton";
-import { Check, X } from "lucide-react";
+import {
+  Check,
+  Home,
+  PlusCircle,
+  Search,
+  User as UserIcon,
+  Users,
+  X,
+} from "lucide-react";
 import { type SimpleUser, type SlugUser, type User } from "~/types/user";
 import { ProfilePicturePreviewWrapper } from "./images/cldImageWrapper";
 import { defaultInterests } from "~/const/defaultVar";
@@ -35,14 +43,142 @@ export function Modal() {
 }
 
 export function AboutUsModal(props: modalProps) {
+  const [interestIcon, setInterestIcon] = useState("");
+  const [hsva, setHsva] = useState({ h: 214, s: 43, v: 90, a: 1 });
   return (
     <div className={styles.modalContainer}>
       <div className={styles.modalBackground} />
-      <div className={styles.modal}>
+      <div className={`${styles.modal} ${styles.AboutUsInnerContainer}`}>
         <p className={styles.closeModalButton} onClick={props.onComplete}>
           <X width={45} height={45} />
         </p>
         <AboutUsInnerModal />
+        <br />
+        <h1>Help</h1>
+        <br />
+        <div className={styles.helpContainer}>
+          <div>
+            <Home size={20} />
+            <p>Home</p>
+          </div>
+          <div className={styles.helpContentContainer}>
+            <p>
+              On the home page you can find your generated tasks and your custom
+              tasks. Here you can also edit your custom tasks and set any task
+              as complete.
+            </p>
+          </div>
+        </div>
+        <div className={styles.helpContainer}>
+          <div>
+            <Search size={20} />
+            <p>Discover</p>
+          </div>
+          <div className={styles.helpContentContainer}>
+            <p>
+              {
+                "The discover page is all about other user's posts, choose from your friends posts or discover"
+              }
+              {
+                ", which will show you posts from other user's that include one or more of your interests."
+              }
+            </p>
+            <div className={styles.discoverTabContainer}>
+              <button>Friends posts</button>
+              <button>Discover posts</button>
+            </div>
+          </div>
+        </div>
+        <div className={styles.helpContainer}>
+          <div>
+            <PlusCircle size={20} />
+            <p>Create</p>
+          </div>
+          <div className={styles.helpContentContainer}>
+            <p>
+              On the create page you can create your own custom tasks and also
+              create posts based on your recent tasks.
+            </p>
+          </div>
+        </div>
+        <div className={styles.helpContainer}>
+          <div>
+            <Users size={20} />
+            <p>Friends</p>
+          </div>
+          <div className={styles.helpContentContainer}>
+            <p>
+              The friends page is a simple shortcut to your friends, users you
+              follow and that follow you.
+            </p>
+          </div>
+        </div>
+        <div className={styles.helpContainer}>
+          <div>
+            <UserIcon size={20} />
+            <p>Profile</p>
+          </div>
+          <div className={styles.helpContentContainer}>
+            <p>
+              The profile page gives you control of account personalisation,
+              where you can edit you profile picture, display name, create
+              custom interests, select interests and edit your posts.
+            </p>
+          </div>
+        </div>
+        <p>
+          When creating a task, post or interest you will need to fill out all
+          areas with your own flare.
+        </p>
+        <p>
+          For example, to create a custom interest you must enter an emoji or
+          two characters as the icon. As well as the name and glow of your
+          interest.
+        </p>
+        <form className={styles.modalForm}>
+          <div className={styles.selectInterestModalInputContainer}>
+            <input
+              type="text"
+              id="interestIcon"
+              value={interestIcon}
+              onChange={(e) => {
+                if (e.target.value.length <= 2) {
+                  setInterestIcon(e.target.value);
+                }
+              }}
+              className={styles.selectInterestModalIconInput}
+              placeholder="🔮"
+              required
+            />
+            <input
+              type="text"
+              id="interestName"
+              className={styles.selectInterestModalInterestInput}
+              placeholder="Interesting..."
+              required
+            />
+            <button
+              onClick={(e) => e.preventDefault()}
+              className={styles.selectInterestModalInterestButton}
+            >
+              Add
+            </button>
+          </div>
+          <Fragment>
+            <Wheel
+              color={hsva}
+              onChange={(color) => setHsva({ ...hsva, ...color.hsva })}
+            />
+            <div
+              style={{
+                width: "100%",
+                height: 34,
+                marginTop: 20,
+                background: hsvaToHex(hsva),
+              }}
+            />
+          </Fragment>
+        </form>
       </div>
     </div>
   );

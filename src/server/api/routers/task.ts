@@ -1,123 +1,114 @@
 import { z } from "zod";
 import { OpenAI } from "openai";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { TaskType } from "@prisma/client";
+import { TaskType, type UserInterest } from "@prisma/client";
+import { type Interest } from "~/types/interest";
 
 export const TaskSchema = z.object({
   name: z.string(),
-  icon: z.string().emoji("Icon must be a single emoji"),
+  icon: z.string().emoji("Icon must be a single emoji").max(2),
   interests: z.array(z.number()),
   description: z.string(),
 });
 
-export const taskRouter = createTRPCRouter({
-  generateDailyTasks: protectedProcedure
-    .input(
-      z.object({
-        userId: z.string(),
-      })
-    )
-    .query(async ({ ctx, input }) => {
-      const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+function roundRobinSplit<T>(arr: T[], batchCount: number): T[][] {
+  const batches: T[][] = Array.from({ length: batchCount }, () => []);
+  arr.forEach((item, index) => {
+    const batchIndex = index % batchCount;
+    if (batches[batchIndex]) batches[batchIndex].push(item);
+  });
+  return batches;
+}
 
-      const user = await ctx.db.user.findUnique({
-        where: {
-          id: ctx.session.userId,
-        },
-        select: {
-          interests: true,
-        },
-      });
+const generateTask = async (batch: Interest[], systemPrompt: string) => {
+  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  const userPrompt = `Please generate one task for me based one or more of my interests:\n${batch
+    .map((i) => `id: ${i.id}, name: ${i.name}`)
+    .join("\n")}\n`;
 
-      const defaultInterests = await ctx.db.interest.findMany({
-        where: {
-          id: { in: user?.interests.map((i) => i.interestId) ?? [] },
-        },
-        include: {
-          createdBy: { select: { id: true, displayName: true, image: true } },
-        },
-      });
+  const response = await openai.chat.completions.create({
+    model: "gpt-4o",
+    messages: [
+      { role: "system", content: systemPrompt },
+      { role: "user", content: userPrompt },
+    ],
+    temperature: 1,
+  });
 
-      if (defaultInterests.length === 0) return [];
+  return response.choices[0]?.message?.content;
+};
 
-      const shuffledInterests = defaultInterests.sort(
-        () => 0.5 - Math.random()
-      );
+async function generateDailyTasks(ctx: any) {
+  const user = await ctx.db.user.findUnique({
+    where: {
+      id: ctx.session.userId,
+    },
+    select: {
+      interests: true,
+    },
+  });
 
-      function roundRobinSplit<T>(arr: T[], batchCount: number): T[][] {
-        const batches: T[][] = Array.from({ length: batchCount }, () => []);
-        arr.forEach((item, index) => {
-          const batchIndex = index % batchCount;
-          if (batches[batchIndex]) batches[batchIndex].push(item);
-        });
-        return batches;
-      }
+  const defaultInterests = await ctx.db.interest.findMany({
+    where: {
+      id: { in: user?.interests.map((i: UserInterest) => i.interestId) ?? [] },
+    },
+    include: {
+      createdBy: { select: { id: true, displayName: true, image: true } },
+    },
+  });
 
-      const batches = roundRobinSplit(
-        shuffledInterests.length == 10
-          ? shuffledInterests.slice(0, 9)
-          : shuffledInterests,
-        3
-      );
+  if (defaultInterests.length === 0) return [];
 
-      const systemPrompt = `
+  const shuffledInterests = defaultInterests.sort(() => 0.5 - Math.random());
+
+  const batches: Interest[][] = roundRobinSplit(
+    shuffledInterests.length == 10
+      ? shuffledInterests.slice(0, 9)
+      : shuffledInterests,
+    3
+  );
+
+  const systemPrompt = `
           You are a creative assistant assigned to generate tasks for users based on their interests. 
           The tasks should be interesting, fun, achievable in a day, and varied.
           You can reach into sub catagories of interests to add depth to tasks.
-          Your response must follow this structure:
+          Your response must follow this exact structure:
           {
             "name": "the task's title",
-            "icon": "One single emoji to represent the task",
+            "icon": "a single emoji to represent the task",
             "interests": [id, ...],
             "description": "Simple sentence about the task, try to balance for different skill levels"
           }
         `;
 
-      for (const batch of batches) {
-        const userPrompt = `Please generate one task for me based one or more of my interests:\n${batch
-          .map((i) => `id: ${i.id}, name: ${i.name}`)
-          .join("\n")}\n`;
+  const tasks = await Promise.all(
+    batches.map(async (batch: Interest[]) => {
+      const content = await generateTask(batch, systemPrompt);
+      if (!content) return;
 
-        const response = await openai.chat.completions.create({
-          model: "gpt-4o",
-          messages: [
-            { role: "system", content: systemPrompt },
-            { role: "user", content: userPrompt },
-          ],
-          temperature: 1,
-        });
-
-        const content = response.choices[0]?.message?.content;
-        if (!content) {
-          console.error("No response content");
-          continue;
-        }
-        try {
-          const taskData = TaskSchema.parse(JSON.parse(content));
-          await ctx.db.task.create({
-            data: {
-              type: TaskType.GENERATED,
-              name: taskData.name,
-              icon: taskData.icon,
-              description: taskData.description,
-              createdById: input.userId,
-              interests: {
-                create: taskData.interests.map((interestId) => ({
-                  interest: {
-                    connect: { id: interestId },
-                  },
-                })),
+      const taskData = TaskSchema.parse(JSON.parse(content));
+      return await ctx.db.task.create({
+        data: {
+          type: TaskType.GENERATED,
+          name: taskData.name,
+          icon: taskData.icon,
+          description: taskData.description,
+          createdById: ctx.session.userId,
+          interests: {
+            create: taskData.interests.map((interestId) => ({
+              interest: {
+                connect: { id: interestId },
               },
-            },
-          });
-        } catch (error: any) {
-          console.error("Failed to parse task:", content);
-          throw new Error(`Generation failed: ${error}`);
-        }
-      }
-      return "success";
-    }),
+            })),
+          },
+        },
+      });
+    })
+  );
+  return tasks;
+}
 
+export const taskRouter = createTRPCRouter({
   getDailyTasks: protectedProcedure
     .input(
       z.object({
@@ -176,7 +167,9 @@ export const taskRouter = createTRPCRouter({
           },
         },
       });
-      return tasks ?? null;
+
+      if (tasks.length == 0) return await generateDailyTasks(ctx);
+      else return tasks ?? null;
     }),
 
   getCustomTasks: protectedProcedure

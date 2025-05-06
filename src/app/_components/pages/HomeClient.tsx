@@ -37,14 +37,6 @@ export default function HomeClient(props: HomeClientProps) {
     0,
   ]);
 
-  const generateDailyTasks = trpc.task.generateDailyTasks.useQuery(
-    {
-      userId: props.session.userId,
-    },
-    {
-      enabled: false, // don't auto-fetch
-    }
-  );
   const getDailyTasks = trpc.task.getDailyTasks.useQuery({
     userId: props.session.userId,
   });
@@ -65,33 +57,16 @@ export default function HomeClient(props: HomeClientProps) {
   useEffect(() => {
     if (getDailyTasks.isLoading || isGenerating) return;
     if (getDailyTasks.data?.length != 0) {
-      setDailyTasks(getDailyTasks.data as Task[]);
-    } else {
       setIsGenerating(true);
-      const handleGenerate = async () => {
-        setIsGenerating(true);
-        setGenerationError("");
-        try {
-          const response = await generateDailyTasks.refetch();
-          if (response.data) {
-            setIsGenerating(false);
-          }
-        } catch (err) {
-          setGenerationError("Failed to generate tasks");
-          console.error(err);
-        } finally {
-          setIsGenerating(false);
-        }
-      };
-      handleGenerate().catch((err) => console.error(err));
+      try {
+        setDailyTasks(getDailyTasks.data as Task[]);
+      } catch (error: any) {
+        setGenerationError(error);
+      } finally {
+        setIsGenerating(false);
+      }
     }
-  }, [
-    getDailyTasks.isLoading,
-    getDailyTasks.data?.length,
-    getDailyTasks.data,
-    generateDailyTasks,
-    isGenerating,
-  ]);
+  }, [getDailyTasks.isLoading, getDailyTasks.data?.length, getDailyTasks.data]);
 
   useEffect(() => {
     if (getCustomTasks.isLoading) return;
