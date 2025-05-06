@@ -54,8 +54,8 @@ export default function ProfileSlugClient(props: ProfileSlugClientProps) {
   ]);
 
   const isFriend = trpc.user.IsFriend.useQuery({ userId: user.id });
-  const getDailyTasks = trpc.task.getDailyTasks.useQuery();
-  const getCustomTasks = trpc.task.getCustomTasks.useQuery();
+  const getDailyTasks = trpc.task.getDailyTasks.useQuery({ userId: user.id });
+  const getCustomTasks = trpc.task.getCustomTasks.useQuery({ userId: user.id });
 
   useMemo(() => {
     if (getSessionUserInterests.isLoading) return;

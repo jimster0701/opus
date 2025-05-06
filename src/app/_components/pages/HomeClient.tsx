@@ -40,25 +40,12 @@ export default function HomeClient(props: HomeClientProps) {
       enabled: false, // don't auto-fetch
     }
   );
-  const getDailyTasks = trpc.task.getDailyTasks.useQuery();
-  const getCustomTasks = trpc.task.getCustomTasks.useQuery();
-
-  const handleGenerate = async () => {
-    setIsGenerating(true);
-    setGenerationError("");
-    try {
-      const response = await generateDailyTasks.refetch();
-      if (response.data) {
-        //setCustomTasks();
-        console.log(response.data);
-      }
-    } catch (err) {
-      setGenerationError("Failed to generate tasks");
-      console.error(err);
-    } finally {
-      setIsGenerating(false);
-    }
-  };
+  const getDailyTasks = trpc.task.getDailyTasks.useQuery({
+    userId: props.session.userId,
+  });
+  const getCustomTasks = trpc.task.getCustomTasks.useQuery({
+    userId: props.session.userId,
+  });
 
   useEffect(() => {
     if (preselectedTab == "custom") {
@@ -76,9 +63,29 @@ export default function HomeClient(props: HomeClientProps) {
       setDailyTasks(getDailyTasks.data as Task[]);
     } else {
       setIsGenerating(true);
-      handleGenerate();
+      const handleGenerate = async () => {
+        setIsGenerating(true);
+        setGenerationError("");
+        try {
+          const response = await generateDailyTasks.refetch();
+          if (response.data) {
+            setIsGenerating(false);
+          }
+        } catch (err) {
+          setGenerationError("Failed to generate tasks");
+          console.error(err);
+        } finally {
+          setIsGenerating(false);
+        }
+      };
+      handleGenerate().catch((err) => console.error(err));
     }
-  }, [getDailyTasks.isLoading, getDailyTasks.data?.length, getDailyTasks.data]);
+  }, [
+    getDailyTasks.isLoading,
+    getDailyTasks.data?.length,
+    getDailyTasks.data,
+    generateDailyTasks,
+  ]);
 
   useEffect(() => {
     if (getCustomTasks.isLoading) return;
@@ -112,25 +119,37 @@ export default function HomeClient(props: HomeClientProps) {
         <br />
         {selectedTabCount[0] == "custom" && selectedTabCount[1] > 0 ? (
           <h3 className={`${styles.homeDescription} ${styles.opusText}`}>
-            These are your custom tasks from the past week:
+            These are your created tasks from the past week:
           </h3>
         ) : selectedTabCount[0] == "daily" ? (
           <h3 className={`${styles.homeDescription} ${styles.opusText}`}>
-            Here are your tasks for today:
+            Here are your generated tasks for today:
           </h3>
         ) : (
           <h3 className={`${styles.homeDescription} ${styles.opusText}`}>
             {"You can create a new task on the 'Create' page!"}
           </h3>
         )}
-        <TaskList
-          session={props.session}
-          setSelectedTab={setSelectedTabCount}
-          customTasks={customTasks}
-          dailyTasks={dailyTasks}
-          selectedTab={selectedTabCount}
-          setCustomTasks={setCustomTasks}
-        />
+        {generationError != "" && (
+          <p>
+            Please report this in the settings page:
+            <br />
+            {generationError}
+          </p>
+        )}
+        {isGenerating ? (
+          <span className={styles.loader} />
+        ) : (
+          <TaskList
+            session={props.session}
+            setSelectedTab={setSelectedTabCount}
+            customTasks={customTasks}
+            dailyTasks={dailyTasks}
+            selectedTab={selectedTabCount}
+            setCustomTasks={setCustomTasks}
+            userId={props.session.userId}
+          />
+        )}
       </div>
     </main>
   );

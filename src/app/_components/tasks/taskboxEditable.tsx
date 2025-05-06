@@ -8,6 +8,7 @@ import TaskboxUpdate from "./taskboxUpdate";
 interface TaskboxEditableProps {
   task: Task;
   session: Session;
+  userId?: string;
   removeTask: (taskId: number) => void;
 }
 
@@ -28,7 +29,10 @@ export default function TaskboxEditable(props: TaskboxEditableProps) {
     }
   };
 
-  if (!editMode) return <Taskbox task={task} setEditMode={setEditMode} />;
+  if (!editMode)
+    return (
+      <Taskbox task={task} setEditMode={setEditMode} userId={props.userId} />
+    );
   else
     return (
       <TaskboxUpdate

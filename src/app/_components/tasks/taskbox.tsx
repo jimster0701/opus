@@ -6,6 +6,7 @@ import { trpc } from "~/utils/trpc";
 import { useEffect, useState } from "react";
 import { shuffle } from "../util";
 import { SquarePen } from "lucide-react";
+import { CompleteTaskModal, UncompleteTaskModal } from "../modals";
 
 interface TaskboxProps {
   setNewInterest?: (value: Interest) => void;
@@ -20,6 +21,8 @@ export default function Taskbox(props: TaskboxProps) {
   const [completedTask, setCompletedTask] = useState<boolean>(
     props.task.completed
   );
+  const [showCompleteTask, setShowCompleteTask] = useState<boolean>(false);
+  const [showUncompleteTask, setShowUncompleteTask] = useState<boolean>(false);
 
   const getInterests = trpc.interest.getInterestsById.useQuery({
     interestIds: props.task.interests.map((i) => i.interest.id),
@@ -32,7 +35,14 @@ export default function Taskbox(props: TaskboxProps) {
   }, [getInterests.isLoading, getInterests.data]);
 
   return (
-    <div key={props.task.id} className={styles.taskContainer}>
+    <div
+      key={props.task.id}
+      className={`${
+        !completedTask
+          ? `${styles.taskContainer}`
+          : `${styles.taskContainer} ${styles.taskContainerCompleted}`
+      }`}
+    >
       <div className={styles.taskMain}>
         <div className={styles.taskIconContainer}>
           <p>{props.task.icon}</p>
@@ -78,15 +88,47 @@ export default function Taskbox(props: TaskboxProps) {
           </div>
         ))}
       </div>
-      {(props.task.type == "GENERATED" ||
-        props.task.type == "GENERATED_FRIEND") &&
-        props.userId && (
-          <input
-            type="checkbox"
-            checked={completedTask}
-            onChange={(e) => setCompletedTask(e.target.checked)}
-          />
-        )}
+      {props.userId && (
+        <div className={styles.taskCompletedContainer}>
+          {completedTask ? (
+            <button
+              className={`${styles.opusButton} ${styles.taskCompleteButton}`}
+              onClick={() => setShowUncompleteTask(true)}
+            >
+              Uncomplete Task
+            </button>
+          ) : (
+            <button
+              className={`${styles.opusButton} ${styles.taskCompleteButton}`}
+              onClick={() => setShowCompleteTask(true)}
+            >
+              Complete Task
+            </button>
+          )}
+        </div>
+      )}
+      {showCompleteTask && (
+        <CompleteTaskModal
+          icon={props.task.icon}
+          onComplete={(action) => {
+            setCompletedTask(action);
+            setShowCompleteTask(false);
+          }}
+          id={props.task.id}
+          name={props.task.name}
+        />
+      )}
+      {showUncompleteTask && (
+        <UncompleteTaskModal
+          icon={props.task.icon}
+          onComplete={(action) => {
+            setCompletedTask(action);
+            setShowUncompleteTask(false);
+          }}
+          id={props.task.id}
+          name={props.task.name}
+        />
+      )}
     </div>
   );
 }

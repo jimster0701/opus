@@ -15,7 +15,6 @@ interface TaskboxUpdateProps {
   onComplete: (
     finalTask: Task,
     updatedInterests: TaskInterest[],
-    completeTask: boolean,
     deleteTask: boolean
   ) => void;
 }
@@ -30,9 +29,6 @@ export default function TaskboxUpdate(props: TaskboxUpdateProps) {
     props.task.interests.map((i) => i.interest)
   );
 
-  const [completedTask, setCompletedTask] = useState<boolean>(
-    props.task.completed
-  );
   const [iconError, setIconError] = useState([false, ""]);
   const [formError, setFormError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -264,7 +260,6 @@ export default function TaskboxUpdate(props: TaskboxUpdateProps) {
                     props.onComplete(
                       updatedTask,
                       updatedTaskWithInterests?.interests as TaskInterest[],
-                      completedTask,
                       false
                     );
                   } catch (error: any) {
@@ -283,12 +278,7 @@ export default function TaskboxUpdate(props: TaskboxUpdateProps) {
               <button
                 className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
                 onClick={() => {
-                  props.onComplete(
-                    props.task,
-                    props.task.interests,
-                    completedTask,
-                    false
-                  );
+                  props.onComplete(props.task, props.task.interests, false);
                 }}
               >
                 Cancel
@@ -327,12 +317,7 @@ export default function TaskboxUpdate(props: TaskboxUpdateProps) {
         <DeleteTaskModal
           onComplete={(deleteTask: boolean) => {
             if (deleteTask)
-              props.onComplete(
-                props.task,
-                props.task.interests,
-                completedTask,
-                true
-              );
+              props.onComplete(props.task, props.task.interests, true);
             setShowTaskDelete(false);
           }}
           id={props.task.id}

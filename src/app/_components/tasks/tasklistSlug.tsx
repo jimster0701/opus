@@ -52,7 +52,7 @@ export default function TaskListSlug(props: taskListSlugProps) {
               <Taskbox key={task.id} task={task} />
             ))}
           {dailyCount == 0 && (
-            <p className={styles.noTaskText}>No tasks yet :(</p>
+            <p className={styles.noTaskText}>No tasks generated today.</p>
           )}
         </div>
       )}
@@ -68,7 +68,7 @@ export default function TaskListSlug(props: taskListSlugProps) {
               <Taskbox key={task.id} task={task} />
             ))}
           {customCount == 0 && (
-            <p className={styles.noTaskText}>No tasks yet :(</p>
+            <p className={styles.noTaskText}>No tasks created this week.</p>
           )}
         </div>
       )}

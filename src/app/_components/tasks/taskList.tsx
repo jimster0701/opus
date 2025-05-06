@@ -12,6 +12,7 @@ interface TaskListProps {
   selectedTab: [string, number];
   dailyTasks: Task[];
   customTasks: Task[];
+  userId?: string;
   setCustomTasks: (tasks: Task[]) => void;
 }
 
@@ -52,11 +53,16 @@ export default function TaskList(props: TaskListProps) {
                 task.type == TaskType.GENERATED ||
                 task.type == TaskType.GENERATED_FRIEND
             )
+            .sort((task1, task2) =>
+              task1.completed === task2.completed ? 0 : task1.completed ? 1 : -1
+            )
             .map((task) => (
-              <Taskbox key={task.id} task={task} />
+              <Taskbox key={task.id} task={task} userId={props.userId} />
             ))}
           {dailyCount == 0 && (
-            <p className={styles.noTaskText}>No tasks yet :(</p>
+            <p className={styles.noTaskText}>
+              No tasks have been generated today.
+            </p>
           )}
         </div>
       )}
@@ -68,10 +74,14 @@ export default function TaskList(props: TaskListProps) {
                 task.type == TaskType.CUSTOM ||
                 task.type == TaskType.CUSTOM_FRIEND
             )
+            .sort((task1, task2) =>
+              task1.completed === task2.completed ? 0 : task1.completed ? 1 : -1
+            )
             .map((task) => (
               <TaskboxEditable
                 key={task.id}
                 task={task}
+                userId={props.session.userId}
                 session={props.session}
                 removeTask={(taskId: number) => {
                   props.setCustomTasks(
@@ -81,7 +91,7 @@ export default function TaskList(props: TaskListProps) {
               />
             ))}
           {customCount == 0 && (
-            <p className={styles.noTaskText}>No tasks yet :(</p>
+            <p className={styles.noTaskText}>No tasks created this week.</p>
           )}
         </div>
       )}

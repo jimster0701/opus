@@ -92,7 +92,6 @@ export const taskRouter = createTRPCRouter({
           console.error("No response content");
           continue;
         }
-        console.log(content);
         try {
           const taskData = TaskSchema.parse(JSON.parse(content));
           await ctx.db.task.create({
@@ -111,7 +110,7 @@ export const taskRouter = createTRPCRouter({
               },
             },
           });
-        } catch (error) {
+        } catch (error: any) {
           console.error("Failed to parse task:", content);
           throw new Error(`Generation failed: ${error}`);
         }
@@ -119,112 +118,124 @@ export const taskRouter = createTRPCRouter({
       return "success";
     }),
 
-  getDailyTasks: protectedProcedure.query(async ({ ctx }) => {
-    const startOfToday = new Date();
-    startOfToday.setHours(0, 0, 0, 0);
+  getDailyTasks: protectedProcedure
+    .input(
+      z.object({
+        userId: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const startOfToday = new Date();
+      startOfToday.setHours(0, 0, 0, 0);
 
-    const endOfToday = new Date();
-    endOfToday.setHours(23, 59, 59, 999);
-    const tasks = await ctx.db.task.findMany({
-      orderBy: { name: "desc" },
-      where: {
-        createdById: ctx.session.user.id,
-        createdAt: { gte: startOfToday, lte: endOfToday }, // Get tasks made today
-        type: {
-          in: [TaskType.GENERATED, TaskType.GENERATED_FRIEND],
+      const endOfToday = new Date();
+      endOfToday.setHours(23, 59, 59, 999);
+      const tasks = await ctx.db.task.findMany({
+        orderBy: { name: "desc" },
+        where: {
+          createdById: input.userId,
+          createdAt: { gte: startOfToday, lte: endOfToday }, // Get tasks made today
+          type: {
+            in: [TaskType.GENERATED, TaskType.GENERATED_FRIEND],
+          },
         },
-      },
-      include: {
-        friends: {
-          include: {
-            user: {
-              select: {
-                id: true,
-                displayName: true,
-                image: true,
+        include: {
+          friends: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  displayName: true,
+                  image: true,
+                },
+              },
+            },
+          },
+          interests: {
+            include: {
+              interest: {
+                select: {
+                  id: true,
+                  name: true,
+                  icon: true,
+                  colour: true,
+                  private: true,
+                  createdById: true,
+                  createdBy: true,
+                  users: true,
+                },
+              },
+              task: {
+                select: {
+                  id: true,
+                  type: true,
+                  name: true,
+                },
               },
             },
           },
         },
-        interests: {
-          include: {
-            interest: {
-              select: {
-                id: true,
-                name: true,
-                icon: true,
-                colour: true,
-                private: true,
-                createdById: true,
-                createdBy: true,
-                users: true,
-              },
-            },
-            task: {
-              select: {
-                id: true,
-                type: true,
-                name: true,
-              },
-            },
-          },
-        },
-      },
-    });
-    return tasks ?? null;
-  }),
+      });
+      return tasks ?? null;
+    }),
 
-  getCustomTasks: protectedProcedure.query(async ({ ctx }) => {
-    const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+  getCustomTasks: protectedProcedure
+    .input(
+      z.object({
+        userId: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
-    const tasks = await ctx.db.task.findMany({
-      orderBy: { updatedAt: "desc" },
-      where: {
-        createdById: ctx.session.user.id,
-        updatedAt: { gte: oneWeekAgo },
-        type: {
-          in: [TaskType.CUSTOM, TaskType.CUSTOM_FRIEND],
+      const tasks = await ctx.db.task.findMany({
+        orderBy: { updatedAt: "desc" },
+        where: {
+          createdById: input.userId,
+          updatedAt: { gte: oneWeekAgo },
+          type: {
+            in: [TaskType.CUSTOM, TaskType.CUSTOM_FRIEND],
+          },
         },
-      },
-      include: {
-        friends: {
-          include: {
-            user: {
-              select: {
-                id: true,
-                displayName: true,
-                image: true,
+        include: {
+          friends: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  displayName: true,
+                  image: true,
+                },
+              },
+            },
+          },
+          interests: {
+            include: {
+              interest: {
+                select: {
+                  id: true,
+                  name: true,
+                  icon: true,
+                  colour: true,
+                  private: true,
+                  createdById: true,
+                  createdBy: true,
+                  users: true,
+                },
+              },
+              task: {
+                select: {
+                  id: true,
+                  type: true,
+                  name: true,
+                },
               },
             },
           },
         },
-        interests: {
-          include: {
-            interest: {
-              select: {
-                id: true,
-                name: true,
-                icon: true,
-                colour: true,
-                private: true,
-                createdById: true,
-                createdBy: true,
-                users: true,
-              },
-            },
-            task: {
-              select: {
-                id: true,
-                type: true,
-                name: true,
-              },
-            },
-          },
-        },
-      },
-    });
-    return tasks ?? null;
-  }),
+      });
+      return tasks ?? null;
+    }),
 
   createCustomTask: protectedProcedure
     .input(
@@ -357,6 +368,19 @@ export const taskRouter = createTRPCRouter({
         });
 
         return updatedTask;
+      });
+    }),
+
+  completeTask: protectedProcedure
+    .input(z.object({ id: z.number().min(1), value: z.boolean() }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.$transaction(async (prisma) => {
+        return prisma.task.update({
+          where: { id: input.id },
+          data: {
+            completed: input.value,
+          },
+        });
       });
     }),
 

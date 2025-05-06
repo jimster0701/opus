@@ -268,6 +268,94 @@ export function RemoveCookiesModal(props: modalProps) {
   );
 }
 
+interface completeTaskModalProps extends deleteModalProps {
+  icon: string;
+}
+
+export function CompleteTaskModal(props: completeTaskModalProps) {
+  const completeTask = api.task.completeTask.useMutation();
+  return (
+    <div className={styles.modalContainer}>
+      <div
+        className={styles.modalBackground}
+        onClick={() => props.onComplete(false)}
+      />
+      <div className={styles.modal}>
+        <h1>Would you like to complete this task?</h1>
+        <h2>
+          {props.icon}
+          {props.name}
+        </h2>
+        <br />
+        <div className={styles.taskUpdateControls}>
+          <button
+            className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
+            onClick={() => {
+              try {
+                completeTask.mutate({ id: props.id, value: true });
+                props.onComplete(true);
+                toast.success("Task Completed!");
+              } catch (error) {
+                console.error(error);
+              }
+            }}
+          >
+            Yes <Check />
+          </button>
+          <button
+            className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
+            onClick={() => props.onComplete(false)}
+          >
+            No <X />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function UncompleteTaskModal(props: completeTaskModalProps) {
+  const completeTask = api.task.completeTask.useMutation();
+  return (
+    <div className={styles.modalContainer}>
+      <div
+        className={styles.modalBackground}
+        onClick={() => props.onComplete(true)}
+      />
+      <div className={styles.modal}>
+        <h1>Do you want to uncomplete this task?</h1>
+        <h2>
+          {props.icon}
+          {props.name}
+        </h2>
+        <br />
+        <div className={styles.taskUpdateControls}>
+          <button
+            className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
+            onClick={() => {
+              try {
+                completeTask.mutate({ id: props.id, value: false });
+                props.onComplete(false);
+                toast.success("Task Uncompleted!");
+              } catch (error) {
+                console.error(error);
+              }
+            }}
+          >
+            Yes <Check />
+          </button>
+          <button
+            className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
+            onClick={() => props.onComplete(true)}
+          >
+            No <X />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 interface gainInterestModalProps extends modalProps {
   interest: Interest;
   userInterests: Interest[];
