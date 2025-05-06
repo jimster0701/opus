@@ -2,28 +2,30 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
 export const notificationRouter = createTRPCRouter({
-  getNotifications: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.db.notification.findMany({
-      where: { toUserId: ctx.session.userId },
-      orderBy: { createdAt: "desc" },
-      include: {
-        fromUser: {
-          select: {
-            id: true,
-            displayName: true,
-            image: true,
+  getNotifications: protectedProcedure
+    .input(z.object({ userId: z.string().min(1) }))
+    .query(async ({ ctx, input }) => {
+      return await ctx.db.notification.findMany({
+        where: { toUserId: input.userId },
+        orderBy: { createdAt: "desc" },
+        include: {
+          fromUser: {
+            select: {
+              id: true,
+              displayName: true,
+              image: true,
+            },
+          },
+          toUser: {
+            select: {
+              id: true,
+              displayName: true,
+              image: true,
+            },
           },
         },
-        toUser: {
-          select: {
-            id: true,
-            displayName: true,
-            image: true,
-          },
-        },
-      },
-    });
-  }),
+      });
+    }),
 
   createInterestNotification: protectedProcedure
     .input(

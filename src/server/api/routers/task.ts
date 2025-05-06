@@ -1,14 +1,135 @@
 import { z } from "zod";
+import { OpenAI } from "openai";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { TaskType } from "@prisma/client";
 
+export const TaskSchema = z.object({
+  name: z.string(),
+  icon: z.string().emoji("Icon must be a single emoji"),
+  interests: z.array(z.number()),
+  description: z.string(),
+});
+
 export const taskRouter = createTRPCRouter({
+  generateDailyTasks: protectedProcedure
+    .input(
+      z.object({
+        userId: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+      const user = await ctx.db.user.findUnique({
+        where: {
+          id: ctx.session.userId,
+        },
+        select: {
+          interests: true,
+        },
+      });
+
+      const defaultInterests = await ctx.db.interest.findMany({
+        where: {
+          id: { in: user?.interests.map((i) => i.interestId) ?? [] },
+        },
+        include: {
+          createdBy: { select: { id: true, displayName: true, image: true } },
+        },
+      });
+
+      if (defaultInterests.length === 0) return [];
+
+      const shuffledInterests = defaultInterests.sort(
+        () => 0.5 - Math.random()
+      );
+
+      function roundRobinSplit<T>(arr: T[], batchCount: number): T[][] {
+        const batches: T[][] = Array.from({ length: batchCount }, () => []);
+        arr.forEach((item, index) => {
+          const batchIndex = index % batchCount;
+          if (batches[batchIndex]) batches[batchIndex].push(item);
+        });
+        return batches;
+      }
+
+      const batches = roundRobinSplit(
+        shuffledInterests.length == 10
+          ? shuffledInterests.slice(0, 9)
+          : shuffledInterests,
+        3
+      );
+
+      const systemPrompt = `
+          You are a creative assistant assigned to generate tasks for users based on their interests. 
+          The tasks should be interesting, fun, achievable in a day, and varied.
+          You can reach into sub catagories of interests to add depth to tasks.
+          Your response must follow this structure:
+          {
+            "name": "the task's title",
+            "icon": "One single emoji to represent the task",
+            "interests": [id, ...],
+            "description": "Simple sentence about the task, try to balance for different skill levels"
+          }
+        `;
+
+      for (const batch of batches) {
+        const userPrompt = `Please generate one task for me based one or more of my interests:\n${batch
+          .map((i) => `id: ${i.id}, name: ${i.name}`)
+          .join("\n")}\n`;
+
+        const response = await openai.chat.completions.create({
+          model: "gpt-4o",
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: userPrompt },
+          ],
+          temperature: 1,
+        });
+
+        const content = response.choices[0]?.message?.content;
+        if (!content) {
+          console.error("No response content");
+          continue;
+        }
+        console.log(content);
+        try {
+          const taskData = TaskSchema.parse(JSON.parse(content));
+          await ctx.db.task.create({
+            data: {
+              type: TaskType.GENERATED,
+              name: taskData.name,
+              icon: taskData.icon,
+              description: taskData.description,
+              createdById: input.userId,
+              interests: {
+                create: taskData.interests.map((interestId) => ({
+                  interest: {
+                    connect: { id: interestId },
+                  },
+                })),
+              },
+            },
+          });
+        } catch (error) {
+          console.error("Failed to parse task:", content);
+          throw new Error(`Generation failed: ${error}`);
+        }
+      }
+      return "success";
+    }),
+
   getDailyTasks: protectedProcedure.query(async ({ ctx }) => {
-    const post = await ctx.db.task.findMany({
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
+
+    const endOfToday = new Date();
+    endOfToday.setHours(23, 59, 59, 999);
+    const tasks = await ctx.db.task.findMany({
       orderBy: { name: "desc" },
       where: {
         createdById: ctx.session.user.id,
-        createdAt: new Date(), // Get tasks made today's
+        createdAt: { gte: startOfToday, lte: endOfToday }, // Get tasks made today
         type: {
           in: [TaskType.GENERATED, TaskType.GENERATED_FRIEND],
         },
@@ -50,13 +171,13 @@ export const taskRouter = createTRPCRouter({
         },
       },
     });
-    return post ?? null;
+    return tasks ?? null;
   }),
 
   getCustomTasks: protectedProcedure.query(async ({ ctx }) => {
     const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
-    const post = await ctx.db.task.findMany({
+    const tasks = await ctx.db.task.findMany({
       orderBy: { updatedAt: "desc" },
       where: {
         createdById: ctx.session.user.id,
@@ -102,7 +223,7 @@ export const taskRouter = createTRPCRouter({
         },
       },
     });
-    return post ?? null;
+    return tasks ?? null;
   }),
 
   createCustomTask: protectedProcedure

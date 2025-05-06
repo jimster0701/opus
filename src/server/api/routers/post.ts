@@ -236,7 +236,7 @@ export const postRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
-      if (!input.isFriend && input.isPrivate) return;
+      if (!input.isFriend && input.isPrivate) return false;
       const dbPosts = await ctx.db.post.findMany({
         orderBy: { createdAt: "desc" },
         where: { createdBy: { id: input.userId } },

@@ -6,32 +6,24 @@ import { trpc } from "~/utils/trpc";
 import { useEffect, useState } from "react";
 import { shuffle } from "../util";
 import { SquarePen } from "lucide-react";
-import { useRouter } from "next/navigation";
 
 interface TaskboxProps {
   setNewInterest?: (value: Interest) => void;
   setShowInterestModal?: (value: boolean) => void;
   task: Task;
+  userId?: string;
   setEditMode?: (value: boolean) => void;
 }
 
 export default function Taskbox(props: TaskboxProps) {
-  const router = useRouter();
   const [interests, setInterests] = useState<Interest[]>([]);
-  const getInterests = trpc.interest.getInterestsById.useQuery(
-    {
-      interestIds: props.task.interests.map((i) => i.interest.id),
-    },
-    {
-      retry: (_count, err) => {
-        // `onError` only runs once React Query stops retrying
-        if (err.data?.code === "UNAUTHORIZED") {
-          void router.push("/");
-        }
-        return true;
-      },
-    }
+  const [completedTask, setCompletedTask] = useState<boolean>(
+    props.task.completed
   );
+
+  const getInterests = trpc.interest.getInterestsById.useQuery({
+    interestIds: props.task.interests.map((i) => i.interest.id),
+  });
   useEffect(() => {
     if (getInterests.isLoading) return;
     if (getInterests.data?.length != 0) {
@@ -86,6 +78,15 @@ export default function Taskbox(props: TaskboxProps) {
           </div>
         ))}
       </div>
+      {(props.task.type == "GENERATED" ||
+        props.task.type == "GENERATED_FRIEND") &&
+        props.userId && (
+          <input
+            type="checkbox"
+            checked={completedTask}
+            onChange={(e) => setCompletedTask(e.target.checked)}
+          />
+        )}
     </div>
   );
 }

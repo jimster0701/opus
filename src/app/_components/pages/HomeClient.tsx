@@ -21,6 +21,9 @@ export default function HomeClient(props: HomeClientProps) {
     searchParams.get("selectedTab")
   );
 
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generationError, setGenerationError] = useState("");
+
   const [customTasks, setCustomTasks] = useState<Task[]>([]);
   const [dailyTasks, setDailyTasks] = useState<Task[]>([]);
 
@@ -29,8 +32,33 @@ export default function HomeClient(props: HomeClientProps) {
     0,
   ]);
 
+  const generateDailyTasks = trpc.task.generateDailyTasks.useQuery(
+    {
+      userId: props.session.userId,
+    },
+    {
+      enabled: false, // don't auto-fetch
+    }
+  );
   const getDailyTasks = trpc.task.getDailyTasks.useQuery();
   const getCustomTasks = trpc.task.getCustomTasks.useQuery();
+
+  const handleGenerate = async () => {
+    setIsGenerating(true);
+    setGenerationError("");
+    try {
+      const response = await generateDailyTasks.refetch();
+      if (response.data) {
+        //setCustomTasks();
+        console.log(response.data);
+      }
+    } catch (err) {
+      setGenerationError("Failed to generate tasks");
+      console.error(err);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   useEffect(() => {
     if (preselectedTab == "custom") {
@@ -45,10 +73,12 @@ export default function HomeClient(props: HomeClientProps) {
   useEffect(() => {
     if (getDailyTasks.isLoading) return;
     if (getDailyTasks.data?.length != 0) {
-      // call gpt
-      setDailyTasks([]);
+      setDailyTasks(getDailyTasks.data as Task[]);
+    } else {
+      setIsGenerating(true);
+      handleGenerate();
     }
-  }, [getDailyTasks.isLoading, getDailyTasks.data?.length]);
+  }, [getDailyTasks.isLoading, getDailyTasks.data?.length, getDailyTasks.data]);
 
   useEffect(() => {
     if (getCustomTasks.isLoading) return;

@@ -4,7 +4,7 @@ import Image from "next/image";
 import { NotificationsModal, SettingsModal } from "./modals";
 import { useEffect, useMemo, useState } from "react";
 import { useThemeStore } from "~/store/themeStore";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { trpc } from "~/utils/trpc";
 import { CookieConsent } from "./cookieConsentBanner";
 import { type Notification } from "~/types/notification";
@@ -18,13 +18,32 @@ interface HeaderProps {
 }
 
 export function Header(props: HeaderProps) {
+  const router = useRouter();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showCookieConsent, setShowCookieConsent] = useState(false);
   const [unreadNotifications, setUnreadNotifications] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const { theme, setTheme } = useThemeStore();
 
-  const getNotifications = trpc.notification.getNotifications.useQuery();
+  const getNotifications = trpc.notification.getNotifications.useQuery(
+    {
+      userId: props.userId,
+    },
+    {
+      retry: (_count, err) => {
+        // `onError` only runs once React Query stops retrying
+        if (err.data?.code === "UNAUTHORIZED") {
+          void router.push("/");
+        }
+        return true;
+      },
+    }
+  );
+
+  useMemo(() => {
+    setShowCookieConsent(localStorage.getItem("cookie_consent") == null);
+  }, []);
 
   useEffect(() => {
     if (getNotifications.isLoading) return;
@@ -91,14 +110,16 @@ export function Header(props: HeaderProps) {
           )}
         </div>
       )}
-      {localStorage.getItem("cookie_consent") == null && <CookieConsent />}
+      {showCookieConsent && <CookieConsent />}
     </div>
   );
 }
 
 export function SlugHeader(props: HeaderProps) {
+  const router = useRouter();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showCookieConsent, setShowCookieConsent] = useState(false);
   const [unreadNotifications, setUnreadNotifications] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [theme, setTheme] = useState("");
@@ -109,7 +130,24 @@ export function SlugHeader(props: HeaderProps) {
     id: typeof slugData === "string" ? slugData : "",
   });
 
-  const getNotifications = trpc.notification.getNotifications.useQuery();
+  const getNotifications = trpc.notification.getNotifications.useQuery(
+    {
+      userId: props.userId,
+    },
+    {
+      retry: (_count, err) => {
+        // `onError` only runs once React Query stops retrying
+        if (err.data?.code === "UNAUTHORIZED") {
+          void router.push("/");
+        }
+        return true;
+      },
+    }
+  );
+
+  useMemo(() => {
+    setShowCookieConsent(localStorage.getItem("cookie_consent") == null);
+  }, []);
 
   useEffect(() => {
     if (getNotifications.isLoading) return;
@@ -180,7 +218,7 @@ export function SlugHeader(props: HeaderProps) {
           )}
         </div>
       )}
-      {localStorage.getItem("cookie_consent") == null && <CookieConsent />}
+      {showCookieConsent && <CookieConsent />}
     </div>
   );
 }
