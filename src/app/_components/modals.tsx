@@ -1050,6 +1050,11 @@ export function NotificationsModal(props: notificationModalProps) {
             {notification.type == NotificationType.TAKE_INTEREST && (
               <p>{notification.fromUser.displayName} borrowed your interest!</p>
             )}
+            {notification.type == NotificationType.BUG_REPORT && (
+              <p>
+                {notification.fromUser.displayName} sent a message in reports!
+              </p>
+            )}
           </div>
         ))}
       </div>

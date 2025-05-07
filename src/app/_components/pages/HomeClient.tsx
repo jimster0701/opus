@@ -55,7 +55,12 @@ export default function HomeClient(props: HomeClientProps) {
   }, [preselectedTab, selectedTabCount, getCustomTasks]);
 
   useEffect(() => {
-    if (getDailyTasks.isLoading || isGenerating) return;
+    if (
+      props.session.user.displayName == null ||
+      getDailyTasks.isLoading ||
+      isGenerating
+    )
+      return;
     if (getDailyTasks.data?.length != 0) {
       setIsGenerating(true);
       try {

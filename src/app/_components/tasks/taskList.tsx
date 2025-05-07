@@ -47,18 +47,23 @@ export default function TaskList(props: TaskListProps) {
       </div>
       {selectedTab == "daily" && (
         <div className={styles.taskComponentContainer}>
-          {props.dailyTasks
-            .filter(
-              (task) =>
-                task.type == TaskType.GENERATED ||
-                task.type == TaskType.GENERATED_FRIEND
-            )
-            .sort((task1, task2) =>
-              task1.completed === task2.completed ? 0 : task1.completed ? 1 : -1
-            )
-            .map((task) => (
-              <Taskbox key={task.id} task={task} userId={props.userId} />
-            ))}
+          {props.dailyTasks.length > 0 &&
+            props.dailyTasks
+              .filter(
+                (task) =>
+                  task.type == TaskType.GENERATED ||
+                  task.type == TaskType.GENERATED_FRIEND
+              )
+              .sort((task1, task2) =>
+                task1.completed === task2.completed
+                  ? 0
+                  : task1.completed
+                  ? 1
+                  : -1
+              )
+              .map((task) => (
+                <Taskbox key={task.id} task={task} userId={props.userId} />
+              ))}
           {dailyCount == 0 && (
             <p className={styles.noTaskText}>
               No tasks have been generated today.
