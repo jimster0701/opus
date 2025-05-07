@@ -168,7 +168,8 @@ export const taskRouter = createTRPCRouter({
         },
       });
 
-      if (tasks.length == 0) return await generateDailyTasks(ctx);
+      if (input.userId == ctx.session.userId && tasks.length == 0)
+        return await generateDailyTasks(ctx);
       else return tasks ?? null;
     }),
 
