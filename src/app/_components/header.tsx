@@ -131,6 +131,7 @@ export function SlugHeader(props: HeaderProps) {
   const [showCookieConsent, setShowCookieConsent] = useState(false);
   const [unreadNotifications, setUnreadNotifications] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [showAboutUs, setShowAboutUs] = useState(false);
   const [theme, setTheme] = useState("");
   const params = useParams();
   const slugData = params.slug;
@@ -190,7 +191,14 @@ export function SlugHeader(props: HeaderProps) {
           : `${styles.header} ${styles[`theme-${theme}`]}`
       }
     >
-      <div className={styles.logo}>Opus</div>
+      <div
+        className={styles.logo}
+        onClick={() => {
+          setShowAboutUs(true);
+        }}
+      >
+        Opus
+      </div>
       {props.userId != "null" && (
         <div className={styles.navIcons}>
           <Image
@@ -228,6 +236,7 @@ export function SlugHeader(props: HeaderProps) {
         </div>
       )}
       {showCookieConsent && <CookieConsent />}
+      {showAboutUs && <AboutUsModal onComplete={() => setShowAboutUs(false)} />}
     </div>
   );
 }

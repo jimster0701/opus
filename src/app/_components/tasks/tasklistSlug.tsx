@@ -48,6 +48,9 @@ export default function TaskListSlug(props: taskListSlugProps) {
                 task.type == TaskType.GENERATED ||
                 task.type == TaskType.GENERATED_FRIEND
             )
+            .sort((task1, task2) =>
+              task1.completed === task2.completed ? 0 : task1.completed ? 1 : -1
+            )
             .map((task) => (
               <Taskbox key={task.id} task={task} />
             ))}
@@ -63,6 +66,9 @@ export default function TaskListSlug(props: taskListSlugProps) {
               (task) =>
                 task.type == TaskType.CUSTOM ||
                 task.type == TaskType.CUSTOM_FRIEND
+            )
+            .sort((task1, task2) =>
+              task1.completed === task2.completed ? 0 : task1.completed ? 1 : -1
             )
             .map((task) => (
               <Taskbox key={task.id} task={task} />
