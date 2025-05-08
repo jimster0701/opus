@@ -53,7 +53,7 @@ export default function TaskboxCreate(props: TaskboxCreateProps) {
               }`}
               value={props.task.icon}
               onChange={(e) => {
-                if (e.target.value.length <= 2) {
+                if (e.target.value.length <= 3) {
                   setIconError([false, ""]);
                   props.onTaskChange?.({
                     ...props.task,
