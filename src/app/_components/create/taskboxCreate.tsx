@@ -21,6 +21,8 @@ export default function TaskboxCreate(props: TaskboxCreateProps) {
     userId: props.user.id,
   });
 
+  const [interestIcon, setInterestIcon] = useState(props.task.icon);
+
   const [loaded, setLoaded] = useState(false);
   const [selectedInterests, setSelectedInterests] = useState<Interest[]>([]);
   const [availableInterests, setAvailableInterests] = useState<Interest[]>([]);
@@ -51,20 +53,21 @@ export default function TaskboxCreate(props: TaskboxCreateProps) {
               className={`${styles.taskCreateIconInput} ${
                 iconError[0] ? styles.inputError : ""
               }`}
-              value={props.task.icon}
+              value={interestIcon}
               onChange={(e) => {
-                if (e.target.value.length <= 3) {
+                const emojiRegex = `(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])`;
+                if (
+                  e.target.value == "" ||
+                  RegExp(emojiRegex).test(e.target.value)
+                ) {
                   setIconError([false, ""]);
                   props.onTaskChange?.({
                     ...props.task,
                     icon: e.target.value,
                   });
+                  setInterestIcon(e.target.value);
                 } else {
-                  setIconError([
-                    true,
-                    "Icon can be 2 characters",
-                    "or one emoji E.g.🌲, LP, :]",
-                  ]);
+                  setIconError([true, "Icon must be an emoji"]);
                 }
               }}
             />

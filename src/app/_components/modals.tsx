@@ -811,7 +811,10 @@ export function PrivacyPolicyModal(props: modalProps) {
         </ul>
         <p>
           To exercise these rights, contact us at{" "}
-          <strong>[your-email@example.com]</strong>.
+          <strong>
+            <a href="mailto:jimmypm0701@gmail.com">jimmypm0701@gmail.com</a>
+          </strong>
+          .
         </p>
 
         <h2>8. Cookies & Tracking</h2>
@@ -835,7 +838,8 @@ export function PrivacyPolicyModal(props: modalProps) {
 
         <h2>11. Contact Us</h2>
         <p>
-          📧 <strong>Email:</strong> jimmypm0701@gmail.com
+          📧 <strong>Email:</strong>{" "}
+          <a href="mailto:jimmypm0701@gmail.com">jimmypm0701@gmail.com</a>
         </p>
       </div>
     </div>
@@ -1308,11 +1312,9 @@ export function SelectInterestsModal(props: selectInterestsModalProps) {
               onChange={(e) => {
                 const newIcon = e.target.value;
                 setSubmitError([false, ""]);
-                if (newIcon.length > 2) {
-                  setSubmitError([
-                    true,
-                    "Interest icon can only be 2 character",
-                  ]);
+                const emojiRegex = `(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])`;
+                if (RegExp(emojiRegex).test(newIcon)) {
+                  setSubmitError([true, "Interest icon must be an emoji"]);
                 } else {
                   setInterestIcon(newIcon);
                 }
