@@ -4,6 +4,8 @@ import { api } from "~/trpc/react";
 import styles from "../../index.module.css";
 import { Postbox } from "./postbox";
 import { type Interest } from "~/types/interest";
+import { useEffect, useState } from "react";
+import { type Post } from "~/types/post";
 
 interface allInterestPostsProps {
   userId: string;
@@ -14,12 +16,20 @@ interface allInterestPostsProps {
 }
 
 export function AllInterestPosts(props: allInterestPostsProps) {
-  const posts = api.post.getAllInterest.useSuspenseQuery({
-    interestIds: props.interestIds,
+  const [posts, setPosts] = useState<Post[]>([]);
+
+  const getPosts = api.post.getAllInterest.useQuery({
+    interestIds: props.interestIds ?? [],
   });
-  if (posts[1].isLoading) <p className={styles.showcaseText}>Loading...</p>;
-  else if (posts[0].length > 0) {
-    return posts[0].map((post) => (
+
+  useEffect(() => {
+    if (getPosts.isLoading) return;
+    if (getPosts.data?.length != 0) return setPosts(getPosts.data as Post[]);
+  }, [getPosts.isLoading, getPosts.data?.length, getPosts.data]);
+
+  if (getPosts.isLoading) <p className={styles.showcaseText}>Loading...</p>;
+  else if (posts.length > 0) {
+    return posts.map((post) => (
       <Postbox
         setNewInterest={props.setNewInterest}
         setShowInterestModal={props.setShowInterestModal}

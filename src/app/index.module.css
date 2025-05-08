@@ -458,7 +458,7 @@
   color: var(--text-primary);
   font-size: 1.2rem;
   text-align: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   transition: all 0.2s ease;
 }
 
@@ -619,8 +619,18 @@
   color: var(--text-primary);
   font-size: 1.2rem;
   text-align: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   transition: all 0.2s ease;
+}
+
+.selectInterestModalPrivateContainer {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.5rem;
+}
+.selectInterestModalPrivateContainer > * {
+  margin: 0 0.25rem;
 }
 
 .selectInterestModalCustomInterestContainer {
@@ -1152,6 +1162,14 @@
   .discoverTabContainer > button.selected {
     border-color: var(--accent-color);
   }
+}
+
+.discoverCustomInterestContainer {
+  width: 100%;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 /* Create Components 

@@ -43,7 +43,8 @@ export function Header(props: HeaderProps) {
   );
 
   useMemo(() => {
-    setShowCookieConsent(localStorage.getItem("cookie_consent") == null);
+    if (localStorage)
+      setShowCookieConsent(localStorage.getItem("cookie_consent") == null);
   }, []);
 
   useEffect(() => {
@@ -90,7 +91,7 @@ export function Header(props: HeaderProps) {
               xmlns="http://www.w3.org/2000/svg"
               onClick={() => setShowNotifications(true)}
               width="25px"
-              height="px"
+              height="25px"
               viewBox="0 0 25 25"
               version="1.1"
             >
@@ -116,7 +117,7 @@ export function Header(props: HeaderProps) {
             xmlns="http://www.w3.org/2000/svg"
             onClick={() => setShowSettings(true)}
             width="25px"
-            height="px"
+            height="25px"
             viewBox="0 0 25 25"
             version="1.1"
           >

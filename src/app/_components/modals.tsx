@@ -1160,10 +1160,10 @@ export function NewUserModal(props: modalProps) {
               <>Please choose at least {3 - selected.length} more</>
             )}
             {selected.length >= 3 && (
-              <>You have {10 - selected.length} choices left:</>
+              <>You have {15 - selected.length} choices left:</>
             )}
           </h4>
-          <h5>You can have up to 10 interests.</h5>
+          <h5>You can have up to 15 interests.</h5>
           <div className={styles.choiceList}>
             {choices.map((interest) => (
               <button
@@ -1178,10 +1178,10 @@ export function NewUserModal(props: modalProps) {
                   if (selected.includes(interest.id)) {
                     removeSelected(interest);
                     setChoiceError([false, ""]);
-                  } else if (selected.length > 10) {
+                  } else if (selected.length > 15) {
                     setChoiceError([
                       true,
-                      "You can only select up to 10 interests",
+                      "You can only select up to 15 interests",
                     ]);
                   } else addSelected(interest);
                 }}
@@ -1195,7 +1195,7 @@ export function NewUserModal(props: modalProps) {
             type="submit"
             disabled={
               selected.length < 3 ||
-              selected.length > 10 ||
+              selected.length > 15 ||
               submitError[0] == true ||
               choiceError[0] == true
             }
@@ -1220,6 +1220,7 @@ interface selectInterestsModalProps {
 export function SelectInterestsModal(props: selectInterestsModalProps) {
   const [interestName, setInterestName] = useState("");
   const [interestIcon, setInterestIcon] = useState("");
+  const [interestPrivate, setInterestPrivate] = useState(false);
   const [interestDeleted, setInterestDeleted] = useState(0);
   const [selected, setSelected] = useState<Interest[]>(props.interests);
   const [choices, setChoices] = useState<Interest[]>([]);
@@ -1355,7 +1356,7 @@ export function SelectInterestsModal(props: selectInterestsModalProps) {
                   name: interestName,
                   icon: interestIcon,
                   colour: hsvaToHex(hsva),
-                  private: false,
+                  private: interestPrivate,
                 });
                 setCustomInterests((prev) => [interest as Interest, ...prev]);
                 setInterestIcon("");
@@ -1365,6 +1366,15 @@ export function SelectInterestsModal(props: selectInterestsModalProps) {
             >
               Add
             </button>
+            <br />
+          </div>
+          <div className={styles.selectInterestModalPrivateContainer}>
+            <p>Make this interest friends only:</p>
+            <input
+              type="checkbox"
+              checked={interestPrivate}
+              onChange={(e) => setInterestPrivate(e.target.checked)}
+            />
           </div>
 
           {submitError[0] && (
@@ -1427,10 +1437,10 @@ export function SelectInterestsModal(props: selectInterestsModalProps) {
               <>Please choose at least {3 - selected.length} more</>
             )}
             {selected.length >= 3 && (
-              <>You have {10 - selected.length} choices left:</>
+              <>You have {15 - selected.length} choices left:</>
             )}
           </h4>
-          <h5>You can have up to 10 interests.</h5>
+          <h5>You can have up to 15 interests.</h5>
           <div className={styles.choiceList}>
             {choices.map((interest) => (
               <button
@@ -1445,10 +1455,10 @@ export function SelectInterestsModal(props: selectInterestsModalProps) {
                   if (selected.some((i) => i.id == interest.id)) {
                     removeSelected(interest);
                     setChoiceError([false, ""]);
-                  } else if (selected.length == 10) {
+                  } else if (selected.length == 15) {
                     setChoiceError([
                       true,
-                      "You can only select up to 10 interests",
+                      "You can only select up to 15 interests",
                     ]);
                   } else {
                     addSelected(interest);
@@ -1465,7 +1475,7 @@ export function SelectInterestsModal(props: selectInterestsModalProps) {
             type="submit"
             disabled={
               selected.length < 3 ||
-              selected.length > 10 ||
+              selected.length > 15 ||
               submitError[0] == true ||
               choiceError[0] == true
             }

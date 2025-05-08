@@ -1,7 +1,6 @@
 "use client";
 import styles from "../../index.module.css";
 import { useThemeStore } from "~/store/themeStore";
-import { AllFriendsPosts } from "../posts/allFriendsPosts";
 import { type Session } from "~/types/session";
 import { useEffect, useMemo, useState } from "react";
 import { AllInterestPosts } from "../posts/allInterestPosts";
@@ -9,6 +8,7 @@ import { type Interest } from "~/types/interest";
 import { defaultInterest } from "~/const/defaultVar";
 import { trpc } from "~/utils/trpc";
 import { GainInterestModal } from "../modals";
+import toast from "react-hot-toast";
 
 interface DiscoverClientProps {
   session: Session;
@@ -17,31 +17,30 @@ interface DiscoverClientProps {
 
 export default function DiscoverClient(props: DiscoverClientProps) {
   const [selectedTab, setSelectedTab] = useState("");
-  const [interests, setInterests] = useState<Interest[]>([defaultInterest]);
+  const [userInterests, setUserInterests] = useState<Interest[]>([
+    defaultInterest,
+  ]);
   const { theme } = useThemeStore();
-  const getInterests = trpc.user.getUserInterests.useQuery({
+  const getUserInterests = trpc.user.getUserInterests.useQuery({
     userId: props.session.userId,
   });
 
   const [showInterestModal, setShowInterestModal] = useState(false);
-  const [sessionUserInterests, setSessionUserInterests] = useState<Interest[]>(
-    []
-  );
+  const [allCustomInterests, setAllCustomInterests] = useState<Interest[]>([]);
+
   const [newInterest, setNewInterest] = useState<Interest>(defaultInterest);
 
-  const getSessionUserInterests = trpc.user.getUserInterests.useQuery({
-    userId: props.session.userId,
-  });
+  const getAllInterests = trpc.interest.getAllCustomInterests.useQuery();
 
   useMemo(() => {
-    if (getSessionUserInterests.isLoading) return;
-    setSessionUserInterests((getSessionUserInterests.data as Interest[]) ?? []);
-  }, [getSessionUserInterests.isLoading, getSessionUserInterests.data]);
+    if (getAllInterests.isLoading) return;
+    setAllCustomInterests((getAllInterests.data as Interest[]) ?? []);
+  }, [getAllInterests.isLoading, getAllInterests.data]);
 
   useEffect(() => {
-    if (getInterests.isLoading) return;
-    setInterests(getInterests.data as Interest[]);
-  }, [getInterests.isLoading, getInterests.data]);
+    if (getUserInterests.isLoading) return;
+    setUserInterests(getUserInterests.data as Interest[]);
+  }, [getUserInterests.isLoading, getUserInterests.data]);
 
   return (
     <main
@@ -56,34 +55,61 @@ export default function DiscoverClient(props: DiscoverClientProps) {
           <button
             autoFocus={selectedTab === "friends"}
             onClick={() => {
-              setSelectedTab("friends");
-            }}
-          >
-            Friends posts
-          </button>
-          <button
-            onClick={() => {
-              setSelectedTab("discover");
+              setSelectedTab("posts");
             }}
           >
             Discover posts
           </button>
+          <button
+            onClick={() => {
+              setSelectedTab("interests");
+            }}
+          >
+            Discover interests
+          </button>
         </div>
-        {(selectedTab == "friends" || selectedTab == "") && (
-          <AllFriendsPosts
-            setNewInterest={setNewInterest}
-            setShowInterestModal={setShowInterestModal}
-            userId={props.session?.user.id}
-          />
-        )}
-        {selectedTab == "discover" && (
+        {(selectedTab == "posts" || selectedTab == "") && (
           <AllInterestPosts
             setNewInterest={setNewInterest}
             setShowInterestModal={setShowInterestModal}
-            interestIds={interests.map((i) => i.id)}
+            interestIds={userInterests.map((i) => i.id)}
             userId={props.session?.user.id}
             session={props.session}
           />
+        )}
+        {selectedTab == "interests" && (
+          <>
+            {getAllInterests.isLoading && <h3>Loading...</h3>}
+            {allCustomInterests.length > 0 ? (
+              <div className={styles.discoverCustomInterestContainer}>
+                {allCustomInterests.map((interest) => (
+                  <div
+                    key={interest.id}
+                    style={{
+                      border: `${interest.colour} 1px solid`,
+                      ["--text-glow" as any]: `linear-gradient(to top left,rgb(70, 70, 70), ${interest.colour})`,
+                    }}
+                    className={styles.glowingNugget}
+                    onClick={() => {
+                      if (!userInterests.some((i) => i.id == interest.id)) {
+                        setShowInterestModal(true);
+                        setNewInterest(interest);
+                      } else {
+                        toast.error("You already have this interest selected");
+                      }
+                    }}
+                  >
+                    <p className={styles.glowingNuggetText}>
+                      {interest.icon}
+                      {interest.name}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <h3>No custom interests are available.</h3>
+            )}
+          </>
         )}
       </div>
       {showInterestModal && (
@@ -91,7 +117,7 @@ export default function DiscoverClient(props: DiscoverClientProps) {
           interest={newInterest}
           userId={props.session.userId}
           onComplete={() => setShowInterestModal(false)}
-          userInterests={sessionUserInterests}
+          userInterests={userInterests}
         />
       )}
     </main>

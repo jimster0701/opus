@@ -9,13 +9,6 @@ export default async function Friends() {
   const session = await auth();
   if (session?.user) {
     void api.user.getFriends.prefetch();
-
-    /*
-    getFriends();
-    friends.map((friend) => {
-        <Link href=`/friends/${friend.slug}`>{friend.displayName}</Link>
-    })
-  */
     return (
       <HydrateClient>
         <Header
@@ -24,7 +17,7 @@ export default async function Friends() {
           userPrivate={session.user.private}
           userTasksPrivate={session.user.tasksPrivate}
         />
-        <FriendsClient />
+        <FriendsClient user={session.user} />
         <Navbar />
       </HydrateClient>
     );

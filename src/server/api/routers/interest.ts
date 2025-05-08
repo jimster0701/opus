@@ -84,6 +84,19 @@ export const interestRouter = createTRPCRouter({
       return customInterests;
     }),
 
+  getAllCustomInterests: protectedProcedure.query(async ({ ctx }) => {
+    const customInterests = await ctx.db.interest.findMany({
+      where: {
+        NOT: {
+          createdById: "system",
+        },
+        private: false,
+      },
+    });
+
+    return customInterests;
+  }),
+
   getInterestsById: protectedProcedure
     .input(
       z.object({
