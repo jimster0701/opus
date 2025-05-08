@@ -71,7 +71,13 @@ export default function HomeClient(props: HomeClientProps) {
         setIsGenerating(false);
       }
     }
-  }, [getDailyTasks.isLoading, getDailyTasks.data?.length, getDailyTasks.data]);
+  }, [
+    getDailyTasks.isLoading,
+    getDailyTasks.data?.length,
+    getDailyTasks.data,
+    isGenerating,
+    props.session.user.displayName,
+  ]);
 
   useEffect(() => {
     if (getCustomTasks.isLoading) return;

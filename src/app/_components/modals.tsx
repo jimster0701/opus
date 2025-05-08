@@ -208,21 +208,22 @@ export function FirstLoginModal(props: firstLoginModalProps) {
             }
           </p>
           <p className={styles.showcaseText}>
-            You are free to use the app until the 22nd of May, after which
-            access will start to be limit.
+            You are free to use the app until the 23rd of May, after which I
+            will start to limit access.
           </p>
           <p className={styles.showcaseText}>
-            The main purpose of this trial is data collection.
-            <br />
-            So, within the next two weeks after some time with the app you will
-            be asked to fill out a survery ranking the app based on a few
-            pre-selected attributes.
+            The main purpose of this trial is data collection for my
+            dissertation.
+            <br />A link to a survery will be supplied if not already, {
+              "I'd"
+            }{" "}
+            be very gratful if you answered it after trying the app.
           </p>
           <p className={styles.showcaseText}>
-            During the mean time you can leave messages to the dev at any point
-            using the settings page, which is intended to be used for bug
-            reports, opinions and reviews on the app, so feel free to use it as
-            you wish.
+            During the mean time, if you need you can a leave message at any
+            point using the settings page, this space is intended to be used as
+            a bug report, opinions and reviews form for the app, so feel free to
+            use it as you wish.
           </p>
           <p className={styles.showcaseText}>Thank you for trying Opus :)</p>
         </div>
@@ -1109,11 +1110,11 @@ export function NewUserModal(props: modalProps) {
             : `${styles.modal} ${styles[`theme-${theme}`]}`
         }
       >
-        <h1>Welcome to Opus :)</h1>
+        <h1>Welcome to Opus</h1>
         <p>
           Please complete your profile.
           <br />
-          {"Don't worry, all choices can be changed later."}
+          {"Don't worry, all choices can be edited later."}
         </p>
         <form className={styles.modalForm} onSubmit={handleSubmit}>
           <label htmlFor="newDisplayName">Choose your display name:</label>

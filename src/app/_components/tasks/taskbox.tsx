@@ -25,7 +25,7 @@ export default function Taskbox(props: TaskboxProps) {
   const [showUncompleteTask, setShowUncompleteTask] = useState<boolean>(false);
 
   const getInterests = trpc.interest.getInterestsById.useQuery({
-    interestIds: props.task.interests.map((i) => i.interest.id),
+    interestIds: props.task.interests.map((i) => i.interest.id) ?? [],
   });
   useEffect(() => {
     if (getInterests.isLoading) return;

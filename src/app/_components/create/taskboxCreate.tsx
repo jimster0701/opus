@@ -21,17 +21,19 @@ export default function TaskboxCreate(props: TaskboxCreateProps) {
     userId: props.user.id,
   });
 
+  const [loaded, setLoaded] = useState(false);
   const [selectedInterests, setSelectedInterests] = useState<Interest[]>([]);
   const [availableInterests, setAvailableInterests] = useState<Interest[]>([]);
 
   useEffect(() => {
-    if (userInterests.isLoading) return;
+    if (loaded || userInterests.isLoading) return;
     if (
       userInterests.data &&
       !availableInterests.some((prev) => userInterests.data.includes(prev))
     )
       setAvailableInterests(userInterests.data as Interest[]);
-  }, [userInterests.isLoading, userInterests.data, availableInterests]);
+    setLoaded(true);
+  }, [userInterests.isLoading, userInterests.data, availableInterests, loaded]);
 
   const [removedInterests, setRemovedInterests] = useState<Interest[]>([]);
   const [iconError, setIconError] = useState([false, ""]);
@@ -134,18 +136,21 @@ export default function TaskboxCreate(props: TaskboxCreateProps) {
                   .map((id) => availableInterests.find((i) => i.id === id))
                   .filter((i): i is (typeof availableInterests)[number] => !!i);
 
-                const newInterestIds = newInterests.map((i) => i.id);
-
                 const updatedSelected = [
                   ...selectedInterests,
                   ...newInterests.filter(
                     (i) => !selectedInterests.some((sel) => sel.id === i.id)
                   ),
                 ];
-
-                const updatedAvailable = availableInterests.filter(
-                  (i) => !newInterestIds.includes(i.id)
-                );
+                console.log(availableInterests);
+                const updatedAvailable =
+                  availableInterests.length == 1
+                    ? []
+                    : [
+                        ...availableInterests.filter(
+                          (i) => !newInterests.some((sel) => sel.id === i.id)
+                        ),
+                      ];
 
                 const updatedRemoved = [
                   ...removedInterests,

@@ -179,21 +179,10 @@
 
 @media (min-width: 1024px) {
   .container {
-    max-width: 1024px;
+    max-width: 80vw;
   }
 }
 
-@media (min-width: 1280px) {
-  .container {
-    max-width: 1280px;
-  }
-}
-
-@media (min-width: 1536px) {
-  .container {
-    max-width: 1536px;
-  }
-}
 /* PWA Helper components
 ------------------------------------------ */
 .pwaHelperContainer {
@@ -276,15 +265,35 @@
   align-items: center;
 }
 
-.header > .navIcons > i {
+.navIcons > i {
   font-size: 1.4rem;
   cursor: pointer;
   transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
-.header .navIcons > i:hover {
+.navIcons > i:hover {
   transform: scale(1.2);
   opacity: 0.8;
+}
+
+.notificationContainer {
+  position: relative;
+  display: flex;
+}
+
+.notificationContainer > img {
+  fill: var(--text-primary);
+}
+
+.unreadNotificationIcon {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 1rem;
+  background-color: rgb(190, 0, 0);
+  border: 1px solid black;
 }
 
 /* Bottom navigation bar */
@@ -495,7 +504,7 @@
   justify-content: center;
   gap: 10px;
   margin-bottom: 2rem;
-  max-height: 30vh;
+  max-height: 35vh;
   overflow-y: auto;
   padding: 0.5rem;
   width: 100%;
@@ -737,6 +746,12 @@
   width: 100%;
   margin-top: 0.25rem;
   gap: 0.2rem;
+}
+
+@media (min-width: 500px) {
+  .profileHeaderInterests {
+    justify-content: flex-start;
+  }
 }
 
 .profileHeaderInterests > div {
@@ -1653,7 +1668,7 @@
 }
 
 .reportInput::placeholder {
-  color: var(--text-secondary);
+  color: var(--text-primary);
 }
 
 .signOutButton {
@@ -1806,7 +1821,7 @@
 }
 
 .theme-default-preview {
-  background: linear-gradient(to bottom, #a400ff, #e1b0ff, #f0e7ff);
+  background: linear-gradient(to bottom, #a400ff, #cf93f5, #c9b1f0);
 }
 
 .theme-sunset-preview {
