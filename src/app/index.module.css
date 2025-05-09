@@ -1602,6 +1602,7 @@
   border-radius: inherit;
 }
 
+.displaySearchInput,
 .taskContentContainer input,
 .taskContentContainer textarea,
 .postContainer textarea {

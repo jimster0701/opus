@@ -7,7 +7,9 @@ export const userRouter = createTRPCRouter({
     .input(z.object({ displayName: z.string().min(1) }))
     .query(async ({ ctx, input }) => {
       const user = await ctx.db.user.findMany({
-        where: { displayName: input.displayName },
+        where: {
+          displayName: { contains: input.displayName, mode: "insensitive" },
+        },
         select: {
           id: true,
           name: true,

@@ -33,9 +33,12 @@ export default function FriendsClient(props: friendsClientProps) {
     userId: props.user.id,
   });
 
-  const getSearchByDisplayName = trpc.user.searchByDisplayName.useQuery({
-    displayName: displayNameSearch,
-  });
+  const getSearchByDisplayName = trpc.user.searchByDisplayName.useQuery(
+    {
+      displayName: displayNameSearch,
+    },
+    { enabled: displayNameSearch != "" }
+  );
 
   const { data: friendsData, isLoading } = trpc.user.getFriends.useQuery();
 
@@ -139,16 +142,20 @@ export default function FriendsClient(props: friendsClientProps) {
         {selectedTab == "search" && (
           <>
             <input
+              className={styles.displaySearchInput}
               placeholder={"Search..."}
               value={displayNameSearch}
               onChange={(e) => setDisplayNameSearch(e.target.value)}
             />
+            {getSearchByDisplayName.isLoading && (
+              <p className={styles.opusText}>Loading...</p>
+            )}
             {!getSearchByDisplayName.isLoading && displayNameSearch == "" ? (
-              <p>Enter a name to search.</p>
+              <p className={styles.opusText}>Enter a name to search.</p>
             ) : (
               <>
                 {searchResults.length == 0 ? (
-                  <p>No results found.</p>
+                  <p className={styles.opusText}>No results found.</p>
                 ) : (
                   <>
                     {searchResults.map((user) => (
