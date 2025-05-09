@@ -4,7 +4,6 @@ import Wheel from "@uiw/react-color-wheel";
 import { hsvaToHex } from "@uiw/color-convert";
 import { trpc } from "../../utils/trpc";
 import "~/styles/themes.css";
-import { shuffle } from "./util";
 import { useThemeStore } from "~/store/themeStore";
 import { SignOutButton } from "./settings/signOutButton";
 import {

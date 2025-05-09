@@ -49,7 +49,11 @@ export default function FriendsClient(props: friendsClientProps) {
   useEffect(() => {
     if (getSearchByDisplayName.isLoading || displayNameSearch == "") return;
     setSearchResults(getSearchByDisplayName.data as SimpleUser[]);
-  }, [getSearchByDisplayName.isLoading, getSearchByDisplayName.data]);
+  }, [
+    getSearchByDisplayName.isLoading,
+    getSearchByDisplayName.data,
+    displayNameSearch,
+  ]);
 
   useEffect(() => {
     if (getUserInterests.isLoading) return;
