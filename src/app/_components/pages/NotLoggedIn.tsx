@@ -20,7 +20,7 @@ export default function NotLoggedIn() {
           </div>
           <br />
           <h2>Survey shortcut</h2>
-          <h3>Opens - 11/05/2025</h3>
+          <h3>Opens - 09/05/2025</h3>
           <h3>Closes - 22/05/2025</h3>
           <iframe
             className={styles.surveyIframe}

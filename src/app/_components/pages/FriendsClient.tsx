@@ -8,7 +8,7 @@ import { ProfilePicturePreviewWrapper } from "../images/cldImageWrapper";
 import { AllFriendsPosts } from "../posts/allFriendsPosts";
 import { type Interest } from "~/types/interest";
 import { defaultInterest } from "~/const/defaultVar";
-import { type User } from "~/types/user";
+import { type SimpleUser, type User } from "~/types/user";
 import { GainInterestModal } from "../modals";
 
 interface friendsClientProps {
@@ -22,12 +22,19 @@ export default function FriendsClient(props: friendsClientProps) {
   const [showInterestModal, setShowInterestModal] = useState(false);
   const [newInterest, setNewInterest] = useState<Interest>(defaultInterest);
   const [hasMounted, setHasMounted] = useState(false);
+  const [displayNameSearch, setDisplayNameSearch] = useState("");
   const [userInterests, setUserInterests] = useState<Interest[]>([
     defaultInterest,
   ]);
 
+  const [searchResults, setSearchResults] = useState<SimpleUser[]>([]);
+
   const getUserInterests = trpc.user.getUserInterests.useQuery({
     userId: props.user.id,
+  });
+
+  const getSearchByDisplayName = trpc.user.searchByDisplayName.useQuery({
+    displayName: displayNameSearch,
   });
 
   const { data: friendsData, isLoading } = trpc.user.getFriends.useQuery();
@@ -35,6 +42,11 @@ export default function FriendsClient(props: friendsClientProps) {
   useEffect(() => {
     setHasMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (getSearchByDisplayName.isLoading || displayNameSearch == "") return;
+    setSearchResults(getSearchByDisplayName.data as SimpleUser[]);
+  }, [getSearchByDisplayName.isLoading, getSearchByDisplayName.data]);
 
   useEffect(() => {
     if (getUserInterests.isLoading) return;
@@ -78,6 +90,13 @@ export default function FriendsClient(props: friendsClientProps) {
           >
             Friends list
           </button>
+          <button
+            onClick={() => {
+              setSelectedTab("search");
+            }}
+          >
+            Find friends
+          </button>
         </div>
         {(selectedTab == "posts" || selectedTab == "") && (
           <AllFriendsPosts
@@ -113,6 +132,45 @@ export default function FriendsClient(props: friendsClientProps) {
               </div>
             ) : (
               <p className={styles.opusText}>No friends found.</p>
+            )}
+          </>
+        )}
+
+        {selectedTab == "search" && (
+          <>
+            <input
+              placeholder={"Search..."}
+              value={displayNameSearch}
+              onChange={(e) => setDisplayNameSearch(e.target.value)}
+            />
+            {!getSearchByDisplayName.isLoading && displayNameSearch == "" ? (
+              <p>Enter a name to search.</p>
+            ) : (
+              <>
+                {searchResults.length == 0 ? (
+                  <p>No results found.</p>
+                ) : (
+                  <>
+                    {searchResults.map((user) => (
+                      <div
+                        key={user.id}
+                        className={styles.cardContainer}
+                        onClick={() => {
+                          router.push(`/profile/${user.id}`);
+                        }}
+                      >
+                        <ProfilePicturePreviewWrapper
+                          id={user.id}
+                          imageUrl={user.image ?? ""}
+                          width={10}
+                          height={10}
+                        />
+                        <p className={styles.opusText}>{user.displayName}</p>
+                      </div>
+                    ))}
+                  </>
+                )}
+              </>
             )}
           </>
         )}

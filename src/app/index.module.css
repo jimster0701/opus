@@ -581,6 +581,23 @@
   background-color: rgba(255, 255, 255, 0.423);
 }
 
+.modal::-webkit-scrollbar {
+  position: absolute;
+  height: 90%;
+  width: 0.25rem;
+  right: 5rem;
+}
+
+.modal::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.modal::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+}
+
 /* Modal responsiveness */
 @media (max-width: 768px) {
   .modal {
@@ -1777,7 +1794,7 @@
 .showcaseText {
   color: white;
   text-align: center;
-  font-size: 1.5rem;
+  font-size: 1rem;
   line-height: 2rem;
 }
 

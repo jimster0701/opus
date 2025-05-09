@@ -3,6 +3,22 @@ import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { NotificationType } from "~/types/notification";
 
 export const userRouter = createTRPCRouter({
+  searchByDisplayName: protectedProcedure
+    .input(z.object({ displayName: z.string().min(1) }))
+    .query(async ({ ctx, input }) => {
+      const user = await ctx.db.user.findMany({
+        where: { displayName: input.displayName },
+        select: {
+          id: true,
+          name: true,
+          image: true,
+          displayName: true,
+        },
+      });
+
+      return user ?? null;
+    }),
+
   getUserById: protectedProcedure
     .input(z.object({ id: z.string().min(1) }))
     .query(async ({ ctx, input }) => {
