@@ -2,7 +2,7 @@
 import styles from "../index.module.css";
 import Image from "next/image";
 import { AboutUsModal, NotificationsModal, SettingsModal } from "./modals";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useThemeStore } from "~/store/themeStore";
 import { useParams, useRouter } from "next/navigation";
 import { trpc } from "~/utils/trpc";
@@ -42,9 +42,8 @@ export function Header(props: HeaderProps) {
     }
   );
 
-  useMemo(() => {
-    if (localStorage)
-      setShowCookieConsent(localStorage.getItem("cookie_consent") == null);
+  useEffect(() => {
+    setShowCookieConsent(localStorage.getItem("cookie_consent") == null);
   }, []);
 
   useEffect(() => {
@@ -181,7 +180,7 @@ export function SlugHeader(props: HeaderProps) {
     }
   );
 
-  useMemo(() => {
+  useEffect(() => {
     setShowCookieConsent(localStorage.getItem("cookie_consent") == null);
   }, []);
 
@@ -198,7 +197,7 @@ export function SlugHeader(props: HeaderProps) {
     getNotifications.data,
   ]);
 
-  useMemo(() => {
+  useEffect(() => {
     setTheme(props.theme);
   }, [props.theme]);
 

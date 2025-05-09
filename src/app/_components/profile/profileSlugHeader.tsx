@@ -22,6 +22,7 @@ export default function ProfileSlugHeader(props: ProfileSlugHeaderProps) {
     []
   );
   const [newInterest, setNewInterest] = useState<Interest>(defaultInterest);
+  const [usersAreFriends, setUsersAreFriends] = useState(false);
   const [tempFollow, setTempFollow] = useState(0);
   const [showFollowModal, setShowFollowModal] = useState<[boolean, string]>([
     false,
@@ -55,10 +56,20 @@ export default function ProfileSlugHeader(props: ProfileSlugHeaderProps) {
     userId: props.sessionUser.id,
   });
 
+  const isFriend = trpc.user.IsFriend.useQuery({ userId: props.user.id });
+
   useMemo(() => {
     if (getSessionUserInterests.isLoading) return;
     setSessionUserInterests((getSessionUserInterests.data as Interest[]) ?? []);
   }, [getSessionUserInterests.isLoading, getSessionUserInterests.data]);
+
+  useEffect(() => {
+    if (isFriend.isLoading) return;
+    if (isFriend.data) {
+      console.log(isFriend.data);
+      setUsersAreFriends(isFriend.data);
+    }
+  }, [isFriend.isLoading, isFriend.data]);
 
   useEffect(() => {
     if (getIsFollowing.isLoading) return;
@@ -91,7 +102,7 @@ export default function ProfileSlugHeader(props: ProfileSlugHeaderProps) {
               <div>
                 {isFollowing ? (
                   <button
-                    className={styles.opusButton}
+                    className={`${styles.opusButton} ${styles.followButton}`}
                     onClick={async () => {
                       setIsFollowing(false);
                       handleFollow();
@@ -104,7 +115,7 @@ export default function ProfileSlugHeader(props: ProfileSlugHeaderProps) {
                   </button>
                 ) : (
                   <button
-                    className={styles.opusButton}
+                    className={`${styles.opusButton} ${styles.followButton}`}
                     onClick={async () => {
                       setIsFollowing(true);
                       handleFollow();
@@ -122,7 +133,7 @@ export default function ProfileSlugHeader(props: ProfileSlugHeaderProps) {
             <p
               className={`${styles.profileHeaderText} ${styles.profileHeaderFollowText}`}
               onClick={async () => {
-                if (!props.user.private) {
+                if (!props.user.private || usersAreFriends) {
                   await handleFollowingPrefetch();
                   setShowFollowModal([true, "Following"]);
                 }
@@ -133,7 +144,7 @@ export default function ProfileSlugHeader(props: ProfileSlugHeaderProps) {
             <p
               className={`${styles.profileHeaderText} ${styles.profileHeaderFollowText}`}
               onClick={async () => {
-                if (!props.user.private) {
+                if (!props.user.private || usersAreFriends) {
                   await handleFollowersPrefetch();
                   setShowFollowModal([true, "Followers"]);
                 }
@@ -146,7 +157,7 @@ export default function ProfileSlugHeader(props: ProfileSlugHeaderProps) {
       </div>
       <div className={styles.profileHeaderInterestsContainer}>
         <div className={styles.profileHeaderInterests}>
-          {!props.user.private &&
+          {(!props.user.private || usersAreFriends) &&
             props.userInterests.map((interest) => (
               <div
                 key={interest.id}
