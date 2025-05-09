@@ -73,14 +73,14 @@ export function CommentComponent(props: commentProps) {
             </p>
           </div>
           <p className={styles.commentTimestamp}>
-            {props.comment.createdById != props.userId ? (
-              props.comment.createdAt.toDateString()
-            ) : (
+            {props.comment.createdById == props.userId ? (
               <Trash2
                 onClick={() => {
                   setShowDeleteComment(true);
                 }}
               />
+            ) : (
+              props.comment.createdAt.toDateString()
             )}
           </p>
         </div>

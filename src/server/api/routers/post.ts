@@ -639,11 +639,26 @@ export const postRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const post = await ctx.db.post.findUnique({
         where: { id: input.postId },
-        select: { likedBy: true },
+        select: { likedBy: true, createdById: true },
       });
       if (!post) throw new Error("Post not found");
 
       const updatedLikedBy = post.likedBy.filter((id) => id !== input.userId);
+
+      const notification = await ctx.db.notification.findFirst({
+        where: {
+          type: "LIKE_POST",
+          fromUserId: ctx.session.userId,
+          toUserId: post.createdById,
+          postId: input.postId,
+        },
+      });
+
+      await ctx.db.notification.delete({
+        where: {
+          id: notification?.id,
+        },
+      });
 
       return ctx.db.post.update({
         where: { id: input.postId },

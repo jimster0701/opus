@@ -192,6 +192,20 @@ export const userRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const currentUserId = ctx.session.user.id;
 
+      const notification = await ctx.db.notification.findFirst({
+        where: {
+          type: "FOLLOW",
+          fromUserId: currentUserId,
+          toUserId: input.userId,
+        },
+      });
+
+      await ctx.db.notification.delete({
+        where: {
+          id: notification?.id,
+        },
+      });
+
       return await ctx.db.follow.delete({
         where: {
           follower_following_unique: {

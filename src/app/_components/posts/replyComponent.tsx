@@ -61,14 +61,14 @@ export function ReplyComponent(props: replyProps) {
             </p>
           </div>
           <p className={styles.commentTimestamp}>
-            {props.reply.createdById != props.userId ? (
-              props.reply.createdAt.toDateString()
-            ) : (
+            {props.reply.createdById == props.userId ? (
               <Trash2
                 onClick={() => {
                   setShowDeleteReply(true);
                 }}
               />
+            ) : (
+              props.reply.createdAt.toDateString()
             )}
           </p>
         </div>

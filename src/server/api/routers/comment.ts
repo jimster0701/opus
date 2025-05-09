@@ -57,13 +57,28 @@ export const commentRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const comment = await ctx.db.comment.findUnique({
         where: { id: input.commentId },
-        select: { likedBy: true },
+        select: { likedBy: true, createdById: true },
       });
       if (!comment) throw new Error("Comment not found");
 
       const updatedLikedBy = comment.likedBy.filter(
         (id) => id !== input.userId
       );
+
+      const notification = await ctx.db.notification.findFirst({
+        where: {
+          type: "LIKE_COMMENT",
+          fromUserId: ctx.session.userId,
+          toUserId: comment.createdById,
+          postId: input.commentId,
+        },
+      });
+
+      await ctx.db.notification.delete({
+        where: {
+          id: notification?.id,
+        },
+      });
 
       return ctx.db.comment.update({
         where: { id: input.commentId },

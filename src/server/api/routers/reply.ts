@@ -57,11 +57,26 @@ export const replyRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const reply = await ctx.db.reply.findUnique({
         where: { id: input.replyId },
-        select: { likedBy: true },
+        select: { likedBy: true, createdById: true },
       });
       if (!reply) throw new Error("Reply not found");
 
       const updatedLikedBy = reply.likedBy.filter((id) => id !== input.userId);
+
+      const notification = await ctx.db.notification.findFirst({
+        where: {
+          type: "LIKE_REPLY",
+          fromUserId: ctx.session.userId,
+          toUserId: reply.createdById,
+          postId: input.replyId,
+        },
+      });
+
+      await ctx.db.notification.delete({
+        where: {
+          id: notification?.id,
+        },
+      });
 
       return ctx.db.reply.update({
         where: { id: input.replyId },
