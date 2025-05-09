@@ -220,7 +220,7 @@ export function FirstLoginModal(props: firstLoginModalProps) {
             be very gratful if you answered it after trying the app.
           </p>
           <p className={styles.showcaseText}>
-            During the mean time, if you need you can a leave message at any
+            During the mean time, if you need you can leave a message at any
             point using the settings page, this space is intended to be used as
             a bug report, opinions and reviews form for the app, so feel free to
             use it as you wish.
@@ -1069,17 +1069,41 @@ export function NotificationsModal(props: notificationModalProps) {
   );
 }
 
-export function NewUserModal(props: modalProps) {
+interface newUserModalProps extends modalProps {
+  user: User;
+}
+
+export function NewUserModal(props: newUserModalProps) {
   const [displayName, setDisplayName] = useState("");
-  const [selected, setSelected] = useState<number[]>([]);
+  const [selected, setSelected] = useState<Interest[]>([]);
   const [choices, setChoices] = useState<Interest[]>([]);
-  const [submitError, setSubmitError] = useState([false, ""]);
+  const [submitError, setSubmitError] = useState(["", ""]);
   const [choiceError, setChoiceError] = useState([false, ""]);
+  const [interestName, setInterestName] = useState("");
+  const [interestIcon, setInterestIcon] = useState("");
+  const [interestPrivate, setInterestPrivate] = useState(false);
+  const [interestDeleted, setInterestDeleted] = useState(0);
+  const [hsva, setHsva] = useState({ h: 214, s: 43, v: 90, a: 1 });
   const { theme } = useThemeStore();
 
+  const [customInterests, setCustomInterests] = useState<Interest[]>(
+    props.user.createdInterests ?? []
+  );
+
+  const addCustomInterest = trpc.interest.createInterest.useMutation({});
+  const deleteCustomInterest = trpc.interest.deleteInterest.useMutation({});
+
   useMemo(() => {
-    setChoices(shuffle(defaultInterests));
-  }, []);
+    setChoices([
+      ...selected,
+      ...customInterests.filter(
+        (interest) => !selected.some((i) => i.id == interest.id)
+      ),
+      ...defaultInterests.filter(
+        (interest) => !selected.some((i) => i.id == interest.id)
+      ),
+    ]);
+  }, [selected, customInterests]);
 
   const updateInterests = trpc.user.updateInterests.useMutation({});
   const updateDisplayName = trpc.user.updateDisplayName.useMutation({
@@ -1090,19 +1114,19 @@ export function NewUserModal(props: modalProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    updateInterests.mutate({ interestIds: selected });
+    updateInterests.mutate({ interestIds: selected.map((i) => i.id) });
     updateDisplayName.mutate({ newDisplayName: displayName });
   };
 
   const removeSelected = (interest: Interest) => {
-    if (selected.includes(interest.id)) {
-      setSelected((prev) => prev.filter((i) => i !== interest.id));
+    if (selected.some((i) => i.id == interest.id)) {
+      setSelected((prev) => prev.filter((i) => i.id !== interest.id));
     }
   };
 
   const addSelected = (interest: Interest) => {
-    if (!selected.includes(interest.id)) {
-      setSelected((prev) => [...prev, interest.id]);
+    if (!selected.some((i) => i.id == interest.id)) {
+      setSelected((prev) => [...prev, interest]);
     }
   };
 
@@ -1135,28 +1159,165 @@ export function NewUserModal(props: modalProps) {
               const newName = e.target.value;
               if (newName.length > 20) {
                 setSubmitError([
-                  true,
+                  "display",
                   "Display name must be less than 20 characters",
                 ]);
               } else {
-                setSubmitError([false, ""]);
+                setSubmitError(["", ""]);
                 setDisplayName(newName);
               }
             }}
             autoComplete="off"
           />
-          {submitError[0] && (
+          {submitError[0] == "display" && (
             <div className={styles.errorTooltip}>{submitError[1]}</div>
           )}
           <h3 className={styles.modalText}>
-            Below is a list of affiliations, <br />
-            Choose at least 3,
+            Below is a list of interests and an area to create custom interests,{" "}
+            <br />
+            Choose at least 3, with a maximum of 15
             <br />
             <br />
-            These choices will influence the tasks you receive and social
-            circles you discover.
+            These choices will influence the tasks you receive and the social
+            circles you have access to in discover.
             <br />
           </h3>
+          <form className={styles.modalForm}>
+            <label htmlFor="newInterestName">Create a new interest:</label>
+            <div className={styles.selectInterestModalInputContainer}>
+              <input
+                type="text"
+                id="newInterestIcon"
+                name="newInterestIcon"
+                className={styles.selectInterestModalIconInput}
+                placeholder={choices[10]?.icon}
+                required
+                value={interestIcon}
+                onChange={(e) => {
+                  const newIcon = e.target.value;
+                  setSubmitError(["", ""]);
+                  const emojiRegex = `(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])`;
+                  if (!RegExp(emojiRegex).test(newIcon)) {
+                    setSubmitError([
+                      "interest",
+                      "Interest icon must be an emoji",
+                    ]);
+                  } else {
+                    setInterestIcon(newIcon);
+                  }
+                }}
+                onClick={() => setSubmitError(["", ""])}
+                autoComplete="off"
+              />
+              <input
+                type="text"
+                id="newInterestName"
+                name="newInterestName"
+                className={styles.selectInterestModalInterestInput}
+                placeholder="Interesting..."
+                required
+                value={interestName}
+                onChange={(e) => {
+                  const newName = e.target.value;
+                  if (newName.length > 20) {
+                    setSubmitError([
+                      "interest",
+                      "Interest name must be less than 20 characters",
+                    ]);
+                  } else {
+                    setSubmitError(["", ""]);
+                    setInterestName(newName);
+                  }
+                }}
+                onClick={() => setSubmitError(["", ""])}
+                autoComplete="off"
+              />
+              <button
+                className={styles.selectInterestModalInterestButton}
+                onClick={async (e) => {
+                  setSubmitError(["", ""]);
+                  if (interestIcon.length == 0) return;
+                  e.preventDefault();
+                  const interest = await addCustomInterest.mutateAsync({
+                    name: interestName,
+                    icon: interestIcon,
+                    colour: hsvaToHex(hsva),
+                    private: interestPrivate,
+                  });
+                  setCustomInterests((prev) => [interest as Interest, ...prev]);
+                  setInterestIcon("");
+                  setInterestName("");
+                }}
+                disabled={interestName.length < 1 || interestName.length > 20}
+              >
+                Add
+              </button>
+              <br />
+            </div>
+            <div className={styles.selectInterestModalPrivateContainer}>
+              <p>Make this interest friends only:</p>
+              <input
+                type="checkbox"
+                checked={interestPrivate}
+                onChange={(e) => setInterestPrivate(e.target.checked)}
+              />
+            </div>
+
+            {submitError[0] == "interest" && (
+              <div className={styles.errorTooltip}>{submitError[1]}</div>
+            )}
+            <Fragment>
+              <Wheel
+                color={hsva}
+                onChange={(color) => setHsva({ ...hsva, ...color.hsva })}
+              />
+              <div
+                style={{
+                  width: "100%",
+                  height: 34,
+                  marginTop: 20,
+                  background: hsvaToHex(hsva),
+                }}
+              ></div>
+            </Fragment>
+          </form>
+          <div className={styles.selectInterestModalCustomInterestContainer}>
+            <h2>Your custom interests</h2>
+            {customInterests.length == 0 ? (
+              <div className={styles.selectInterestModalCustomInterest}>
+                No custom interests created.
+              </div>
+            ) : (
+              customInterests.map((custom) => (
+                <div
+                  key={custom.id}
+                  style={{ borderColor: custom.colour }}
+                  className={styles.selectInterestModalCustomInterest}
+                >
+                  <div>
+                    <p>{custom.icon}</p>
+                    <p>{custom.name}</p>
+                  </div>
+                  {interestDeleted == custom.id &&
+                  deleteCustomInterest.isPending ? (
+                    <span className={styles.loader} />
+                  ) : (
+                    <X
+                      onClick={async () => {
+                        setInterestDeleted(custom.id);
+                        await deleteCustomInterest.mutateAsync({
+                          id: custom.id,
+                        });
+                        setCustomInterests(
+                          customInterests.filter((i) => i.id != custom.id)
+                        );
+                      }}
+                    />
+                  )}
+                </div>
+              ))
+            )}
+          </div>
           <h4>
             {selected.length < 3 && (
               <>Please choose at least {3 - selected.length} more</>
@@ -1172,12 +1333,12 @@ export function NewUserModal(props: modalProps) {
                 type="button"
                 key={interest.id}
                 className={`${styles.choiceButton} ${
-                  selected.includes(interest.id)
+                  selected.includes(interest)
                     ? `${styles.selectedChoiceButton}`
                     : ""
                 }`}
                 onClick={() => {
-                  if (selected.includes(interest.id)) {
+                  if (selected.includes(interest)) {
                     removeSelected(interest);
                     setChoiceError([false, ""]);
                   } else if (selected.length > 15) {
@@ -1198,7 +1359,7 @@ export function NewUserModal(props: modalProps) {
             disabled={
               selected.length < 3 ||
               selected.length > 15 ||
-              submitError[0] == true ||
+              submitError[0] != "" ||
               choiceError[0] == true
             }
           >
@@ -1316,7 +1477,7 @@ export function SelectInterestsModal(props: selectInterestsModalProps) {
                 const newIcon = e.target.value;
                 setSubmitError([false, ""]);
                 const emojiRegex = `(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])`;
-                if (RegExp(emojiRegex).test(newIcon)) {
+                if (!RegExp(emojiRegex).test(newIcon)) {
                   setSubmitError([true, "Interest icon must be an emoji"]);
                 } else {
                   setInterestIcon(newIcon);

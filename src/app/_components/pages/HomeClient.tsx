@@ -145,7 +145,7 @@ export default function HomeClient(props: HomeClientProps) {
       </div>
       {newUser && (
         <NewUserModalWrapper
-          userId={props.session.user.id}
+          user={props.session.user}
           displayName={props.session.user.displayName ?? null}
           onComplete={() => setNewUser(false)}
         />

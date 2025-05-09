@@ -5,10 +5,11 @@ import { FirstLoginModal, NewUserModal } from "./modals";
 import { trpc } from "~/utils/trpc";
 import { type Interest } from "~/types/interest";
 import { defaultInterest } from "~/const/defaultVar";
+import { type User } from "~/types/user";
 
 interface newUserWrapperProps {
   displayName: string | null;
-  userId: string;
+  user: User;
   onComplete: () => void;
 }
 
@@ -17,7 +18,7 @@ export function NewUserModalWrapper(props: newUserWrapperProps) {
   const [interests, setInterests] = useState<Interest[]>([defaultInterest]);
 
   const getInterests = trpc.user.getUserInterests.useQuery({
-    userId: props.userId,
+    userId: props.user.id,
   });
 
   useEffect(() => {
@@ -35,6 +36,7 @@ export function NewUserModalWrapper(props: newUserWrapperProps) {
   return showModal ? (
     <>
       <NewUserModal
+        user={props.user}
         onComplete={() => {
           setShowModal(false);
           props.onComplete();
