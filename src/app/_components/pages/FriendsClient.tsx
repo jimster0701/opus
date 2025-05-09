@@ -6,9 +6,9 @@ import { trpc } from "~/utils/trpc";
 import { useRouter } from "next/navigation";
 import { ProfilePicturePreviewWrapper } from "../images/cldImageWrapper";
 import { AllFriendsPosts } from "../posts/allFriendsPosts";
-import { Interest } from "~/types/interest";
+import { type Interest } from "~/types/interest";
 import { defaultInterest } from "~/const/defaultVar";
-import { User } from "~/types/user";
+import { type User } from "~/types/user";
 import { GainInterestModal } from "../modals";
 
 interface friendsClientProps {
