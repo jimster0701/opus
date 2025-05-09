@@ -1008,8 +1008,10 @@ export function NotificationsModal(props: notificationModalProps) {
   const router = useRouter();
   const markAsRead = trpc.notification.markNotificationsAsRead.useMutation();
   useEffect(() => {
-    if (props.notifications.some((n) => !n.read) == true) markAsRead.mutate();
-  }, [props.notifications, markAsRead]);
+    if (props.notifications.some((n) => !n.read)) {
+      markAsRead.mutate();
+    }
+  });
 
   return (
     <div className={styles.modalContainer}>
