@@ -213,18 +213,21 @@ export function FirstLoginModal(props: firstLoginModalProps) {
           <p className={styles.showcaseText}>
             The main purpose of this trial is data collection for my
             dissertation.
-            <br />A link to a survery will be supplied if not already, {
+            <br />
+            The survey can be found in the settings page at the bottom, {
               "I'd"
             }{" "}
-            be very gratful if you answered it after trying the app.
+            be very gratful if you answered it after having a look around the
+            app.
           </p>
           <p className={styles.showcaseText}>
-            During the mean time, if you need you can leave a message at any
-            point using the settings page, this space is intended to be used as
-            a bug report, opinions and reviews form for the app, so feel free to
-            use it as you wish.
+            Also in the settings page there is a message box, this space is
+            intended to be used as a bug report, opinions and reviews system for
+            the app, so feel free to use it as you wish.
           </p>
-          <p className={styles.showcaseText}>Thank you for trying Opus :)</p>
+          <p className={styles.showcaseText}>
+            Thank you for reading and for trying Opus :)
+          </p>
         </div>
       </div>
     );
