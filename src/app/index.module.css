@@ -51,6 +51,7 @@
   display: inline-block;
   box-sizing: border-box;
   animation: loaderRotation 1s linear infinite;
+  z-index: 10;
 }
 
 @keyframes loaderRotation {

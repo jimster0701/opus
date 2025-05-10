@@ -1,11 +1,10 @@
 "use client";
 
 import styles from "../../index.module.css";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useThemeStore } from "~/store/themeStore";
 import { type Session } from "~/types/session";
 import ProfileHeader from "../profile/profileHeader";
-import { type Interest } from "~/types/interest";
 import { trpc } from "~/utils/trpc";
 import { type Task } from "~/types/task";
 import TaskList from "../tasks/taskList";
@@ -17,10 +16,6 @@ interface ProfileClientProps {
 
 export default function ProfileClient(props: ProfileClientProps) {
   const { theme } = useThemeStore();
-  const [userInterests, setUserInterests] = useState<Interest[]>([]);
-  const getInterests = trpc.user.getUserInterests.useQuery({
-    userId: props.session.userId,
-  });
 
   const [customTasks, setCustomTasks] = useState<Task[]>([]);
   const [dailyTasks, setDailyTasks] = useState<Task[]>([]);
@@ -57,11 +52,6 @@ export default function ProfileClient(props: ProfileClientProps) {
     getCustomTasks.data,
   ]);
 
-  useMemo(() => {
-    if (getInterests.isLoading) return;
-    setUserInterests((getInterests.data as Interest[]) ?? []);
-  }, [getInterests.isLoading, getInterests.data]);
-
   return (
     <main
       className={
@@ -71,11 +61,7 @@ export default function ProfileClient(props: ProfileClientProps) {
       }
     >
       <div className={styles.container}>
-        <ProfileHeader
-          session={props.session}
-          userInterests={userInterests}
-          setUserInterests={setUserInterests}
-        />
+        <ProfileHeader session={props.session} />
         <br />
         <div className={styles.profilePostContainer}>
           <div className={styles.profileTabContainer}>

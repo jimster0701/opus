@@ -3,7 +3,7 @@
 import styles from "../../index.module.css";
 import { ProfilePictureWrapper } from "../images/cldImageWrapper";
 import Image from "next/image";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { trpc } from "~/utils/trpc";
 import { Check, X } from "lucide-react";
 import { FollowerOrFollowingModal, SelectInterestsModal } from "../modals";
@@ -12,8 +12,6 @@ import { type SimpleUser } from "~/types/user";
 import { type Interest } from "~/types/interest";
 
 interface ProfileHeaderProps {
-  userInterests: Interest[];
-  setUserInterests: (interests: Interest[]) => void;
   session: Session;
 }
 
@@ -26,6 +24,11 @@ export default function ProfileHeader(props: ProfileHeaderProps) {
     false,
     "",
   ]);
+
+  const [userInterests, setUserInterests] = useState<Interest[]>([]);
+  const getInterests = trpc.user.getUserInterests.useQuery({
+    userId: props.session.userId,
+  });
 
   const { data: following } = trpc.user.getFollowing.useQuery({
     userId: props.session.user.id,
@@ -48,6 +51,11 @@ export default function ProfileHeader(props: ProfileHeaderProps) {
   const handleFollowingPrefetch = async () => {
     await utils.user.getFollowers.prefetch({ userId: props.session.user.id });
   };
+
+  useMemo(() => {
+    if (getInterests.isLoading) return;
+    setUserInterests((getInterests.data as Interest[]) ?? []);
+  }, [getInterests.isLoading, getInterests.data]);
 
   return (
     <div className={styles.profileHeaderContainer}>
@@ -175,30 +183,32 @@ export default function ProfileHeader(props: ProfileHeaderProps) {
           Edit <Image src="/images/pen.png" alt={""} width={15} height={15} />
         </div>
         <div className={styles.profileHeaderInterests}>
-          {props.userInterests.map((interest) => (
-            <div
-              key={interest.id}
-              style={{
-                border: `${interest.colour} 1px solid`,
-                ["--text-glow" as any]: `linear-gradient(to top left,rgb(70, 70, 70), ${interest.colour})`,
-              }}
-              className={styles.glowingNugget}
-            >
-              <p className={styles.glowingNuggetText}>
-                {interest.icon}
-                {interest.name}
-              </p>
-            </div>
-          ))}
+          {getInterests.isLoading && <span className={styles.loader} />}
+          {!getInterests.isLoading &&
+            userInterests.map((interest) => (
+              <div
+                key={interest.id}
+                style={{
+                  border: `${interest.colour} 1px solid`,
+                  ["--text-glow" as any]: `linear-gradient(to top left,rgb(70, 70, 70), ${interest.colour})`,
+                }}
+                className={styles.glowingNugget}
+              >
+                <p className={styles.glowingNuggetText}>
+                  {interest.icon}
+                  {interest.name}
+                </p>
+              </div>
+            ))}
         </div>
       </div>
       {showSelectInterests && (
         <SelectInterestsModal
           onComplete={(newInterests) => {
             setShowSelectInterests(false);
-            props.setUserInterests(newInterests);
+            setUserInterests(newInterests);
           }}
-          interests={props.userInterests}
+          interests={userInterests}
           session={props.session}
         />
       )}

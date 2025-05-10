@@ -2,7 +2,7 @@
 
 import styles from "../../index.module.css";
 import { ProfileSlugPictureWrapper } from "../images/cldImageWrapper";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { trpc } from "~/utils/trpc";
 import { FollowerOrFollowingModal, GainInterestModal } from "../modals";
 import { type SlugUser, type SimpleUser, type User } from "~/types/user";
@@ -58,18 +58,17 @@ export default function ProfileSlugHeader(props: ProfileSlugHeaderProps) {
 
   const isFriend = trpc.user.IsFriend.useQuery({ userId: props.user.id });
 
-  useMemo(() => {
-    if (getSessionUserInterests.isLoading) return;
-    setSessionUserInterests((getSessionUserInterests.data as Interest[]) ?? []);
-  }, [getSessionUserInterests.isLoading, getSessionUserInterests.data]);
-
   useEffect(() => {
     if (isFriend.isLoading) return;
     if (isFriend.data) {
-      console.log(isFriend.data);
       setUsersAreFriends(isFriend.data);
     }
   }, [isFriend.isLoading, isFriend.data]);
+
+  useEffect(() => {
+    if (getSessionUserInterests.isLoading) return;
+    setSessionUserInterests((getSessionUserInterests.data as Interest[]) ?? []);
+  }, [getSessionUserInterests.isLoading, getSessionUserInterests.data]);
 
   useEffect(() => {
     if (getIsFollowing.isLoading) return;
@@ -157,7 +156,11 @@ export default function ProfileSlugHeader(props: ProfileSlugHeaderProps) {
       </div>
       <div className={styles.profileHeaderInterestsContainer}>
         <div className={styles.profileHeaderInterests}>
+          {getSessionUserInterests.isLoading && (
+            <span className={styles.loader} />
+          )}
           {(!props.user.private || usersAreFriends) &&
+            !getSessionUserInterests.isLoading &&
             props.userInterests.map((interest) => (
               <div
                 key={interest.id}

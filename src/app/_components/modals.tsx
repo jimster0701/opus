@@ -1178,7 +1178,6 @@ export function NewUserModal(props: newUserModalProps) {
             id="newDisplayName"
             name="newDisplayName"
             placeholder="Username"
-            required
             value={displayName}
             onChange={(e) => {
               const newName = e.target.value;
@@ -1221,10 +1220,7 @@ export function NewUserModal(props: newUserModalProps) {
                   setSubmitError(["", ""]);
                   const emojiRegex = `(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])`;
                   if (!RegExp(emojiRegex).test(newIcon)) {
-                    setSubmitError([
-                      "interest",
-                      "Interest icon must be an emoji",
-                    ]);
+                    setSubmitError(["interest", "The Icon must be an emoji"]);
                   } else {
                     setInterestIcon(newIcon);
                   }
@@ -1257,18 +1253,23 @@ export function NewUserModal(props: newUserModalProps) {
               <button
                 className={styles.selectInterestModalInterestButton}
                 onClick={async (e) => {
-                  setSubmitError(["", ""]);
-                  if (interestIcon.length == 0)
-                    setSubmitError([
-                      "interest",
-                      "Interest icon must be filled to create",
-                    ]);
-                  if (interestName.length == 0)
-                    setSubmitError([
-                      "interest",
-                      "Interest name must be filled to create",
-                    ]);
                   e.preventDefault();
+                  setSubmitError(["", ""]);
+                  if (interestIcon.length == 0) {
+                    setSubmitError([
+                      "interest",
+                      "Icon must be present to create",
+                    ]);
+                    return;
+                  }
+                  if (interestName.length == 0) {
+                    setSubmitError([
+                      "interest",
+                      "Interest name must be filled to create the interest",
+                    ]);
+                    return;
+                  }
+
                   const interest = await addCustomInterest.mutateAsync({
                     name: interestName,
                     icon: interestIcon,
@@ -1391,7 +1392,7 @@ export function NewUserModal(props: newUserModalProps) {
             disabled={
               selected.length < 3 ||
               selected.length > 15 ||
-              submitError[0] != "" ||
+              submitError[0] == "display" ||
               choiceError[0] == true
             }
           >

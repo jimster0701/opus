@@ -1,6 +1,5 @@
 "use client";
 import styles from "../index.module.css";
-import Image from "next/image";
 import { AboutUsModal, NotificationsModal, SettingsModal } from "./modals";
 import { useEffect, useState } from "react";
 import { useThemeStore } from "~/store/themeStore";
