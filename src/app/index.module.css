@@ -1367,6 +1367,29 @@
   margin: 0;
 }
 
+.taskFriendsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  gap: 0.5rem;
+}
+
+.taskFriendText {
+  color: black;
+}
+
+.taskFriendContainer {
+  background-color: #aaa7a77a;
+  border-radius: 1rem;
+  display: flex;
+  width: fit-content;
+  padding: 0 0.2rem;
+  box-shadow: 0 4px 12px #aaa7a77a;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
 /* Task Components
 ------------------------------------------ */
 .taskList {

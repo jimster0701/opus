@@ -1,13 +1,15 @@
 "use client";
 import styles from "../../index.module.css";
 import { type TaskInterest, type Task } from "~/types/task";
-import { type User } from "~/types/user";
+import { type SimpleUser, type User } from "~/types/user";
 import { type Interest } from "~/types/interest";
 import { useEffect, useState } from "react";
 import { api } from "~/trpc/react";
 import { trpc } from "~/utils/trpc";
 import { Check, Trash2, X } from "lucide-react";
 import { DeleteTaskModal } from "../modals";
+import { ProfilePicturePreviewWrapper } from "../images/cldImageWrapper";
+import { useRouter } from "next/navigation";
 
 interface TaskboxUpdateProps {
   task: Task;
@@ -20,23 +22,47 @@ interface TaskboxUpdateProps {
 }
 
 export default function TaskboxUpdate(props: TaskboxUpdateProps) {
+  const router = useRouter();
   const [updatedTask, setUpdatedTask] = useState<Task>(props.task);
   const [selectedInterests, setSelectedInterests] = useState<Interest[]>(
     props.task.interests.map((i) => i.interest)
   );
+  const [selectedFriends, setSelectedFriends] = useState<SimpleUser[]>([]);
   const [availableInterests, setAvailableInterests] = useState<Interest[]>([]);
+  const [availableFriends, setAvailableFriends] = useState<SimpleUser[]>([]);
   const [removedInterests, setRemovedInterests] = useState<Interest[]>(
     props.task.interests.map((i) => i.interest)
   );
+  const [removedFriends, setRemovedFriends] = useState<SimpleUser[]>([]);
 
   const [iconError, setIconError] = useState([false, ""]);
   const [formError, setFormError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showTaskDelete, setShowTaskDelete] = useState(false);
 
+  const getFriends = trpc.user.getFriends.useQuery();
+
   const userInterests = trpc.user.getUserInterests.useQuery({
     userId: props.user.id,
   });
+
+  useEffect(() => {
+    if (getFriends.isLoading) return;
+    if (getFriends.data?.length != 0) {
+      console.log(getFriends.data);
+      setSelectedFriends(
+        getFriends.data?.filter((newF) =>
+          props.task.friends.map((f) => f.userId).includes(newF.id)
+        ) as SimpleUser[]
+      );
+      setAvailableFriends(
+        getFriends.data?.filter(
+          (f) => !selectedFriends.includes(f as SimpleUser)
+        ) as SimpleUser[]
+      );
+      setRemovedFriends(selectedFriends);
+    }
+  }, [getFriends.isLoading, getFriends.data?.length]);
 
   useEffect(() => {
     if (userInterests.isLoading) return;
@@ -149,31 +175,51 @@ export default function TaskboxUpdate(props: TaskboxUpdateProps) {
               <h6>(Your interests)</h6>
             </div>
             <select
+              multiple
               className={`${styles.opusSelector} ${styles.opusSelectorMultiple}`}
               onChange={(e) => {
-                if (selectedInterests.length >= 5) {
+                const selectedOptions = Array.from(
+                  e.target.selectedOptions
+                ).map((option) => Number(option.value));
+
+                if (selectedOptions.length + selectedInterests.length > 5) {
                   setFormError("You can only select 5 interests.");
                   return;
                 }
-                const value = e.target.value;
-                if (value) {
-                  const interest = availableInterests.find(
-                    (i) => i.id == Number(value)
-                  );
-                  setSelectedInterests([...selectedInterests, interest!]);
 
-                  setRemovedInterests([
-                    ...removedInterests,
-                    ...availableInterests.filter((i) => i.id == Number(value)),
-                  ]);
+                const newInterests = selectedOptions
+                  .map((id) => availableInterests.find((i) => i.id === id))
+                  .filter((i): i is (typeof availableInterests)[number] => !!i);
 
-                  setAvailableInterests(
-                    availableInterests.filter((i) => i.id != Number(value))
-                  );
-                }
+                const updatedSelected = [
+                  ...selectedInterests,
+                  ...newInterests.filter(
+                    (i) => !selectedInterests.some((sel) => sel.id === i.id)
+                  ),
+                ];
+
+                const updatedAvailable =
+                  availableInterests.length == 1
+                    ? []
+                    : [
+                        ...availableInterests.filter(
+                          (i) => !newInterests.some((sel) => sel.id === i.id)
+                        ),
+                      ];
+
+                const updatedRemoved = [
+                  ...removedInterests,
+                  ...newInterests.filter(
+                    (i) => !removedInterests.some((r) => r.id === i.id)
+                  ),
+                ];
+
+                setSelectedInterests(updatedSelected);
+                setAvailableInterests(updatedAvailable);
+                setRemovedInterests(updatedRemoved);
               }}
             >
-              <option>Select an interest</option>
+              <option disabled>Select up to 5 interests</option>
               {availableInterests.map((interest) => (
                 <option
                   className={styles.taskCreateSelectOption}
@@ -220,6 +266,102 @@ export default function TaskboxUpdate(props: TaskboxUpdateProps) {
             ))}
           </div>
         </div>
+        {props.task.type == "CUSTOM_FRIEND" && (
+          <>
+            <div className={styles.opusSelectorContainer}>
+              <div className={styles.taskCreateSelectorText}>
+                <p>Friends:</p>
+              </div>
+              <select
+                multiple
+                className={`${styles.opusSelector} ${styles.opusSelectorMultiple}`}
+                onChange={(e) => {
+                  const selectedOptions = Array.from(
+                    e.target.selectedOptions
+                  ).map((option) => option.value);
+
+                  if (selectedOptions.length + selectedFriends.length > 5) {
+                    setFormError("You can only select 5 friends.");
+                    return;
+                  }
+
+                  const newFriends = selectedOptions
+                    .map((id) => availableFriends.find((f) => f.id === id))
+                    .filter((f) => !!f);
+
+                  const updatedSelected = [
+                    ...selectedFriends,
+                    ...newFriends.filter((f) =>
+                      selectedFriends.filter((sel) => sel.id != f.id)
+                    ),
+                  ];
+
+                  const updatedAvailable =
+                    availableFriends.length == 1
+                      ? []
+                      : [
+                          ...availableFriends.filter(
+                            (f) => !newFriends.some((sel) => sel.id === f.id)
+                          ),
+                        ];
+
+                  const updatedRemoved = [
+                    ...removedFriends,
+                    ...newFriends.filter(
+                      (i) => !removedFriends.some((r) => r.id === i.id)
+                    ),
+                  ];
+
+                  setSelectedFriends(updatedSelected);
+                  setAvailableFriends(updatedAvailable);
+                  setRemovedFriends(updatedRemoved);
+                }}
+              >
+                <option disabled>Select up to 5 friends</option>
+                {availableFriends.map((friend) => (
+                  <option
+                    className={styles.taskCreateSelectOption}
+                    key={friend.id}
+                    value={friend.id}
+                  >
+                    {friend.displayName}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className={styles.taskFriendsContainer}>
+              {selectedFriends.map((friend) => (
+                <div
+                  key={friend.id}
+                  className={styles.taskFriendContainer}
+                  onClick={() => {
+                    const newArray = selectedFriends.filter((f) => f != friend);
+                    setSelectedFriends(newArray);
+                    setRemovedFriends(
+                      removedFriends.filter((f) => f.id != friend.id)
+                    );
+                    setAvailableFriends([
+                      ...availableFriends,
+                      ...removedFriends.filter((f) => f.id == friend.id),
+                    ]);
+                  }}
+                >
+                  <ProfilePicturePreviewWrapper
+                    id={friend.id}
+                    imageUrl={friend.image ?? ""}
+                    width={10}
+                    height={10}
+                  />
+                  <div>
+                    <p className={`${styles.taskFriendText}`}>
+                      {friend.displayName} x
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
       </div>
       <div className={styles.taskSubmitContainer}>
         {!isSubmitting && (
@@ -249,19 +391,36 @@ export default function TaskboxUpdate(props: TaskboxUpdateProps) {
 
                   try {
                     setIsSubmitting(true);
-                    const updatedTaskWithInterests =
-                      await updateTask.mutateAsync({
-                        id: updatedTask.id,
-                        name: updatedTask.name,
-                        icon: updatedTask.icon,
-                        interestIds: selectedInterests.map((i) => i.id),
-                        description: updatedTask.description,
-                      });
-                    props.onComplete(
-                      updatedTask,
-                      updatedTaskWithInterests?.interests as TaskInterest[],
-                      false
-                    );
+                    if (props.task.type == "CUSTOM") {
+                      const updatedTaskWithInterests =
+                        await updateTask.mutateAsync({
+                          id: updatedTask.id,
+                          name: updatedTask.name,
+                          icon: updatedTask.icon,
+                          interestIds: selectedInterests.map((i) => i.id),
+                          description: updatedTask.description,
+                        });
+                      props.onComplete(
+                        updatedTask,
+                        updatedTaskWithInterests?.interests as TaskInterest[],
+                        false
+                      );
+                    } else {
+                      const updatedTaskWithInterests =
+                        await updateTask.mutateAsync({
+                          id: updatedTask.id,
+                          name: updatedTask.name,
+                          icon: updatedTask.icon,
+                          interestIds: selectedInterests.map((i) => i.id),
+                          description: updatedTask.description,
+                          friends: selectedFriends.map((f) => f.id),
+                        });
+                      props.onComplete(
+                        updatedTask,
+                        updatedTaskWithInterests?.interests as TaskInterest[],
+                        false
+                      );
+                    }
                   } catch (error: any) {
                     setFormError(
                       error?.message ??

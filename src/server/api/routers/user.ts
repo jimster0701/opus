@@ -52,7 +52,9 @@ export const userRouter = createTRPCRouter({
         followingId: currentUserId,
       },
       include: {
-        follower: true,
+        follower: {
+          select: { id: true, displayName: true, image: true, name: true },
+        },
       },
     });
 

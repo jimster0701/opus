@@ -7,6 +7,10 @@ import { useEffect, useState } from "react";
 import { shuffle } from "../util";
 import { BadgeCheck, SquarePen } from "lucide-react";
 import { CompleteTaskModal, UncompleteTaskModal } from "../modals";
+import { ProfilePicturePreviewWrapper } from "../images/cldImageWrapper";
+import { type SimpleUser } from "~/types/user";
+import { useRouter } from "next/navigation";
+import { defaultUser } from "~/const/defaultVar";
 
 interface TaskboxProps {
   setNewInterest?: (value: Interest) => void;
@@ -17,22 +21,41 @@ interface TaskboxProps {
 }
 
 export default function Taskbox(props: TaskboxProps) {
+  const router = useRouter();
   const [interests, setInterests] = useState<Interest[]>([]);
   const [completedTask, setCompletedTask] = useState<boolean>(
     props.task.completed
   );
   const [showCompleteTask, setShowCompleteTask] = useState<boolean>(false);
   const [showUncompleteTask, setShowUncompleteTask] = useState<boolean>(false);
+  const [friendsTask, setFriendsTask] = useState(false);
+  const [friends, setFriends] = useState<SimpleUser[]>([defaultUser]);
 
   const getInterests = trpc.interest.getInterestsById.useQuery({
     interestIds: props.task.interests.map((i) => i.interest.id) ?? [],
   });
+
+  const getFriends = trpc.task.getFriendsOnTask.useQuery(
+    {
+      userIds: props.task.friends.map((f) => f.userId),
+    },
+    { enabled: props.task.friends.length != 0 }
+  );
+
   useEffect(() => {
     if (getInterests.isLoading) return;
     if (getInterests.data?.length != 0) {
       setInterests(shuffle(getInterests.data as Interest[]));
     }
   }, [getInterests.isLoading, getInterests.data]);
+
+  useEffect(() => {
+    if (getFriends.isLoading || getFriends.isPending) return;
+    if (getFriends.data?.length != 0) {
+      setFriends(getFriends.data as SimpleUser[]);
+      setFriendsTask(true);
+    }
+  }, [getFriends.isLoading, getFriends.data]);
 
   return (
     <div
@@ -104,6 +127,28 @@ export default function Taskbox(props: TaskboxProps) {
           </div>
         ))}
       </div>
+      {friendsTask && (
+        <div className={styles.flexRow}>
+          <p>Friends:</p>
+          <div className={styles.taskFriendsContainer}>
+            {friends.map((friend) => (
+              <div key={friend.id} className={styles.taskFriendContainer}>
+                <ProfilePicturePreviewWrapper
+                  id={friend.id}
+                  imageUrl={friend.image ?? ""}
+                  width={10}
+                  height={10}
+                />
+                <div>
+                  <p className={`${styles.taskFriendText}`}>
+                    {friend.displayName}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
       {props.userId && (
         <div className={styles.taskCompletedContainer}>
           {completedTask ? (

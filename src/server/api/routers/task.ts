@@ -109,6 +109,20 @@ async function generateDailyTasks(ctx: any) {
 }
 
 export const taskRouter = createTRPCRouter({
+  getFriendsOnTask: protectedProcedure
+    .input(
+      z.object({
+        userIds: z.array(z.string()),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const users = await ctx.db.user.findMany({
+        where: { id: { in: input.userIds } },
+        select: { id: true, displayName: true, name: true, image: true },
+      });
+      return users;
+    }),
+
   getDailyTasks: protectedProcedure
     .input(
       z.object({
@@ -124,11 +138,20 @@ export const taskRouter = createTRPCRouter({
       const tasks = await ctx.db.task.findMany({
         orderBy: { name: "desc" },
         where: {
-          createdById: input.userId,
           createdAt: { gte: startOfToday, lte: endOfToday }, // Get tasks made today
           type: {
             in: [TaskType.GENERATED, TaskType.GENERATED_FRIEND],
           },
+          OR: [
+            { createdById: input.userId },
+            {
+              friends: {
+                some: {
+                  userId: input.userId,
+                },
+              },
+            },
+          ],
         },
         include: {
           friends: {
@@ -185,11 +208,20 @@ export const taskRouter = createTRPCRouter({
       const tasks = await ctx.db.task.findMany({
         orderBy: { updatedAt: "desc" },
         where: {
-          createdById: input.userId,
           updatedAt: { gte: oneWeekAgo },
           type: {
             in: [TaskType.CUSTOM, TaskType.CUSTOM_FRIEND],
           },
+          OR: [
+            { createdById: input.userId },
+            {
+              friends: {
+                some: {
+                  userId: input.userId,
+                },
+              },
+            },
+          ],
         },
         include: {
           friends: {

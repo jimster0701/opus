@@ -1,12 +1,13 @@
 "use client";
 import styles from "../../index.module.css";
 import { type Task } from "~/types/task";
-import { type User } from "~/types/user";
+import { type SimpleUser, type User } from "~/types/user";
 import { type Interest } from "~/types/interest";
 import { useEffect, useState } from "react";
 import { api } from "~/trpc/react";
 import { useRouter } from "next/navigation";
 import { trpc } from "~/utils/trpc";
+import { ProfilePicturePreviewWrapper } from "../images/cldImageWrapper";
 
 interface TaskboxCreateProps {
   task: Task;
@@ -17,15 +18,24 @@ interface TaskboxCreateProps {
 export default function TaskboxCreate(props: TaskboxCreateProps) {
   const router = useRouter();
 
-  const userInterests = trpc.user.getUserInterests.useQuery({
-    userId: props.user.id,
-  });
-
   const [interestIcon, setInterestIcon] = useState(props.task.icon);
 
   const [loaded, setLoaded] = useState(false);
   const [selectedInterests, setSelectedInterests] = useState<Interest[]>([]);
   const [availableInterests, setAvailableInterests] = useState<Interest[]>([]);
+  const [removedInterests, setRemovedInterests] = useState<Interest[]>([]);
+  const [selectedFriends, setSelectedFriends] = useState<SimpleUser[]>([]);
+  const [availableFriends, setAvailableFriends] = useState<SimpleUser[]>([]);
+  const [removedFriends, setRemovedFriends] = useState<SimpleUser[]>([]);
+  const [iconError, setIconError] = useState([false, ""]);
+  const [formError, setFormError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const getFriends = trpc.user.getFriends.useQuery();
+
+  const userInterests = trpc.user.getUserInterests.useQuery({
+    userId: props.user.id,
+  });
 
   useEffect(() => {
     if (loaded || userInterests.isLoading) return;
@@ -37,12 +47,15 @@ export default function TaskboxCreate(props: TaskboxCreateProps) {
     setLoaded(true);
   }, [userInterests.isLoading, userInterests.data, availableInterests, loaded]);
 
-  const [removedInterests, setRemovedInterests] = useState<Interest[]>([]);
-  const [iconError, setIconError] = useState([false, ""]);
-  const [formError, setFormError] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  useEffect(() => {
+    if (getFriends.isLoading) return;
+    if (getFriends.data?.length != 0) {
+      setAvailableFriends(getFriends.data as SimpleUser[]);
+    }
+  }, [getFriends.isLoading, getFriends.data?.length]);
 
   const createTask = api.task.createCustomTask.useMutation();
+  const createFriendTask = api.task.createCustomFriendTask.useMutation();
   return (
     <>
       <div key={props.task.id} className={styles.taskCreateContainer}>
@@ -145,7 +158,7 @@ export default function TaskboxCreate(props: TaskboxCreateProps) {
                     (i) => !selectedInterests.some((sel) => sel.id === i.id)
                   ),
                 ];
-                console.log(availableInterests);
+
                 const updatedAvailable =
                   availableInterests.length == 1
                     ? []
@@ -213,6 +226,98 @@ export default function TaskboxCreate(props: TaskboxCreateProps) {
             ))}
           </div>
         </div>
+        <div className={styles.opusSelectorContainer}>
+          <div className={styles.taskCreateSelectorText}>
+            <p>Friends:</p>
+          </div>
+          <select
+            multiple
+            className={`${styles.opusSelector} ${styles.opusSelectorMultiple}`}
+            onChange={(e) => {
+              const selectedOptions = Array.from(e.target.selectedOptions).map(
+                (option) => option.value
+              );
+
+              if (selectedOptions.length + selectedFriends.length > 5) {
+                setFormError("You can only select 5 friends.");
+                return;
+              }
+
+              const newFriends = selectedOptions
+                .map((id) => availableFriends.find((f) => f.id === id))
+                .filter((f) => !!f);
+
+              const updatedSelected = [
+                ...selectedFriends,
+                ...newFriends.filter((f) =>
+                  selectedFriends.filter((sel) => sel.id != f.id)
+                ),
+              ];
+
+              const updatedAvailable =
+                availableFriends.length == 1
+                  ? []
+                  : [
+                      ...availableFriends.filter(
+                        (f) => !newFriends.some((sel) => sel.id === f.id)
+                      ),
+                    ];
+
+              const updatedRemoved = [
+                ...removedFriends,
+                ...newFriends.filter(
+                  (i) => !removedFriends.some((r) => r.id === i.id)
+                ),
+              ];
+
+              setSelectedFriends(updatedSelected);
+              setAvailableFriends(updatedAvailable);
+              setRemovedFriends(updatedRemoved);
+            }}
+          >
+            <option disabled>Select up to 5 friends</option>
+            {availableFriends.map((friend) => (
+              <option
+                className={styles.taskCreateSelectOption}
+                key={friend.id}
+                value={friend.id}
+              >
+                {friend.displayName}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className={styles.taskFriendsContainer}>
+          {selectedFriends.map((friend) => (
+            <div
+              key={friend.id}
+              className={styles.taskFriendContainer}
+              onClick={() => {
+                const newArray = selectedFriends.filter((f) => f != friend);
+                setSelectedFriends(newArray);
+                setRemovedFriends(
+                  removedFriends.filter((f) => f.id != friend.id)
+                );
+                setAvailableFriends([
+                  ...availableFriends,
+                  ...removedFriends.filter((f) => f.id == friend.id),
+                ]);
+              }}
+            >
+              <ProfilePicturePreviewWrapper
+                id={friend.id}
+                imageUrl={friend.image ?? ""}
+                width={10}
+                height={10}
+              />
+              <div>
+                <p className={`${styles.taskFriendText}`}>
+                  {friend.displayName} x
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
       <div className={styles.taskSubmitContainer}>
         <button
@@ -249,12 +354,22 @@ export default function TaskboxCreate(props: TaskboxCreateProps) {
 
             try {
               setIsSubmitting(true);
-              await createTask.mutateAsync({
-                name: props.task.name,
-                icon: props.task.icon,
-                interestIds: selectedInterests.map((i) => i.id),
-                description: props.task.description,
-              });
+              if (selectedFriends.length > 0) {
+                await createFriendTask.mutateAsync({
+                  name: props.task.name,
+                  icon: props.task.icon,
+                  interestIds: selectedInterests.map((i) => i.id),
+                  description: props.task.description,
+                  friends: selectedFriends.map((f) => f.id),
+                });
+              } else {
+                await createTask.mutateAsync({
+                  name: props.task.name,
+                  icon: props.task.icon,
+                  interestIds: selectedInterests.map((i) => i.id),
+                  description: props.task.description,
+                });
+              }
               // Success redirect and show new task
               router.push("/?selectedTab=custom");
             } catch (error: any) {
