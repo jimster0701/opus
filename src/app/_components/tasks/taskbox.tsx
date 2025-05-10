@@ -9,7 +9,6 @@ import { BadgeCheck, SquarePen } from "lucide-react";
 import { CompleteTaskModal, UncompleteTaskModal } from "../modals";
 import { ProfilePicturePreviewWrapper } from "../images/cldImageWrapper";
 import { type SimpleUser } from "~/types/user";
-import { useRouter } from "next/navigation";
 import { defaultUser } from "~/const/defaultVar";
 
 interface TaskboxProps {
@@ -21,7 +20,6 @@ interface TaskboxProps {
 }
 
 export default function Taskbox(props: TaskboxProps) {
-  const router = useRouter();
   const [interests, setInterests] = useState<Interest[]>([]);
   const [completedTask, setCompletedTask] = useState<boolean>(
     props.task.completed
@@ -73,7 +71,7 @@ export default function Taskbox(props: TaskboxProps) {
         <div className={styles.taskContentContainer}>
           <div className={styles.taskTitleContainer}>
             <p className={styles.taskTitle}>{props.task.name}</p>
-            {props.setEditMode ? (
+            {props.setEditMode && props.userId == props.task.createdById ? (
               <div
                 className={styles.taskEditContainer}
                 onClick={() => {

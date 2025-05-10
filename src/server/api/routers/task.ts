@@ -390,6 +390,7 @@ export const taskRouter = createTRPCRouter({
                 },
               },
             },
+            friends: true,
           },
         });
 

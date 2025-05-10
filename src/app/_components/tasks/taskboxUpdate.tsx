@@ -17,6 +17,7 @@ interface TaskboxUpdateProps {
   onComplete: (
     finalTask: Task,
     updatedInterests: TaskInterest[],
+    updatedFriends: SimpleUser[] | null,
     deleteTask: boolean
   ) => void;
 }
@@ -48,21 +49,22 @@ export default function TaskboxUpdate(props: TaskboxUpdateProps) {
 
   useEffect(() => {
     if (getFriends.isLoading) return;
-    if (getFriends.data?.length != 0) {
-      console.log(getFriends.data);
-      setSelectedFriends(
-        getFriends.data?.filter((newF) =>
-          props.task.friends.map((f) => f.userId).includes(newF.id)
-        ) as SimpleUser[]
-      );
-      setAvailableFriends(
-        getFriends.data?.filter(
-          (f) => !selectedFriends.includes(f as SimpleUser)
-        ) as SimpleUser[]
-      );
-      setRemovedFriends(selectedFriends);
+    if (getFriends.data?.length != 0 && getFriends.data) {
+      const taskFriendIds = props.task.friends.map((f) => f.userId);
+
+      const selected = getFriends.data.filter((f) =>
+        taskFriendIds.includes(f.id)
+      ) as SimpleUser[];
+
+      const available = getFriends.data.filter(
+        (f) => !taskFriendIds.includes(f.id)
+      ) as SimpleUser[];
+
+      setSelectedFriends(selected);
+      setAvailableFriends(available);
+      setRemovedFriends(selected);
     }
-  }, [getFriends.isLoading, getFriends.data?.length]);
+  }, [getFriends.isLoading, getFriends.data?.length, props.task.friends]);
 
   useEffect(() => {
     if (userInterests.isLoading) return;
@@ -403,6 +405,7 @@ export default function TaskboxUpdate(props: TaskboxUpdateProps) {
                       props.onComplete(
                         updatedTask,
                         updatedTaskWithInterests?.interests as TaskInterest[],
+                        null,
                         false
                       );
                     } else {
@@ -418,6 +421,7 @@ export default function TaskboxUpdate(props: TaskboxUpdateProps) {
                       props.onComplete(
                         updatedTask,
                         updatedTaskWithInterests?.interests as TaskInterest[],
+                        selectedFriends,
                         false
                       );
                     }
@@ -437,7 +441,12 @@ export default function TaskboxUpdate(props: TaskboxUpdateProps) {
               <button
                 className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
                 onClick={() => {
-                  props.onComplete(props.task, props.task.interests, false);
+                  props.onComplete(
+                    props.task,
+                    props.task.interests,
+                    null,
+                    false
+                  );
                 }}
               >
                 Cancel
@@ -476,7 +485,7 @@ export default function TaskboxUpdate(props: TaskboxUpdateProps) {
         <DeleteTaskModal
           onComplete={(deleteTask: boolean) => {
             if (deleteTask)
-              props.onComplete(props.task, props.task.interests, true);
+              props.onComplete(props.task, props.task.interests, null, true);
             setShowTaskDelete(false);
           }}
           id={props.task.id}
