@@ -1181,7 +1181,7 @@ export function NewUserModal(props: newUserModalProps) {
             circles you have access to in discover.
             <br />
           </h3>
-          <form className={styles.modalForm}>
+          <div className={styles.modalForm}>
             <label htmlFor="newInterestName">Create a new interest:</label>
             <div className={styles.selectInterestModalInputContainer}>
               <input
@@ -1279,7 +1279,7 @@ export function NewUserModal(props: newUserModalProps) {
                 }}
               ></div>
             </Fragment>
-          </form>
+          </div>
           <div className={styles.selectInterestModalCustomInterestContainer}>
             <h2>Your custom interests</h2>
             {customInterests.length == 0 ? (
@@ -1307,6 +1307,7 @@ export function NewUserModal(props: newUserModalProps) {
                         await deleteCustomInterest.mutateAsync({
                           id: custom.id,
                         });
+                        setSelected(selected.filter((i) => i.id != custom.id));
                         setCustomInterests(
                           customInterests.filter((i) => i.id != custom.id)
                         );
@@ -1582,6 +1583,7 @@ export function SelectInterestsModal(props: selectInterestsModalProps) {
                     onClick={async () => {
                       setInterestDeleted(custom.id);
                       await deleteCustomInterest.mutateAsync({ id: custom.id });
+                      setSelected(selected.filter((i) => i.id != custom.id));
                       setCustomInterests(
                         customInterests.filter((i) => i.id != custom.id)
                       );
