@@ -18,14 +18,6 @@ export default function NotLoggedIn() {
           <div className={`${styles.modal} ${styles.AboutUsInnerContainer}`}>
             <AboutUsInnerModal />
           </div>
-          <br />
-          <h2>Survey shortcut</h2>
-          <h3>Opens - 09/05/2025</h3>
-          <h3>Closes - 22/05/2025</h3>
-          <iframe
-            className={styles.surveyIframe}
-            src="https://app.onlinesurveys.jisc.ac.uk/s/bournemouth/opus-trail-tester-questionnaire"
-          />
         </div>
       </div>
     </main>

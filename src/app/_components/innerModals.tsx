@@ -4,21 +4,28 @@ export function AboutUsInnerModal() {
       <h1>About Opus</h1>
       <br />
       <h4>
-        The original idea for Opus was to create an app that used AI to generate
-        tasks,
-        {
-          " based on the user's given interests, each day it would come up with 3 tasks that the user could complete."
-        }
+        The orignal idea for this app came from a desire to reduce my own screen
+        time and engage in more meaniful activities that I would enjoy off of my
+        phone.
         <br />
         <br />
-        That function is still a core part of Opus however after some research
-        the idea became more focused on social aspects turning into a social
-        media platform revolving around tasks and sharing your hobbies and
-        interests.
+        The plan was to use AI to come up with tasks for the user based on their
+        given interests.
         <br />
         <br />
-        This was created as part of my university dissertation and will be live
-        until the 23rd of May.
+        Each day it would generate 3 daily tasks that the user could complete in
+        that day or at least take inspiration from.
+        <br />
+        <br />
+        This function is still a core part of the app however to add more engage
+        it felt right to focus more on social aspects of these tasks.
+        <br />
+        <br />
+        This app was created as part of my university dissertation an thus will
+        not be live for long.
+        <br />
+        <br />
+        The official end date is the 23rd of May.
         <br />
         <br />
         {

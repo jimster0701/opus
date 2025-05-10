@@ -845,6 +845,26 @@ export function PrivacyPolicyModal(props: modalProps) {
   );
 }
 
+export function SurveyModal(props: modalProps) {
+  return (
+    <div className={styles.modalContainer}>
+      <div className={styles.modalBackground} onClick={props.onComplete} />
+      <div className={styles.modal}>
+        <p className={styles.closeModalButton} onClick={props.onComplete}>
+          <X width={45} height={45} />
+        </p>
+        <h2>Survey shortcut</h2>
+        <h3>Opens - 09/05/2025</h3>
+        <h3>Closes - 22/05/2025</h3>
+        <iframe
+          className={styles.surveyIframe}
+          src="https://app.onlinesurveys.jisc.ac.uk/s/bournemouth/opus-trail-tester-questionnaire"
+        />
+      </div>
+    </div>
+  );
+}
+
 interface settingsModalProps extends modalProps {
   userPrivate: boolean;
   userTasksPrivate: boolean;
@@ -856,6 +876,7 @@ export function SettingsModal(props: settingsModalProps) {
   const [profileTaskPrivate, setProfileTaskPrivate] = useState(
     props.userTasksPrivate
   );
+  const [showSurvey, setShowSurvey] = useState(false);
   const [showRemoveCookies, setShowRemoveCookies] = useState(false);
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
   const [reportMessage, setReportMessage] = useState("");
@@ -982,11 +1003,13 @@ export function SettingsModal(props: settingsModalProps) {
         <br />
         <br />
         <SignOutButton />
+        <p onClick={() => setShowSurvey(true)}>Answer survey</p>
         <p onClick={() => setShowPrivacyPolicy(true)}>Privacy Policy</p>
         <p onClick={() => setShowRemoveCookies(true)}>
           Revoke Cookie acception
         </p>
         <p></p>
+        {showSurvey && <SurveyModal onComplete={() => setShowSurvey(false)} />}
         {showPrivacyPolicy && (
           <PrivacyPolicyModal onComplete={() => setShowPrivacyPolicy(false)} />
         )}
@@ -1172,13 +1195,12 @@ export function NewUserModal(props: newUserModalProps) {
             <div className={styles.errorTooltip}>{submitError[1]}</div>
           )}
           <h3 className={styles.modalText}>
-            Below is a list of interests and an area to create custom interests,{" "}
-            <br />
-            Choose at least 3, with a maximum of 15
+            Below you can select or create your own custom interests, <br />
+            Choose at least 3 and a maximum of 15
             <br />
             <br />
             These choices will influence the tasks you receive and the social
-            circles you have access to in discover.
+            circles you can discover.
             <br />
           </h3>
           <div className={styles.modalForm}>
@@ -1190,7 +1212,6 @@ export function NewUserModal(props: newUserModalProps) {
                 name="newInterestIcon"
                 className={styles.selectInterestModalIconInput}
                 placeholder={choices[10]?.icon}
-                required
                 value={interestIcon}
                 onChange={(e) => {
                   const newIcon = e.target.value;
@@ -1214,7 +1235,6 @@ export function NewUserModal(props: newUserModalProps) {
                 name="newInterestName"
                 className={styles.selectInterestModalInterestInput}
                 placeholder="Interesting..."
-                required
                 value={interestName}
                 onChange={(e) => {
                   const newName = e.target.value;
@@ -1235,7 +1255,16 @@ export function NewUserModal(props: newUserModalProps) {
                 className={styles.selectInterestModalInterestButton}
                 onClick={async (e) => {
                   setSubmitError(["", ""]);
-                  if (interestIcon.length == 0) return;
+                  if (interestIcon.length == 0)
+                    setSubmitError([
+                      "interest",
+                      "Interest icon must be filled to create",
+                    ]);
+                  if (interestName.length == 0)
+                    setSubmitError([
+                      "interest",
+                      "Interest name must be filled to create",
+                    ]);
                   e.preventDefault();
                   const interest = await addCustomInterest.mutateAsync({
                     name: interestName,

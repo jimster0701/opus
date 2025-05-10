@@ -17,11 +17,14 @@ interface allUserPostsProps {
 
 export function AllUserPosts(props: allUserPostsProps) {
   const [posts, setPosts] = useState<Post[]>([]);
-  const getPosts = api.post.getAllUser.useQuery({
-    userId: props.userId,
-    isFriend: props.isFriend,
-    isPrivate: props.isPrivate,
-  });
+  const getPosts = api.post.getAllUser.useQuery(
+    {
+      userId: props.userId,
+      isFriend: props.isFriend,
+      isPrivate: props.isPrivate,
+    },
+    { enabled: props.isPrivate != undefined }
+  );
 
   useEffect(() => {
     if (getPosts.isLoading) return;
