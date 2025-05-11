@@ -29,9 +29,12 @@ export default function Taskbox(props: TaskboxProps) {
   const [friendsTask, setFriendsTask] = useState(false);
   const [friends, setFriends] = useState<SimpleUser[]>([defaultUser]);
 
-  const getInterests = trpc.interest.getInterestsById.useQuery({
-    interestIds: props.task.interests.map((i) => i.interest.id) ?? [],
-  });
+  const getInterests = trpc.interest.getInterestsById.useQuery(
+    {
+      interestIds: props.task.interests.map((i) => i.interest.id),
+    },
+    { enabled: props.task.interests != undefined }
+  );
 
   const getFriends = trpc.task.getFriendsOnTask.useQuery(
     {

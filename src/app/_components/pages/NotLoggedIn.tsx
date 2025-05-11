@@ -12,13 +12,14 @@ export default function NotLoggedIn() {
           to <span className={styles.opusText}>Opus</span>
         </h1>
         <div className={styles.showcaseContainer}>
+          <h2 className={styles.showcaseText}>Please login to start:</h2>
+          <LoginButton />
+          <br />
           <div className={`${styles.modal} ${styles.AboutUsInnerContainer}`}>
             <AboutUsInnerModal />
           </div>
           <br />
-          <h2 className={styles.showcaseText}>Please login to start:</h2>
-          <LoginButton />
-          <br />
+
           <br />
         </div>
       </div>
