@@ -161,25 +161,27 @@ export default function ProfileSlugHeader(props: ProfileSlugHeaderProps) {
           )}
           {(!props.user.private || usersAreFriends) &&
             !getSessionUserInterests.isLoading &&
-            props.userInterests.map((interest) => (
-              <div
-                key={interest.id}
-                style={{
-                  border: `${interest.colour} 1px solid`,
-                  ["--text-glow" as any]: `linear-gradient(to top left,rgb(70, 70, 70), ${interest.colour})`,
-                }}
-                className={styles.glowingNugget}
-                onClick={() => {
-                  setShowInterestModal(true);
-                  setNewInterest(interest);
-                }}
-              >
-                <p className={styles.glowingNuggetText}>
-                  {interest.icon}
-                  {interest.name}
-                </p>
-              </div>
-            ))}
+            props.userInterests
+              .filter((interest) => !interest.private)
+              .map((interest) => (
+                <div
+                  key={interest.id}
+                  style={{
+                    border: `${interest.colour} 1px solid`,
+                    ["--text-glow" as any]: `linear-gradient(to top left,rgb(70, 70, 70), ${interest.colour})`,
+                  }}
+                  className={styles.glowingNugget}
+                  onClick={() => {
+                    setShowInterestModal(true);
+                    setNewInterest(interest);
+                  }}
+                >
+                  <p className={styles.glowingNuggetText}>
+                    {interest.icon}
+                    {interest.name}
+                  </p>
+                </div>
+              ))}
         </div>
       </div>
       {showFollowModal[0] && followers && following && (

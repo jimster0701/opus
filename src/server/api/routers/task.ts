@@ -47,8 +47,8 @@ async function generateDailyTasks(ctx: any) {
       interests: true,
     },
   });
-
-  const defaultInterests = await ctx.db.interest.findMany({
+  console.log(user.interests);
+  const userInterests = await ctx.db.interest.findMany({
     where: {
       id: { in: user?.interests.map((i: UserInterest) => i.interestId) ?? [] },
     },
@@ -56,10 +56,10 @@ async function generateDailyTasks(ctx: any) {
       createdBy: { select: { id: true, displayName: true, image: true } },
     },
   });
+  console.log(userInterests);
+  if (userInterests.length === 0) return [];
 
-  if (defaultInterests.length === 0) return [];
-
-  const shuffledInterests = defaultInterests.sort(() => 0.5 - Math.random());
+  const shuffledInterests = userInterests.sort(() => 0.5 - Math.random());
 
   const batches: Interest[][] = roundRobinSplit(
     shuffledInterests.length == 10
@@ -72,7 +72,6 @@ async function generateDailyTasks(ctx: any) {
           You are a creative assistant assigned to generate tasks for users based on their interests. 
           The tasks should be interesting, fun, achievable in a day, and varied.
           You can reach into sub catagories of interests to add depth to tasks.
-          Your response must follow this exact structure:
           {
             "name": "the task's title",
             "icon": "a single emoji to represent the task",
@@ -86,7 +85,9 @@ async function generateDailyTasks(ctx: any) {
       const content = await generateTask(batch, systemPrompt);
       if (!content) return;
 
-      const taskData = TaskSchema.parse(JSON.parse(content));
+      const cleaned = content.replace(/```(?:json)?/gi, "").trim();
+
+      const taskData = TaskSchema.parse(JSON.parse(cleaned));
       return await ctx.db.task.create({
         data: {
           type: TaskType.GENERATED,
@@ -102,9 +103,35 @@ async function generateDailyTasks(ctx: any) {
             })),
           },
         },
+        include: {
+          interests: {
+            include: {
+              interest: {
+                select: {
+                  id: true,
+                  name: true,
+                  icon: true,
+                  colour: true,
+                  private: true,
+                  createdById: true,
+                  createdBy: true,
+                  users: true,
+                },
+              },
+              task: {
+                select: {
+                  id: true,
+                  type: true,
+                  name: true,
+                },
+              },
+            },
+          },
+        },
       });
     })
   );
+  console.log(tasks);
   return tasks;
 }
 
