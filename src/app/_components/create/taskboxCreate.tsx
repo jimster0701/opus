@@ -52,7 +52,7 @@ export default function TaskboxCreate(props: TaskboxCreateProps) {
     if (getFriends.data?.length != 0) {
       setAvailableFriends(getFriends.data as SimpleUser[]);
     }
-  }, [getFriends.isLoading, getFriends.data?.length]);
+  }, [getFriends.isLoading, getFriends.data, getFriends.data?.length]);
 
   const createTask = api.task.createCustomTask.useMutation();
   const createFriendTask = api.task.createCustomFriendTask.useMutation();

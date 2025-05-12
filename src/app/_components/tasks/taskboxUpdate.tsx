@@ -9,7 +9,6 @@ import { trpc } from "~/utils/trpc";
 import { Check, Trash2, X } from "lucide-react";
 import { DeleteTaskModal } from "../modals";
 import { ProfilePicturePreviewWrapper } from "../images/cldImageWrapper";
-import { useRouter } from "next/navigation";
 
 interface TaskboxUpdateProps {
   task: Task;
@@ -23,7 +22,6 @@ interface TaskboxUpdateProps {
 }
 
 export default function TaskboxUpdate(props: TaskboxUpdateProps) {
-  const router = useRouter();
   const [updatedTask, setUpdatedTask] = useState<Task>(props.task);
   const [selectedInterests, setSelectedInterests] = useState<Interest[]>(
     props.task.interests.map((i) => i.interest)
@@ -64,7 +62,12 @@ export default function TaskboxUpdate(props: TaskboxUpdateProps) {
       setAvailableFriends(available);
       setRemovedFriends(selected);
     }
-  }, [getFriends.isLoading, getFriends.data?.length, props.task.friends]);
+  }, [
+    getFriends.isLoading,
+    getFriends.data?.length,
+    getFriends.data,
+    props.task.friends,
+  ]);
 
   useEffect(() => {
     if (userInterests.isLoading) return;

@@ -56,7 +56,7 @@ export default function Taskbox(props: TaskboxProps) {
       setFriends(getFriends.data as SimpleUser[]);
       setFriendsTask(true);
     }
-  }, [getFriends.isLoading, getFriends.data]);
+  }, [getFriends.isLoading, getFriends.isPending, getFriends.data]);
 
   return (
     <div
