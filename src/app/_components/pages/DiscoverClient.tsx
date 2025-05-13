@@ -9,6 +9,7 @@ import { defaultInterest } from "~/const/defaultVar";
 import { trpc } from "~/utils/trpc";
 import { GainInterestModal } from "../modals";
 import toast from "react-hot-toast";
+import { shuffle } from "../util";
 
 interface DiscoverClientProps {
   session: Session;
@@ -34,7 +35,7 @@ export default function DiscoverClient(props: DiscoverClientProps) {
 
   useMemo(() => {
     if (getAllInterests.isLoading) return;
-    setAllCustomInterests((getAllInterests.data as Interest[]) ?? []);
+    setAllCustomInterests(shuffle(getAllInterests.data as Interest[]) ?? []);
   }, [getAllInterests.isLoading, getAllInterests.data]);
 
   useEffect(() => {
@@ -69,13 +70,18 @@ export default function DiscoverClient(props: DiscoverClientProps) {
           </button>
         </div>
         {(selectedTab == "posts" || selectedTab == "") && (
-          <AllInterestPosts
-            setNewInterest={setNewInterest}
-            setShowInterestModal={setShowInterestModal}
-            interestIds={userInterests.map((i) => i.id)}
-            userId={props.session?.user.id}
-            session={props.session}
-          />
+          <>
+            <h2 className={styles.opusText} style={{ margin: 0 }}>
+              Posts related to you:
+            </h2>
+            <AllInterestPosts
+              setNewInterest={setNewInterest}
+              setShowInterestModal={setShowInterestModal}
+              interestIds={userInterests.map((i) => i.id)}
+              userId={props.session?.user.id}
+              session={props.session}
+            />
+          </>
         )}
         {selectedTab == "interests" && (
           <>
@@ -108,7 +114,9 @@ export default function DiscoverClient(props: DiscoverClientProps) {
                 ))}
               </div>
             ) : (
-              <h3>No custom interests are available.</h3>
+              <h3 className={styles.opusText}>
+                No custom interests are available.
+              </h3>
             )}
           </>
         )}

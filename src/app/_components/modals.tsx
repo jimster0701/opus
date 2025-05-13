@@ -1109,7 +1109,21 @@ export function NewUserModal(props: newUserModalProps) {
   const [interestPrivate, setInterestPrivate] = useState(false);
   const [interestDeleted, setInterestDeleted] = useState(0);
   const [hsva, setHsva] = useState({ h: 214, s: 43, v: 90, a: 1 });
-  const { theme } = useThemeStore();
+  const { theme, setTheme } = useThemeStore();
+
+  const allThemes = [
+    "default",
+    "sunset",
+    "ocean",
+    "forest",
+    "ice",
+    "lava",
+    "midnight",
+    "space",
+    "obsidian",
+    "velvet",
+    "twilight",
+  ];
 
   const [customInterests, setCustomInterests] = useState<Interest[]>(
     props.user.createdInterests ?? []
@@ -1136,6 +1150,8 @@ export function NewUserModal(props: newUserModalProps) {
       props.onComplete();
     },
   });
+
+  const updateThemePreset = trpc.user.updateThemePreset.useMutation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -1196,6 +1212,30 @@ export function NewUserModal(props: newUserModalProps) {
           {submitError[0] == "display" && (
             <div className={styles.errorTooltip}>{submitError[1]}</div>
           )}
+          <h3 className={`${styles.opusText} ${styles.themeTitle}`}>
+            Change The Theme
+          </h3>
+          <div className={styles.themeList}>
+            {allThemes.map((theme) => (
+              <div
+                className={styles.themeOption}
+                key={theme}
+                onClick={() => {
+                  setTheme(theme);
+                  updateThemePreset.mutate({ theme: theme });
+                }}
+              >
+                <p className={`${styles.themeText} ${styles.opusText}`}>
+                  {theme}
+                </p>
+                <div
+                  className={`${styles.themePreset} ${
+                    styles[`theme-${theme}-preview`]
+                  }`}
+                />
+              </div>
+            ))}
+          </div>
           <h3 className={styles.modalText}>
             Below you can select or create your own custom interests, <br />
             Choose at least 3 and a maximum of 15

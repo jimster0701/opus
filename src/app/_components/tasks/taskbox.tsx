@@ -47,7 +47,9 @@ export default function Taskbox(props: TaskboxProps) {
     {
       userIds: props.task.friends.map((f) => f.userId),
     },
-    { enabled: props.task.friends != undefined }
+    {
+      enabled: props.task.friends != undefined && props.task.friends.length > 0,
+    }
   );
 
   useEffect(() => {

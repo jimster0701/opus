@@ -31,16 +31,21 @@ export function AllInterestPosts(props: allInterestPostsProps) {
       return setPosts(getPosts.data as Post[]);
   }, [getPosts.isLoading, getPosts.data?.length, getPosts.data]);
 
-  if (getPosts.isLoading) <p className={styles.showcaseText}>Loading...</p>;
+  if (getPosts.isLoading)
+    return <p className={styles.showcaseText}>Loading...</p>;
   else if (posts.length > 0) {
-    return posts.map((post) => (
-      <Postbox
-        setNewInterest={props.setNewInterest}
-        setShowInterestModal={props.setShowInterestModal}
-        key={post.id}
-        userId={props.userId}
-        post={post}
-      />
-    ));
-  } else return <p className={styles.showcaseText}>No posts yet.</p>;
+    return (
+      <>
+        {posts.map((post) => (
+          <Postbox
+            setNewInterest={props.setNewInterest}
+            setShowInterestModal={props.setShowInterestModal}
+            key={post.id}
+            userId={props.userId}
+            post={post}
+          />
+        ))}
+      </>
+    );
+  } else return <p className={styles.showcaseText}>There are no posts yet.</p>;
 }
