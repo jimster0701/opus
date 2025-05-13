@@ -79,6 +79,7 @@ export default function DiscoverClient(props: DiscoverClientProps) {
         )}
         {selectedTab == "interests" && (
           <>
+            <h3 className={styles.opusText}>User created interests:</h3>
             {getAllInterests.isLoading && <h3>Loading...</h3>}
             {allCustomInterests.length > 0 ? (
               <div className={styles.discoverCustomInterestContainer}>

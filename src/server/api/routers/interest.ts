@@ -146,7 +146,7 @@ export const interestRouter = createTRPCRouter({
         id: z.string().min(1),
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .query(async ({ ctx, input }) => {
       return ctx.db.interest.findMany({
         where: {
           createdById: input.id,

@@ -821,6 +821,13 @@
   border-radius: 5rem;
 }
 
+@media (min-width: 600px) {
+  .profileAvatarPreview {
+    width: 4vw;
+    height: 4vw;
+  }
+}
+
 .profileAvatar {
   width: 10vw;
   height: 10vw;
@@ -1658,6 +1665,52 @@
   gap: 0.2rem;
 }
 
+.taskGeneratorContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+}
+
+.taskGeneratorPickContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  width: 100%;
+}
+
+.taskGeneratorFriendSelect {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 0.25rem;
+}
+
+.taskGeneratorInterestsContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.taskGeneratorInterests {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+.taskGeneratorChoosenInterest {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  margin: 0.25rem 0;
+}
+
+.taskGeneratorChoosenInterest > div {
+  width: auto;
+}
+
 /* Friends Components
 ------------------------------------------ */
 .friendsContainer {
@@ -1667,6 +1720,10 @@
   width: 100%;
   padding: 0;
   margin: 0;
+}
+
+.suggestedUserContainer {
+  width: 100%;
 }
 
 /* Help Components

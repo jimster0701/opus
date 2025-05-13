@@ -8,6 +8,7 @@ import { FollowerOrFollowingModal, GainInterestModal } from "../modals";
 import { type SlugUser, type SimpleUser, type User } from "~/types/user";
 import { type Interest } from "~/types/interest";
 import { defaultInterest } from "~/const/defaultVar";
+import toast from "react-hot-toast";
 
 interface ProfileSlugHeaderProps {
   sessionUser: User;
@@ -116,11 +117,16 @@ export default function ProfileSlugHeader(props: ProfileSlugHeaderProps) {
                   <button
                     className={`${styles.opusButton} ${styles.followButton}`}
                     onClick={async () => {
-                      setIsFollowing(true);
-                      handleFollow();
-                      await addFollowing.mutateAsync({ userId: props.user.id });
+                      if (props.user.id == props.sessionUser.id) {
+                        toast.error("You can't follow yourself");
+                      } else {
+                        setIsFollowing(true);
+                        handleFollow();
+                        await addFollowing.mutateAsync({
+                          userId: props.user.id,
+                        });
+                      }
                     }}
-                    disabled={props.user.id == props.sessionUser.id}
                   >
                     Follow
                   </button>
@@ -188,7 +194,7 @@ export default function ProfileSlugHeader(props: ProfileSlugHeaderProps) {
         <FollowerOrFollowingModal
           onComplete={() => setShowFollowModal([false, ""])}
           data={
-            showFollowModal[1]
+            showFollowModal[1] == "Followers"
               ? (followers.map((f) => f.follower) as SimpleUser[])
               : (following.map((f) => f.following) as SimpleUser[])
           }

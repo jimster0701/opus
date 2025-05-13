@@ -19,6 +19,7 @@ export default function FriendsClient(props: friendsClientProps) {
   const router = useRouter();
   const { theme } = useThemeStore();
   const [selectedTab, setSelectedTab] = useState("");
+  const [suggestedUsers, setSuggestedUsers] = useState<SimpleUser[]>([]);
   const [showInterestModal, setShowInterestModal] = useState(false);
   const [newInterest, setNewInterest] = useState<Interest>(defaultInterest);
   const [hasMounted, setHasMounted] = useState(false);
@@ -40,6 +41,11 @@ export default function FriendsClient(props: friendsClientProps) {
     { enabled: displayNameSearch != "" }
   );
 
+  const getSuggestedUsers = trpc.user.getNewUsersByInterests.useQuery(
+    { interestIds: userInterests.map((i) => i.id) },
+    { enabled: userInterests.length != 0 }
+  );
+
   const { data: friendsData, isLoading } = trpc.user.getFriends.useQuery();
 
   useEffect(() => {
@@ -59,6 +65,17 @@ export default function FriendsClient(props: friendsClientProps) {
     if (getUserInterests.isLoading) return;
     setUserInterests(getUserInterests.data as Interest[]);
   }, [getUserInterests.isLoading, getUserInterests.data]);
+
+  useEffect(() => {
+    if (getSuggestedUsers.isLoading || userInterests.length == 0) return;
+    if (getSuggestedUsers.data && getSuggestedUsers.data.length > 0)
+      setSuggestedUsers(getSuggestedUsers.data as SimpleUser[]);
+  }, [
+    getSuggestedUsers.isLoading,
+    getSuggestedUsers.data,
+    getSuggestedUsers.data?.length,
+    userInterests.length,
+  ]);
 
   if (!hasMounted) {
     return (
@@ -183,6 +200,31 @@ export default function FriendsClient(props: friendsClientProps) {
                 )}
               </>
             )}
+            <div className={styles.suggestedUserContainer}>
+              <h3 className={styles.opusText}>Suggested Users:</h3>
+              {suggestedUsers.map((user) => (
+                <div
+                  key={user.id}
+                  className={styles.cardContainer}
+                  onClick={() => {
+                    router.push(`/profile/${user.id}`);
+                  }}
+                >
+                  <ProfilePicturePreviewWrapper
+                    id={user.id}
+                    imageUrl={user.image ?? ""}
+                    width={10}
+                    height={10}
+                  />
+                  <p className={styles.opusText}>{user.displayName}</p>
+                </div>
+              ))}
+              {suggestedUsers.length == 0 && (
+                <p className={styles.opusText}>
+                  You are friends with everyone!
+                </p>
+              )}
+            </div>
           </>
         )}
       </div>

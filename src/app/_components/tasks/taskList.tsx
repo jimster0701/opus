@@ -49,11 +49,7 @@ export default function TaskList(props: TaskListProps) {
         <div className={styles.taskComponentContainer}>
           {props.dailyTasks.length > 0 &&
             props.dailyTasks
-              .filter(
-                (task) =>
-                  task.type == TaskType.GENERATED ||
-                  task.type == TaskType.GENERATED_FRIEND
-              )
+              .filter((task) => task.type == TaskType.GENERATED)
               .sort((task1, task2) =>
                 task1.completed === task2.completed
                   ? 0
@@ -62,7 +58,7 @@ export default function TaskList(props: TaskListProps) {
                   : -1
               )
               .map((task) => (
-                <Taskbox key={task.id} task={task} userId={props.userId} />
+                <Taskbox key={task.id} task={task} user={props.session.user} />
               ))}
           {dailyCount == 0 && (
             <p className={styles.noTaskText}>
@@ -77,7 +73,8 @@ export default function TaskList(props: TaskListProps) {
             .filter(
               (task) =>
                 task.type == TaskType.CUSTOM ||
-                task.type == TaskType.CUSTOM_FRIEND
+                task.type == TaskType.CUSTOM_FRIEND ||
+                task.type == TaskType.GENERATED_FRIEND
             )
             .sort((task1, task2) =>
               task1.completed === task2.completed ? 0 : task1.completed ? 1 : -1

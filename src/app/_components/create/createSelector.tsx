@@ -7,6 +7,7 @@ import { type User } from "~/types/user";
 import { PostboxCreate } from "./postboxCreate";
 import { defaultPost, defaultTask } from "~/const/defaultVar";
 import TaskboxCreate from "./taskboxCreate";
+import CustomTaskGenerator from "../tasks/customTaskGenerator";
 interface CreateSelectorProps {
   user: User;
   availableTasks: Task[];
@@ -33,6 +34,15 @@ export default function CreateSelector(props: CreateSelectorProps) {
           }}
         >
           Create task
+        </button>
+        <button
+          autoFocus={selectedTab === "generate"}
+          onClick={() => {
+            setSelectedTab("generate");
+            props.setSelectedTab("generate");
+          }}
+        >
+          Generate task
         </button>
         <button
           autoFocus={selectedTab === "post"}
@@ -63,6 +73,7 @@ export default function CreateSelector(props: CreateSelectorProps) {
           />
         </div>
       )}
+      {selectedTab == "generate" && <CustomTaskGenerator user={props.user} />}
     </div>
   );
 }

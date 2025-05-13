@@ -46,7 +46,11 @@ export default function TaskboxEditable(props: TaskboxEditableProps) {
 
   if (!editMode)
     return (
-      <Taskbox task={task} setEditMode={setEditMode} userId={props.userId} />
+      <Taskbox
+        task={task}
+        setEditMode={setEditMode}
+        user={props.session.user}
+      />
     );
   else
     return (
