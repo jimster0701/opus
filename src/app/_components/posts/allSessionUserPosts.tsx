@@ -18,7 +18,8 @@ export function AllSessionUserPosts(props: allSessionUserPostsProps) {
 
   useEffect(() => {
     if (getPosts.isLoading) return;
-    if (getPosts.data?.length != 0) return setPosts(getPosts.data as Post[]);
+    if (getPosts.data?.length != 0 && getPosts.data != undefined)
+      return setPosts(getPosts.data as Post[]);
   }, [getPosts.isLoading, getPosts.data?.length, getPosts.data]);
 
   if (getPosts.isLoading) {

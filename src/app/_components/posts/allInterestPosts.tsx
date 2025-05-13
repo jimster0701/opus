@@ -18,13 +18,17 @@ interface allInterestPostsProps {
 export function AllInterestPosts(props: allInterestPostsProps) {
   const [posts, setPosts] = useState<Post[]>([]);
 
-  const getPosts = api.post.getAllInterest.useQuery({
-    interestIds: props.interestIds ?? [],
-  });
+  const getPosts = api.post.getAllInterest.useQuery(
+    {
+      interestIds: props.interestIds ?? [],
+    },
+    { enabled: props.interestIds[0] != -1 }
+  );
 
   useEffect(() => {
     if (getPosts.isLoading) return;
-    if (getPosts.data?.length != 0) return setPosts(getPosts.data as Post[]);
+    if (getPosts.data?.length != 0 && getPosts.data != undefined)
+      return setPosts(getPosts.data as Post[]);
   }, [getPosts.isLoading, getPosts.data?.length, getPosts.data]);
 
   if (getPosts.isLoading) <p className={styles.showcaseText}>Loading...</p>;
