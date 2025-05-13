@@ -304,6 +304,8 @@ export const postRouter = createTRPCRouter({
         },
       });
 
+      if (dbPosts.length == 0) return [];
+
       const posts = dbPosts.map((dbPost) => {
         const transformedInterests = dbPost.task.interests.map(
           (interestRelation) => {

@@ -6,7 +6,7 @@ import { type Interest } from "~/types/interest";
 
 export const TaskSchema = z.object({
   name: z.string(),
-  icon: z.string().emoji("Icon must be a single emoji").max(2),
+  icon: z.string().emoji("Icon must be a single emoji").max(10),
   interests: z.array(z.number()),
   description: z.string(),
 });
@@ -22,7 +22,28 @@ function roundRobinSplit<T>(arr: T[], batchCount: number): T[][] {
 
 const generateTask = async (batch: Interest[], systemPrompt: string) => {
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-  const userPrompt = `Please generate one task for me based one or more of my interests:\n${batch
+  const userPrompt = `Please generate one task for me based on one or more of my interests:\n${batch
+    .map((i) => `id: ${i.id}, name: ${i.name}`)
+    .join("\n")}\n`;
+
+  const response = await openai.chat.completions.create({
+    model: "gpt-4o",
+    messages: [
+      { role: "system", content: systemPrompt },
+      { role: "user", content: userPrompt },
+    ],
+    temperature: 1,
+  });
+
+  return response.choices[0]?.message?.content;
+};
+
+const generateFriendsTask = async (
+  interests: { name: string; id: number }[],
+  systemPrompt: string
+) => {
+  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  const userPrompt = `Please generate one task for me and my friend based on our interests:\n${interests
     .map((i) => `id: ${i.id}, name: ${i.name}`)
     .join("\n")}\n`;
 
@@ -47,7 +68,6 @@ async function generateDailyTasks(ctx: any) {
       interests: true,
     },
   });
-  console.log(user.interests);
   const userInterests = await ctx.db.interest.findMany({
     where: {
       id: { in: user?.interests.map((i: UserInterest) => i.interestId) ?? [] },
@@ -56,7 +76,6 @@ async function generateDailyTasks(ctx: any) {
       createdBy: { select: { id: true, displayName: true, image: true } },
     },
   });
-  console.log(userInterests);
   if (userInterests.length === 0) return [];
 
   const shuffledInterests = userInterests.sort(() => 0.5 - Math.random());
@@ -131,8 +150,88 @@ async function generateDailyTasks(ctx: any) {
       });
     })
   );
-  console.log(tasks);
   return tasks;
+}
+
+async function generateCollabrativeTasks(
+  ctx: any,
+  interests: { name: string; id: number }[],
+  friendIds: string[]
+) {
+  const systemPrompt = `
+          You are a creative assistant assigned to generate collabrative tasks that users can do together based one interest of each.
+          The tasks should be interesting, fun, achievable in a day, and varied.
+          {
+            "name": "the task's title",
+            "icon": "a single emoji to represent the task",
+            "interests": [id, ...],
+            "description": "Simple sentence about the task, try to balance for different skill levels"
+          }
+        `;
+
+  const content = await generateFriendsTask(interests, systemPrompt);
+  if (!content) return;
+
+  const cleaned = content.replace(/```(?:json)?/gi, "").trim();
+
+  const taskData = TaskSchema.parse(JSON.parse(cleaned));
+  return await ctx.db.task.create({
+    data: {
+      type: TaskType.GENERATED_FRIEND,
+      name: taskData.name,
+      icon: taskData.icon,
+      description: taskData.description,
+      createdById: "system",
+      friends: {
+        create: friendIds.map((id) => ({
+          user: { connect: { id: id } },
+        })),
+      },
+      interests: {
+        create: taskData.interests.map((interestId) => ({
+          interest: {
+            connect: { id: interestId },
+          },
+        })),
+      },
+    },
+    include: {
+      friends: {
+        include: {
+          user: {
+            select: {
+              id: true,
+              displayName: true,
+              image: true,
+            },
+          },
+        },
+      },
+      interests: {
+        include: {
+          interest: {
+            select: {
+              id: true,
+              name: true,
+              icon: true,
+              colour: true,
+              private: true,
+              createdById: true,
+              createdBy: true,
+              users: true,
+            },
+          },
+          task: {
+            select: {
+              id: true,
+              type: true,
+              name: true,
+            },
+          },
+        },
+      },
+    },
+  });
 }
 
 export const taskRouter = createTRPCRouter({
@@ -167,7 +266,7 @@ export const taskRouter = createTRPCRouter({
         where: {
           createdAt: { gte: startOfToday, lte: endOfToday }, // Get tasks made today
           type: {
-            in: [TaskType.GENERATED, TaskType.GENERATED_FRIEND],
+            in: [TaskType.GENERATED],
           },
           OR: [
             { createdById: input.userId },
@@ -237,7 +336,11 @@ export const taskRouter = createTRPCRouter({
         where: {
           updatedAt: { gte: oneWeekAgo },
           type: {
-            in: [TaskType.CUSTOM, TaskType.CUSTOM_FRIEND],
+            in: [
+              TaskType.CUSTOM,
+              TaskType.CUSTOM_FRIEND,
+              TaskType.GENERATED_FRIEND,
+            ],
           },
           OR: [
             { createdById: input.userId },
@@ -348,6 +451,23 @@ export const taskRouter = createTRPCRouter({
           },
         },
       });
+    }),
+
+  generateFriendTask: protectedProcedure
+    .input(
+      z.object({
+        friendIds: z.array(z.string().cuid()),
+        interests: z.array(
+          z.object({ id: z.number().min(1), name: z.string().min(1) })
+        ),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await generateCollabrativeTasks(
+        ctx,
+        input.interests,
+        input.friendIds
+      );
     }),
 
   updateTask: protectedProcedure

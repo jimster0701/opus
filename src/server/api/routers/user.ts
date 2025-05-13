@@ -100,17 +100,32 @@ export const userRouter = createTRPCRouter({
 
   getNewUsersByInterests: protectedProcedure
     .input(z.object({ interestIds: z.array(z.number()) }))
-    .mutation(async ({ ctx, input }) => {
+    .query(async ({ ctx, input }) => {
       const currentUserId = ctx.session.user.id;
       const users = await ctx.db.user.findMany({
         orderBy: { id: "desc" },
         where: {
-          interests: { some: { interestId: { in: input.interestIds } } },
-          NOT: { followers: { some: { followerId: currentUserId } } },
+          AND: [
+            { followers: { none: { followerId: currentUserId } } },
+            { interests: { some: { interestId: { in: input.interestIds } } } },
+            { id: { not: currentUserId } },
+          ],
         },
       });
 
-      return users ?? null;
+      if (users.length == 0) {
+        const moreUsers = await ctx.db.user.findMany({
+          orderBy: { id: "desc" },
+          where: {
+            AND: [
+              { followers: { none: { followerId: currentUserId } } },
+              { id: { not: currentUserId } },
+            ],
+          },
+        });
+        return moreUsers ?? [];
+      }
+      return users ?? [];
     }),
 
   IsFriend: protectedProcedure
