@@ -123,6 +123,17 @@ async function generateDailyTasks(ctx: any) {
           },
         },
         include: {
+          friends: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  displayName: true,
+                  image: true,
+                },
+              },
+            },
+          },
           interests: {
             include: {
               interest: {
