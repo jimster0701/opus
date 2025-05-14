@@ -97,7 +97,7 @@ export default function CustomTaskGenerator(props: customTaskGeneratorProps) {
     }
     return [choice1, choice2];
   };
-  console.log(createdTasks);
+
   return (
     <div className={styles.taskList}>
       <div className={styles.taskGeneratorContainer}>

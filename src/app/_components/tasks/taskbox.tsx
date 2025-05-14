@@ -42,8 +42,7 @@ export default function Taskbox(props: TaskboxProps) {
     },
     { enabled: props.task.interests != undefined }
   );
-  console.log(props.task);
-  console.log(props.task.friends);
+
   const getFriends = trpc.task.getFriendsOnTask.useQuery(
     {
       userIds: props.task.friends.map((f) => f.userId),

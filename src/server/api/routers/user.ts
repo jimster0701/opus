@@ -103,29 +103,31 @@ export const userRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const currentUserId = ctx.session.user.id;
       const users = await ctx.db.user.findMany({
-        orderBy: { id: "desc" },
         where: {
           AND: [
-            { followers: { none: { followerId: currentUserId } } },
-            { interests: { some: { interestId: { in: input.interestIds } } } },
             { id: { not: currentUserId } },
+            { following: { none: { followerId: currentUserId } } },
+            { interests: { some: { interestId: { in: input.interestIds } } } },
           ],
         },
+        orderBy: { id: "desc" },
+        take: 20,
       });
 
-      if (users.length == 0) {
-        const moreUsers = await ctx.db.user.findMany({
-          orderBy: { id: "desc" },
+      if (users.length === 0) {
+        const fallbackUsers = await ctx.db.user.findMany({
           where: {
             AND: [
-              { followers: { none: { followerId: currentUserId } } },
               { id: { not: currentUserId } },
+              { following: { none: { followerId: currentUserId } } },
             ],
           },
+          orderBy: { id: "desc" },
+          take: 20,
         });
-        return moreUsers ?? [];
+        return fallbackUsers;
       }
-      return users ?? [];
+      return users;
     }),
 
   IsFriend: protectedProcedure

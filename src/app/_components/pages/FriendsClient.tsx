@@ -220,9 +220,7 @@ export default function FriendsClient(props: friendsClientProps) {
                 </div>
               ))}
               {suggestedUsers.length == 0 && (
-                <p className={styles.opusText}>
-                  You are friends with everyone!
-                </p>
+                <p className={styles.opusText}>You are following everyone!</p>
               )}
             </div>
           </>
