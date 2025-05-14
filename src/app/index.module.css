@@ -277,12 +277,12 @@
   opacity: 0.8;
 }
 
-.notificationContainer {
+.headerNotificationContainer {
   position: relative;
   display: flex;
 }
 
-.notificationContainer > img {
+.headerNotificationContainer > img {
   fill: var(--text-primary);
 }
 
@@ -295,6 +295,20 @@
   border-radius: 1rem;
   background-color: rgb(190, 0, 0);
   border: 1px solid black;
+}
+
+/* For modal */
+.notificationContainer {
+  display: flex;
+  flex-direction: row;
+}
+
+.notificationContentContainer {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 0.25rem;
+  text-align: left;
 }
 
 /* Bottom navigation bar */

@@ -25,6 +25,9 @@ import { NotificationType, type Notification } from "~/types/notification";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import { AboutUsInnerModal } from "./innerModals";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import updateLocale from "dayjs/plugin/updateLocale";
 
 interface modalProps {
   onComplete: () => void;
@@ -1038,6 +1041,26 @@ export function NotificationsModal(props: notificationModalProps) {
     }
   });
 
+  dayjs.extend(relativeTime);
+  dayjs.extend(updateLocale);
+  dayjs.updateLocale("en", {
+    relativeTime: {
+      future: "in %s",
+      past: "%s ago",
+      s: "1s",
+      m: "1m",
+      mm: "%dm",
+      h: "1h",
+      hh: "%dh",
+      d: "1d",
+      dd: "%dd",
+      M: "1mo",
+      MM: "%dmo",
+      y: "1y",
+      yy: "%dy",
+    },
+  });
+
   return (
     <div className={styles.modalContainer}>
       <div className={styles.modalBackground} onClick={props.onComplete} />
@@ -1056,37 +1079,42 @@ export function NotificationsModal(props: notificationModalProps) {
         {props.notifications.map((notification) => (
           <div
             key={notification.id}
-            className={styles.cardContainer}
+            className={`${styles.cardContainer} ${styles.notificationContainer}`}
             onClick={() => {
               router.push(`/profile/${notification.fromUserId}`);
             }}
           >
-            <ProfilePicturePreviewWrapper
-              id={notification.fromUserId}
-              imageUrl={notification.fromUser.image}
-              width={10}
-              height={10}
-            />
-            {notification.type == NotificationType.FOLLOW && (
-              <p>{notification.fromUser.displayName} has followed you!</p>
-            )}
-            {notification.type == NotificationType.LIKE_COMMENT && (
-              <p>{notification.fromUser.displayName} liked your comment!</p>
-            )}
-            {notification.type == NotificationType.LIKE_REPLY && (
-              <p>{notification.fromUser.displayName} liked your reply!</p>
-            )}
-            {notification.type == NotificationType.LIKE_POST && (
-              <p>{notification.fromUser.displayName} liked your post!</p>
-            )}
-            {notification.type == NotificationType.TAKE_INTEREST && (
-              <p>{notification.fromUser.displayName} borrowed your interest!</p>
-            )}
-            {notification.type == NotificationType.BUG_REPORT && (
-              <p>
-                {notification.fromUser.displayName} sent a message in reports!
-              </p>
-            )}
+            <div className={styles.notificationContentContainer}>
+              <ProfilePicturePreviewWrapper
+                id={notification.fromUserId}
+                imageUrl={notification.fromUser.image}
+                width={10}
+                height={10}
+              />
+              {notification.type == NotificationType.FOLLOW && (
+                <p>{notification.fromUser.displayName} has followed you!</p>
+              )}
+              {notification.type == NotificationType.LIKE_COMMENT && (
+                <p>{notification.fromUser.displayName} liked your comment!</p>
+              )}
+              {notification.type == NotificationType.LIKE_REPLY && (
+                <p>{notification.fromUser.displayName} liked your reply!</p>
+              )}
+              {notification.type == NotificationType.LIKE_POST && (
+                <p>{notification.fromUser.displayName} liked your post!</p>
+              )}
+              {notification.type == NotificationType.TAKE_INTEREST && (
+                <p>
+                  {notification.fromUser.displayName} borrowed your interest!
+                </p>
+              )}
+              {notification.type == NotificationType.BUG_REPORT && (
+                <p>
+                  {notification.fromUser.displayName} sent a message in reports!
+                </p>
+              )}
+            </div>
+            <p>{dayjs(notification.createdAt).fromNow()}</p>
           </div>
         ))}
       </div>

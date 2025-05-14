@@ -84,7 +84,7 @@ export function Header(props: HeaderProps) {
       </div>
       {props.userId != "null" && (
         <div className={styles.navIcons}>
-          <div className={styles.notificationContainer}>
+          <div className={styles.headerNotificationContainer}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               onClick={() => setShowNotifications(true)}
@@ -225,7 +225,7 @@ export function SlugHeader(props: HeaderProps) {
       </div>
       {props.userId != "null" && (
         <div className={styles.navIcons}>
-          <div className={styles.notificationContainer}>
+          <div className={styles.headerNotificationContainer}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               onClick={() => setShowNotifications(true)}
