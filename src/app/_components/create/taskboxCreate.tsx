@@ -324,6 +324,7 @@ export default function TaskboxCreate(props: TaskboxCreateProps) {
           className={styles.opusButton}
           disabled={isSubmitting}
           onClick={async () => {
+            setIsSubmitting(true);
             setFormError(""); // Clear previous errors
 
             // Basic validation
@@ -353,7 +354,6 @@ export default function TaskboxCreate(props: TaskboxCreateProps) {
             }
 
             try {
-              setIsSubmitting(true);
               if (selectedFriends.length > 0) {
                 await createFriendTask.mutateAsync({
                   name: props.task.name,

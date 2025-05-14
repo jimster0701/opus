@@ -26,6 +26,7 @@ export function PostboxCreate(props: postboxCreateProps) {
     description: props.post.description ?? "",
   });
 
+  const [disableCreate, setDisableCreate] = useState(false);
   const [newPostTime, setNewPostTime] = useState("");
   const [image, setImage] = useState<File | null>(null);
   const [preview, setPreview] = useState<string>("");
@@ -104,6 +105,7 @@ export function PostboxCreate(props: postboxCreateProps) {
   };
 
   const handleSubmit = async (e: FormEvent) => {
+    setDisableCreate(true);
     e.preventDefault();
     try {
       // First create the post
@@ -146,6 +148,7 @@ export function PostboxCreate(props: postboxCreateProps) {
     } finally {
       setUploading(false);
     }
+    setDisableCreate(false);
   };
 
   const cancelImageUpload = () => {
@@ -249,7 +252,7 @@ export function PostboxCreate(props: postboxCreateProps) {
         <button
           type="submit"
           className={`${styles.opusButton} ${styles.submitButton}`}
-          disabled={uploading}
+          disabled={uploading || disableCreate}
         >
           {uploading ? "Creating..." : "Create"}
         </button>
