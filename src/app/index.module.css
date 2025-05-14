@@ -732,6 +732,11 @@
   width: 100%;
 }
 
+.cookieConsentButton {
+  font-size: large;
+  color: var(--text-primary);
+}
+
 /* Profile Components
 ------------------------------------------ */
 /* Profile header */

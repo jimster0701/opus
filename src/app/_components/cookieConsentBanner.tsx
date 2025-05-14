@@ -27,13 +27,13 @@ export function CookieConsent() {
       </p>
       <div className={styles.flexRow}>
         <button
-          className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
+          className={`${styles.opusButton} ${styles.cookieConsentButton}`}
           onClick={() => handleConsent(true)}
         >
           Accept
         </button>
         <button
-          className={`${styles.opusButton} ${styles.profileAvatarConfirmButton}`}
+          className={`${styles.opusButton} ${styles.cookieConsentButton}`}
           onClick={() => handleConsent(false)}
         >
           Reject
