@@ -1281,13 +1281,13 @@ export function NewUserModal(props: newUserModalProps) {
                 id="newInterestIcon"
                 name="newInterestIcon"
                 className={styles.selectInterestModalIconInput}
-                placeholder={choices[10]?.icon}
+                placeholder={"Icon"}
                 value={interestIcon}
                 onChange={(e) => {
                   const newIcon = e.target.value;
                   setSubmitError(["", ""]);
                   const emojiRegex = `(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])`;
-                  if (!RegExp(emojiRegex).test(newIcon)) {
+                  if (!RegExp(emojiRegex).test(newIcon) && newIcon != "") {
                     setSubmitError(["interest", "The Icon must be an emoji"]);
                   } else {
                     setInterestIcon(newIcon);
@@ -1571,14 +1571,14 @@ export function SelectInterestsModal(props: selectInterestsModalProps) {
               id="newInterestIcon"
               name="newInterestIcon"
               className={styles.selectInterestModalIconInput}
-              placeholder={choices[10]?.icon}
+              placeholder={"Icon"}
               required
               value={interestIcon}
               onChange={(e) => {
                 const newIcon = e.target.value;
                 setSubmitError([false, ""]);
                 const emojiRegex = `(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])`;
-                if (!RegExp(emojiRegex).test(newIcon)) {
+                if (!RegExp(emojiRegex).test(newIcon) && newIcon != "") {
                   setSubmitError([true, "Interest icon must be an emoji"]);
                 } else {
                   setInterestIcon(newIcon);
