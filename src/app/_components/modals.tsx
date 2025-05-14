@@ -1346,6 +1346,8 @@ export function NewUserModal(props: newUserModalProps) {
                     private: interestPrivate,
                   });
                   setCustomInterests((prev) => [interest as Interest, ...prev]);
+                  if (selected.length < 15)
+                    setSelected((prev) => [interest as Interest, ...prev]);
                   setInterestIcon("");
                   setInterestName("");
                 }}
@@ -1615,16 +1617,32 @@ export function SelectInterestsModal(props: selectInterestsModalProps) {
             <button
               className={styles.selectInterestModalInterestButton}
               onClick={async (e) => {
-                setSubmitError([false, ""]);
-                if (interestIcon.length == 0) return;
                 e.preventDefault();
+                setSubmitError(["", ""]);
+                if (interestIcon.length == 0) {
+                  setSubmitError([
+                    "interest",
+                    "Icon must be present to create",
+                  ]);
+                  return;
+                }
+                if (interestName.length == 0) {
+                  setSubmitError([
+                    "interest",
+                    "Interest name must be filled to create the interest",
+                  ]);
+                  return;
+                }
                 const interest = await addCustomInterest.mutateAsync({
                   name: interestName,
                   icon: interestIcon,
                   colour: hsvaToHex(hsva),
                   private: interestPrivate,
                 });
+
                 setCustomInterests((prev) => [interest as Interest, ...prev]);
+                if (selected.length < 15)
+                  setSelected((prev) => [interest as Interest, ...prev]);
                 setInterestIcon("");
                 setInterestName("");
               }}
