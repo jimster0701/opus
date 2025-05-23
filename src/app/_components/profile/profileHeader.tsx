@@ -27,7 +27,7 @@ export default function ProfileHeader(props: ProfileHeaderProps) {
 
   const [userInterests, setUserInterests] = useState<Interest[]>([]);
   const getInterests = trpc.user.getUserInterests.useQuery({
-    userId: props.session.userId,
+    userId: props.session.user.id,
   });
 
   const { data: following } = trpc.user.getFollowing.useQuery({

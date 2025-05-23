@@ -38,7 +38,7 @@ export const replyRouter = createTRPCRouter({
         await ctx.db.notification.create({
           data: {
             type: "LIKE_REPLY",
-            fromUserId: ctx.session.userId,
+            fromUserId: ctx.session.user.id,
             toUserId: reply.createdById,
             replyId: input.replyId,
           },
@@ -66,7 +66,7 @@ export const replyRouter = createTRPCRouter({
       const notification = await ctx.db.notification.findFirst({
         where: {
           type: "LIKE_REPLY",
-          fromUserId: ctx.session.userId,
+          fromUserId: ctx.session.user.id,
           toUserId: reply.createdById,
           postId: input.replyId,
         },

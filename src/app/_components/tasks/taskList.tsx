@@ -83,7 +83,7 @@ export default function TaskList(props: TaskListProps) {
               <TaskboxEditable
                 key={task.id}
                 task={task}
-                userId={props.session.userId}
+                userId={props.session.user.id}
                 session={props.session}
                 removeTask={(taskId: number) => {
                   props.setCustomTasks(

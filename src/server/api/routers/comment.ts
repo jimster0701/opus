@@ -39,7 +39,7 @@ export const commentRouter = createTRPCRouter({
         await ctx.db.notification.create({
           data: {
             type: "LIKE_COMMENT",
-            fromUserId: ctx.session.userId,
+            fromUserId: ctx.session.user.id,
             toUserId: comment.createdById,
             commentId: input.commentId,
           },
@@ -68,7 +68,7 @@ export const commentRouter = createTRPCRouter({
       const notification = await ctx.db.notification.findFirst({
         where: {
           type: "LIKE_COMMENT",
-          fromUserId: ctx.session.userId,
+          fromUserId: ctx.session.user.id,
           toUserId: comment.createdById,
           postId: input.commentId,
         },

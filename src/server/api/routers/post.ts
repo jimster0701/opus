@@ -360,7 +360,7 @@ export const postRouter = createTRPCRouter({
   getAllSessionUser: protectedProcedure.query(async ({ ctx }) => {
     const dbPosts = await ctx.db.post.findMany({
       orderBy: { createdAt: "desc" },
-      where: { createdBy: { id: ctx.session.userId } },
+      where: { createdBy: { id: ctx.session.user.id } },
       include: {
         createdBy: true,
         task: {
@@ -622,7 +622,7 @@ export const postRouter = createTRPCRouter({
         await ctx.db.notification.create({
           data: {
             type: "LIKE_POST",
-            fromUserId: ctx.session.userId,
+            fromUserId: ctx.session.user.id,
             toUserId: post.createdById,
             postId: input.postId,
           },
@@ -650,7 +650,7 @@ export const postRouter = createTRPCRouter({
       const notification = await ctx.db.notification.findFirst({
         where: {
           type: "LIKE_POST",
-          fromUserId: ctx.session.userId,
+          fromUserId: ctx.session.user.id,
           toUserId: post.createdById,
           postId: input.postId,
         },

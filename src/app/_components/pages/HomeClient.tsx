@@ -38,10 +38,10 @@ export default function HomeClient(props: HomeClientProps) {
   ]);
 
   const getDailyTasks = trpc.task.getDailyTasks.useQuery({
-    userId: props.session.userId,
+    userId: props.session.user.id,
   });
   const getCustomTasks = trpc.task.getCustomTasks.useQuery({
-    userId: props.session.userId,
+    userId: props.session.user.id,
   });
 
   useEffect(() => {
@@ -139,7 +139,7 @@ export default function HomeClient(props: HomeClientProps) {
             dailyTasks={dailyTasks}
             selectedTab={selectedTabCount}
             setCustomTasks={setCustomTasks}
-            userId={props.session.userId}
+            userId={props.session.user.id}
           />
         )}
       </div>

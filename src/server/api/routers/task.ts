@@ -62,7 +62,7 @@ const generateFriendsTask = async (
 async function generateDailyTasks(ctx: any) {
   const user = await ctx.db.user.findUnique({
     where: {
-      id: ctx.session.userId,
+      id: ctx.session.user.id,
     },
     select: {
       interests: true,
@@ -113,7 +113,7 @@ async function generateDailyTasks(ctx: any) {
           name: taskData.name,
           icon: taskData.icon,
           description: taskData.description,
-          createdById: ctx.session.userId,
+          createdById: ctx.session.user.id,
           interests: {
             create: taskData.interests.map((interestId) => ({
               interest: {
@@ -328,7 +328,7 @@ export const taskRouter = createTRPCRouter({
         },
       });
 
-      if (input.userId == ctx.session.userId && tasks.length == 0)
+      if (input.userId == ctx.session.user.id && tasks.length == 0)
         return await generateDailyTasks(ctx);
       else return tasks ?? null;
     }),

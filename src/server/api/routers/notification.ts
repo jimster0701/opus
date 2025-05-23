@@ -35,7 +35,7 @@ export const notificationRouter = createTRPCRouter({
       await ctx.db.notification.create({
         data: {
           type: "TAKE_INTEREST",
-          fromUserId: ctx.session.userId,
+          fromUserId: ctx.session.user.id,
           toUserId: input.userId,
           interestId: input.interestId,
         },
@@ -45,7 +45,7 @@ export const notificationRouter = createTRPCRouter({
   markNotificationsAsRead: protectedProcedure.mutation(async ({ ctx }) => {
     return await ctx.db.notification.updateMany({
       where: {
-        toUserId: ctx.session.userId,
+        toUserId: ctx.session.user.id,
         read: false,
       },
       data: {

@@ -23,7 +23,7 @@ export default function DiscoverClient(props: DiscoverClientProps) {
   ]);
   const { theme } = useThemeStore();
   const getUserInterests = trpc.user.getUserInterests.useQuery({
-    userId: props.session.userId,
+    userId: props.session.user.id,
   });
 
   const [showInterestModal, setShowInterestModal] = useState(false);
@@ -124,7 +124,7 @@ export default function DiscoverClient(props: DiscoverClientProps) {
       {showInterestModal && (
         <GainInterestModal
           interest={newInterest}
-          userId={props.session.userId}
+          userId={props.session.user.id}
           onComplete={() => setShowInterestModal(false)}
           userInterests={userInterests}
         />

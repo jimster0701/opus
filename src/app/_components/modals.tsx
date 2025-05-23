@@ -33,22 +33,11 @@ interface modalProps {
   onComplete: () => void;
 }
 
-export function Modal() {
-  return (
-    <div className={styles.modalContainer}>
-      <div className={styles.modalBackground} />
-      <div className={styles.modal}>
-        <h1>Hello, do this please :)</h1>
-      </div>
-    </div>
-  );
-}
-
 export function AboutUsModal(props: modalProps) {
   const [interestIcon, setInterestIcon] = useState("");
   const [hsva, setHsva] = useState({ h: 214, s: 43, v: 90, a: 1 });
   return (
-    <div className={styles.modalContainer}>
+    <div className={styles.modalContainer} id="aboutUsModal">
       <div className={styles.modalBackground} />
       <div className={`${styles.modal} ${styles.AboutUsInnerContainer}`}>
         <p className={styles.closeModalButton} onClick={props.onComplete}>
@@ -194,7 +183,7 @@ export function FirstLoginModal(props: firstLoginModalProps) {
   const [closed, setClosed] = useState(false);
   if (!closed && !props.displayName)
     return (
-      <div className={styles.modalContainer}>
+      <div className={styles.modalContainer} id="firstLoginModal">
         <div className={styles.modalBackground} />
         <div className={styles.modal}>
           <p
@@ -245,7 +234,7 @@ interface deleteModalProps {
 export function DeleteCommentModal(props: deleteModalProps) {
   const deleteComment = api.comment.deleteComment.useMutation();
   return (
-    <div className={styles.modalContainer}>
+    <div className={styles.modalContainer} id="deleteCommentModal">
       <div
         className={styles.modalBackground}
         onClick={() => props.onComplete(false)}
@@ -283,7 +272,7 @@ export function DeleteCommentModal(props: deleteModalProps) {
 export function DeleteReplyModal(props: deleteModalProps) {
   const deleteReply = api.reply.deleteReply.useMutation();
   return (
-    <div className={styles.modalContainer}>
+    <div className={styles.modalContainer} id="deleteReplyModal">
       <div
         className={styles.modalBackground}
         onClick={() => props.onComplete(false)}
@@ -320,7 +309,7 @@ export function DeleteReplyModal(props: deleteModalProps) {
 
 export function DeletePostImageModal(props: deleteModalProps) {
   return (
-    <div className={styles.modalContainer}>
+    <div className={styles.modalContainer} id="deletePostImageModal">
       <div
         className={styles.modalBackground}
         onClick={() => props.onComplete(false)}
@@ -356,7 +345,7 @@ export function DeletePostImageModal(props: deleteModalProps) {
 export function DeletePostModal(props: deleteModalProps) {
   const deletePost = api.post.deletePost.useMutation();
   return (
-    <div className={styles.modalContainer}>
+    <div className={styles.modalContainer} id="deletePostModal">
       <div
         className={styles.modalBackground}
         onClick={() => props.onComplete(false)}
@@ -395,7 +384,7 @@ export function DeletePostModal(props: deleteModalProps) {
 export function DeleteTaskModal(props: deleteModalProps) {
   const deleteTask = api.task.deleteTask.useMutation();
   return (
-    <div className={styles.modalContainer}>
+    <div className={styles.modalContainer} id="deleteTaskModal">
       <div
         className={styles.modalBackground}
         onClick={() => props.onComplete(false)}
@@ -437,7 +426,7 @@ export function RemoveCookiesModal(props: modalProps) {
   };
 
   return (
-    <div className={styles.modalContainer}>
+    <div className={styles.modalContainer} id="revokeCookiesModal">
       <div className={styles.modalBackground} onClick={props.onComplete} />
       <div className={styles.modal}>
         <h1>Are you sure you want to revoke your cookie acception?</h1>
@@ -478,7 +467,7 @@ interface completeTaskModalProps extends deleteModalProps {
 export function CompleteTaskModal(props: completeTaskModalProps) {
   const completeTask = api.task.completeTask.useMutation();
   return (
-    <div className={styles.modalContainer}>
+    <div className={styles.modalContainer} id="completeTaskModal">
       <div
         className={styles.modalBackground}
         onClick={() => props.onComplete(false)}
@@ -520,7 +509,7 @@ export function CompleteTaskModal(props: completeTaskModalProps) {
 export function UncompleteTaskModal(props: completeTaskModalProps) {
   const completeTask = api.task.completeTask.useMutation();
   return (
-    <div className={styles.modalContainer}>
+    <div className={styles.modalContainer} id="uncompleteTaskModal">
       <div
         className={styles.modalBackground}
         onClick={() => props.onComplete(true)}
@@ -586,7 +575,7 @@ export function GainInterestModal(props: gainInterestModalProps) {
   }, [getInterests.isLoading, getInterests.data]);
   if (newUserInterests.length == 10) {
     return (
-      <div className={styles.modalContainer}>
+      <div className={styles.modalContainer} id="tooManyGainInterestModal">
         <div className={styles.modalBackground} onClick={props.onComplete} />
         <div className={styles.modal}>
           <h3>You can only have 10 interests</h3>
@@ -638,7 +627,7 @@ export function GainInterestModal(props: gainInterestModalProps) {
     );
   } else {
     return (
-      <div className={styles.modalContainer}>
+      <div className={styles.modalContainer} id="gainInterestModal">
         <div className={styles.modalBackground} onClick={props.onComplete} />
         <div className={styles.modal}>
           <h1>Do you want to add this interest to your own profile?</h1>
@@ -695,7 +684,7 @@ export function FollowerOrFollowingModal(props: followerOrFollowingProps) {
   const router = useRouter();
 
   return (
-    <div className={styles.modalContainer}>
+    <div className={styles.modalContainer} id="followModal">
       <div className={styles.modalBackground} onClick={props.onComplete} />
       <div
         className={
@@ -733,7 +722,7 @@ export function FollowerOrFollowingModal(props: followerOrFollowingProps) {
 
 export function PrivacyPolicyModal(props: modalProps) {
   return (
-    <div className={styles.modalContainer}>
+    <div className={styles.modalContainer} id="privacyModal">
       <div className={styles.modalBackground} onClick={props.onComplete} />
       <div className={styles.modal}>
         <p className={styles.closeModalButton} onClick={props.onComplete}>
@@ -853,7 +842,7 @@ export function PrivacyPolicyModal(props: modalProps) {
 
 export function SurveyModal(props: modalProps) {
   return (
-    <div className={styles.modalContainer}>
+    <div className={styles.modalContainer} id="surveyModal">
       <div className={styles.modalBackground} onClick={props.onComplete} />
       <div className={styles.modal}>
         <p className={styles.closeModalButton} onClick={props.onComplete}>
@@ -905,7 +894,7 @@ export function SettingsModal(props: settingsModalProps) {
   const sendReport = trpc.report.createIssueReport.useMutation();
 
   return (
-    <div className={styles.modalContainer}>
+    <div className={styles.modalContainer} id="settingsModal">
       <div className={styles.modalBackground} onClick={props.onComplete} />
       <div
         className={
@@ -1062,7 +1051,7 @@ export function NotificationsModal(props: notificationModalProps) {
   });
 
   return (
-    <div className={styles.modalContainer}>
+    <div className={styles.modalContainer} id="notificationModal">
       <div className={styles.modalBackground} onClick={props.onComplete} />
       <div
         className={
@@ -1183,6 +1172,10 @@ export function NewUserModal(props: newUserModalProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (displayName.length == 0)
+      setChoiceError([true, "You can only select up to 15 interests"]);
+
     updateInterests.mutate({ interestIds: selected.map((i) => i.id) });
     updateDisplayName.mutate({ newDisplayName: displayName });
   };
@@ -1200,7 +1193,7 @@ export function NewUserModal(props: newUserModalProps) {
   };
 
   return (
-    <div className={styles.modalContainer}>
+    <div className={styles.modalContainer} id="newUserModal">
       <div className={styles.modalBackground} />
       <div
         className={
@@ -1225,6 +1218,7 @@ export function NewUserModal(props: newUserModalProps) {
             value={displayName}
             onChange={(e) => {
               const newName = e.target.value;
+              setChoiceError([false, ""]);
               if (newName.length > 20) {
                 setSubmitError([
                   "display",
@@ -1463,6 +1457,7 @@ export function NewUserModal(props: newUserModalProps) {
             disabled={
               selected.length < 3 ||
               selected.length > 15 ||
+              displayName.length == 0 ||
               submitError[0] == "display" ||
               choiceError[0] == true
             }
@@ -1501,7 +1496,7 @@ export function SelectInterestsModal(props: selectInterestsModalProps) {
 
   const updateInterests = trpc.user.updateInterests.useMutation({});
   const getCustomInterests = trpc.interest.getCustomUserInterests.useQuery({
-    userId: props.session.userId,
+    userId: props.session.user.id,
   });
   const addCustomInterest = trpc.interest.createInterest.useMutation({});
   const deleteCustomInterest = trpc.interest.deleteInterest.useMutation({});
@@ -1542,7 +1537,7 @@ export function SelectInterestsModal(props: selectInterestsModalProps) {
   };
 
   return (
-    <div className={styles.modalContainer}>
+    <div className={styles.modalContainer} id="selectInterestsModal">
       <div
         className={styles.modalBackground}
         onClick={() => props.onComplete(selected)}

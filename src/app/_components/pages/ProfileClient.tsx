@@ -28,10 +28,10 @@ export default function ProfileClient(props: ProfileClientProps) {
   ]);
 
   const getDailyTasks = trpc.task.getDailyTasks.useQuery({
-    userId: props.session.userId,
+    userId: props.session.user.id,
   });
   const getCustomTasks = trpc.task.getCustomTasks.useQuery({
-    userId: props.session.userId,
+    userId: props.session.user.id,
   });
 
   useEffect(() => {
