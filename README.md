@@ -1,29 +1,80 @@
-# Create T3 App
+# Opus
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+**Opus** is a progressive web application (PWA) designed to reduce excessive screen time and promote daily well-being through personalized and collaborative task management. Built with persuasive technology principles, Opus encourages users to engage in meaningful activities based on their interests and social connections.
 
-## What's next? How do I make an app with this?
+## Features
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+- 🔄 **Daily Personalized Tasks**: Automatically generates 3 daily tasks tailored to each user's interests.
+- 👥 **Friend System**: Connect with friends to collaborate on tasks and share progress.
+- 🤝 **Collaborative Tasks**: Create and join group tasks involving 2–20 users to stay motivated together.
+- ✍️ **Custom Tasks and Interests**: Add your own tasks and define interests to personalize your experience further.
+- 🖼️ **Posts with Photos**: Share your task completions or moments through image-based posts.
+- 💬 **Comment & Reply System**: Engage with friends by commenting and replying to posts.
+- 🔔 **Notification System**: Stay updated with task reminders, friend requests, and post interactions.
+- 🎨 **Custom Themes**: Personalize your app experience with theme settings.
+- 🌐 **Discover Page**: Explore public interests and browse related user posts.
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+## Technologies Used
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+- **Frontend**: React, Tailwind CSS
+- **Backend**: Node.js, Prisma, PostgreSQL
+- **Authentication**: JWT-based auth system
+- **Hosting**: Vercel (frontend), Railway (backend + database)
+- **Other**: PWA features, responsive design, REST API
 
-## Learn More
+## Getting Started
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+### Prerequisites
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+- Node.js (v18+)
+- PostgreSQL (or a Railway account)
+- Yarn or npm
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+### Installation
 
-## How do I deploy this?
+1. Clone the repository:
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+   ```bash
+   git clone https://github.com/yourusername/opus.git
+   cd opus
+
+   ```
+
+2. Install dependencies:
+
+npm install
+
+# or
+
+yarn install
+
+3. Set up your environment variables:
+
+Create a .env file based on .env.example and fill in the required values.
+
+4. Run the development server:
+
+npm run dev
+
+# or
+
+yarn dev
+
+### Building for Production
+
+npm run build
+npm start
+
+### Project Structure
+
+/client # React frontend
+/server # Node.js backend with Prisma
+/prisma # Prisma schema and migrations
+/public # Static assets
+
+### Contributing
+
+As this is a final-year university project, contributions are currently not open. However, feedback is welcome.
+
+Author
+[James Palmer-Moore] – Final Year Software Engineering Student
