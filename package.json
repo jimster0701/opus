@@ -59,11 +59,9 @@
     "@typescript-eslint/parser": "^8.1.0",
     "cross-env": "^7.0.3",
     "cypress": "^14.4.0",
-    "dotenv-cli": "^8.0.0",
     "eslint": "^8.57.0",
     "eslint-config-next": "^15.0.1",
     "prisma": "^5.14.0",
-    "start-server-and-test": "^2.0.12",
     "tsx": "^4.19.4",
     "typescript": "^5.5.3"
   },
