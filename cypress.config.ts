@@ -1,9 +1,5 @@
 // cypress.config.ts
 import { defineConfig } from "cypress";
-import * as dotenv from "dotenv";
-
-// Load the test environment variables (assumes .env.test is in project root)
-dotenv.config({ path: ".env.test" });
 
 export default defineConfig({
   e2e: {
