@@ -44,7 +44,7 @@
 
 npm install
 
-# or
+or
 
 yarn install
 
@@ -56,7 +56,7 @@ Create a .env file based on .env.example and fill in the required values.
 
 npm run dev
 
-# or
+or
 
 yarn dev
 
@@ -77,4 +77,4 @@ npm start
 As this is a final-year university project, contributions are currently not open. However, feedback is welcome.
 
 Author
-[James Palmer-Moore] – Final Year Software Engineering Student
+James Palmer-Moore – Final Year Software Engineering Student
