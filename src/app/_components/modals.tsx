@@ -573,12 +573,12 @@ export function GainInterestModal(props: gainInterestModalProps) {
     if (getInterests.isLoading) return;
     setNewUserInterests((getInterests.data as Interest[]) ?? []);
   }, [getInterests.isLoading, getInterests.data]);
-  if (newUserInterests.length == 10) {
+  if (newUserInterests.length == 15) {
     return (
       <div className={styles.modalContainer} id="tooManyGainInterestModal">
         <div className={styles.modalBackground} onClick={props.onComplete} />
         <div className={styles.modal}>
-          <h3>You can only have 10 interests</h3>
+          <h3>You can only have 15 interests</h3>
           <h4>
             Choose one for this to replace:
             <br />
@@ -601,10 +601,10 @@ export function GainInterestModal(props: gainInterestModalProps) {
                       prev.filter((i) => i.id != interest.id)
                     );
                     setNewSelectedError([false, ""]);
-                  } else if (newUserInterests.length > 10) {
+                  } else if (newUserInterests.length > 15) {
                     setNewSelectedError([
                       true,
-                      "You can only select up to 10 interests",
+                      "You can only select up to 15 interests",
                     ]);
                   } else {
                     setNewUserInterests((prev) =>

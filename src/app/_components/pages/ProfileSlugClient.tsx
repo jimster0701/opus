@@ -54,8 +54,14 @@ export default function ProfileSlugClient(props: ProfileSlugClientProps) {
   ]);
 
   const isFriend = trpc.user.IsFriend.useQuery({ userId: user.id });
-  const getDailyTasks = trpc.task.getDailyTasks.useQuery({ userId: user.id });
-  const getCustomTasks = trpc.task.getCustomTasks.useQuery({ userId: user.id });
+  const getDailyTasks = trpc.task.getDailyTasks.useQuery(
+    { userId: user.id },
+    { enabled: user.id != "system" }
+  );
+  const getCustomTasks = trpc.task.getCustomTasks.useQuery(
+    { userId: user.id },
+    { enabled: user.id != "system" }
+  );
 
   useMemo(() => {
     if (getSessionUserInterests.isLoading) return;
@@ -89,14 +95,14 @@ export default function ProfileSlugClient(props: ProfileSlugClientProps) {
   }, [isFriend.isLoading, isFriend.data]);
 
   useEffect(() => {
-    if (getDailyTasks.isLoading) return;
+    if (getDailyTasks.isLoading || user.id == "system") return;
     if (getDailyTasks.data?.length != 0) {
       setDailyTasks(getDailyTasks.data as Task[]);
     }
   }, [getDailyTasks.isLoading, getDailyTasks.data?.length, getDailyTasks.data]);
 
   useEffect(() => {
-    if (getCustomTasks.isLoading) return;
+    if (getCustomTasks.isLoading || user.id == "system") return;
     if (getCustomTasks.data?.length != 0) {
       setCustomTasks(getCustomTasks.data as Task[]);
     }
