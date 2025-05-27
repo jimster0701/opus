@@ -330,7 +330,7 @@ export const taskRouter = createTRPCRouter({
 
       if (input.userId == ctx.session.user.id && tasks.length == 0)
         return await generateDailyTasks(ctx);
-      else return tasks ?? null;
+      else return tasks ?? [];
     }),
 
   getCustomTasks: protectedProcedure
@@ -401,7 +401,7 @@ export const taskRouter = createTRPCRouter({
           },
         },
       });
-      return tasks ?? null;
+      return tasks ?? [];
     }),
 
   createCustomTask: protectedProcedure

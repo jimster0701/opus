@@ -41,7 +41,11 @@ export default function PostboxEditable(props: postboxEditableProps) {
   useEffect(() => {
     if (getDailyTasks.isLoading) return;
     if (getDailyTasks.data?.length != 0) {
-      setAvailableTasks([...(getDailyTasks.data as Task[]), ...customTasks]);
+      setAvailableTasks([
+        ...(getDailyTasks.data as Task[]),
+        ...customTasks,
+        post.task,
+      ]);
     }
   }, [
     getDailyTasks.isLoading,
