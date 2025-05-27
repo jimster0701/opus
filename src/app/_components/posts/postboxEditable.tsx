@@ -52,6 +52,7 @@ export default function PostboxEditable(props: postboxEditableProps) {
     getDailyTasks.data?.length,
     getDailyTasks.data,
     customTasks,
+    post.task,
   ]);
 
   const finishUpdate = (post: Post, deletePost: boolean) => {

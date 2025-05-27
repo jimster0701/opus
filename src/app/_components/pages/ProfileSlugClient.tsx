@@ -99,7 +99,12 @@ export default function ProfileSlugClient(props: ProfileSlugClientProps) {
     if (getDailyTasks.data?.length != 0) {
       setDailyTasks(getDailyTasks.data as Task[]);
     }
-  }, [getDailyTasks.isLoading, getDailyTasks.data?.length, getDailyTasks.data]);
+  }, [
+    getDailyTasks.isLoading,
+    getDailyTasks.data?.length,
+    getDailyTasks.data,
+    user.id,
+  ]);
 
   useEffect(() => {
     if (getCustomTasks.isLoading || user.id == "system") return;
@@ -110,6 +115,7 @@ export default function ProfileSlugClient(props: ProfileSlugClientProps) {
     getCustomTasks.isLoading,
     getCustomTasks.data?.length,
     getCustomTasks.data,
+    user.id,
   ]);
 
   if (getUser.isLoading) {
